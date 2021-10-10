@@ -34,8 +34,7 @@ class BurgerIngredients extends React.Component{
         if (!oBurger.nPrice) {
             oBurger.nPrice = 0;
         }
-        
-        //Modyfing ingredients map - adding counter
+
         this.props.ingredients.forEach(currentElement => {
             if(oIngredients[currentElement.type]){
                 let nCounter = 0;
