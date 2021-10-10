@@ -33,7 +33,7 @@ class BurgerConstructor extends React.Component {
                                                 thumbnail={this.state.burger.oBun.image} />
                         </li>
                     </ul>
-                    <ul className={[BurgerConstructorStyles.list, BurgerConstructorStyles.list_scrollable].join(" ")}>
+                    <ul className={BurgerConstructorStyles.list_scrollable}>
                         {this.state.burger.oContent &&  this.state.burger.oContent.map((oElement, nIndex) => 
                              <li key={nIndex} className={[BurgerConstructorStyles.item, BurgerConstructorStyles.item_moveable,  "pl-8" + ((this.state.burger.oContent.length > nIndex + 1) ? " pb-4" : "")].join(" ")}>
                                 <DragIcon type="primary" />

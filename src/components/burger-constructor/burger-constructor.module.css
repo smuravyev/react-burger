@@ -18,6 +18,13 @@
 .list_scrollable{
     max-height: 41.2vh;
     overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    margin: 0;
+    text-align: center;
+    list-style-type: none;
+    padding: 0;
+
 }
 
 .total_price{

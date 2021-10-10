@@ -17,16 +17,16 @@ const AppHeader = props => {
     const isProfilePage = () => props.section === "profile";
 
     return ( 
-        <header className={styles.header + " pt-4 pb-4"}>
+        <header className={`${styles.header} pt-4 pb-4`}>
             <nav className={styles.nav}>
                 <ul className={styles.header__element}>
-                    <li className={styles.header__button + " mr-2 pl-5 pt-5 pr-5 pb-5"}>
+                    <li className={`${styles.header__button} mr-2 pl-5 pt-5 pr-5 pb-5`}>
                         <BurgerIcon type={isBurgerPage() ? "primary" : "secondary"} />
                         <p className={[styles.header__button_text,
                                        "ml-2 text text_type_main-default",
                                        (isBurgerPage()  ? "" : "text_color_inactive")].join(" ")}>Конструктор</p>
                     </li>
-                    <li className={styles.header__button + " mr-2 pl-5 pt-5 pr-5 pb-5"}>
+                    <li className={`${styles.header__button} mr-2 pl-5 pt-5 pr-5 pb-5`}>
                         <ListIcon type={isListPage() ? "primary" : "secondary"} />
                         <p className={[styles.header__button_text,
                                           "ml-2 text text_type_main-default",
@@ -39,7 +39,7 @@ const AppHeader = props => {
                     </li>
                 </ul>
                 <ul className={styles.header__element}>
-                    <li className={styles.header__button + " ml-2 pl-5 pt-5 pr-5 pb-5"}>
+                    <li className={`${styles.header__button} ml-2 pl-5 pt-5 pr-5 pb-5`}>
                         <ProfileIcon type={isProfilePage() ? "primary" : "secondary"} />
                         <p className={[styles.header__button_text,
                                        "ml-2 text text_type_main-default",
