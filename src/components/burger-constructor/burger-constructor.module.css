@@ -55,5 +55,5 @@
 .item_moveable > svg{
     position: absolute;
     left: 0;
-    top: calc(50% - 16px);
+    top: calc(50% - 20px);
 }

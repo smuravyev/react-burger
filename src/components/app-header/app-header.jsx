@@ -8,64 +8,47 @@ import {
         Logo
        } from '@ya.praktikum/react-developer-burger-ui-components'
 
-import AppHeaderStyles from  './app-header.module.css';
-
-class AppHeader extends React.Component {
+import styles from  './app-header.module.css';
     
-    constructor(props){
-        super(props);
-        
-        this.state = {activeButton : props.section || "burger"}; 
-    }
-    
-    isBurgerPage(){
-        return this.state.activeButton === "burger";
-    }
+const AppHeader = props => {
 
-    isListPage(){
-        return this.state.activeButton === "list";
-    }
+    const isBurgerPage = () => props.section === "burger";
+    const isListPage = () => props.section === "list";
+    const isProfilePage = () => props.section === "profile";
 
-    isProfilePage(){
-        return this.state.activeButton === "profile";
-    }
-
-    render(){
-        return ( 
-            <header className={AppHeaderStyles.header + " pt-4 pb-4"}>
-                <nav className={AppHeaderStyles.nav}>
-                    <ul className={AppHeaderStyles.header__element}>
-                        <li className={AppHeaderStyles.header__button + " mr-2 pl-5 pt-5 pr-5 pb-5"}>
-                            <BurgerIcon type={this.isBurgerPage() ? "primary" : "secondary"} />
-                            <p className={[AppHeaderStyles.header__button_text,
-                                              "ml-2 text text_type_main-default",
-                                              (this.isBurgerPage()  ? "" : "text_color_inactive")].join(" ")}>Конструктор</p>
-                        </li>
-                        <li className={AppHeaderStyles.header__button + " mr-2 pl-5 pt-5 pr-5 pb-5"}>
-                            <ListIcon type={this.isListPage() ? "primary" : "secondary"} />
-                            <p className={[AppHeaderStyles.header__button_text,
-                                              "ml-2 text text_type_main-default",
-                                              (this.isListPage()  ? "" : "text_color_inactive")].join(" ")}>Лента заказов</p>
-                        </li>
-                    </ul>
-                    <ul className={AppHeaderStyles.header__element}>
-                        <li href="/">
-                            <Logo />
-                        </li>
-                    </ul>
-                    <ul className={AppHeaderStyles.header__element}>
-                        <li className={AppHeaderStyles.header__button + " ml-2 pl-5 pt-5 pr-5 pb-5"}>
-                            <ProfileIcon type={this.isProfilePage() ? "primary" : "secondary"} />
-                            <p className={[AppHeaderStyles.header__button_text,
-                                              "ml-2 text text_type_main-default",
-                                              (this.isProfilePage()  ? "" : "text_color_inactive")].join(" ")}>Личный кабинет</p>
-                        </li>
-                    </ul>
-                </nav>
-
-            </header>
-        );
-    }
+    return ( 
+        <header className={styles.header + " pt-4 pb-4"}>
+            <nav className={styles.nav}>
+                <ul className={styles.header__element}>
+                    <li className={styles.header__button + " mr-2 pl-5 pt-5 pr-5 pb-5"}>
+                        <BurgerIcon type={isBurgerPage() ? "primary" : "secondary"} />
+                        <p className={[styles.header__button_text,
+                                       "ml-2 text text_type_main-default",
+                                       (isBurgerPage()  ? "" : "text_color_inactive")].join(" ")}>Конструктор</p>
+                    </li>
+                    <li className={styles.header__button + " mr-2 pl-5 pt-5 pr-5 pb-5"}>
+                        <ListIcon type={isListPage() ? "primary" : "secondary"} />
+                        <p className={[styles.header__button_text,
+                                          "ml-2 text text_type_main-default",
+                                          (isListPage()  ? "" : "text_color_inactive")].join(" ")}>Лента заказов</p>
+                    </li>
+                </ul>
+                <ul className={styles.header__element}>
+                    <li href="/">
+                        <Logo />
+                    </li>
+                </ul>
+                <ul className={styles.header__element}>
+                    <li className={styles.header__button + " ml-2 pl-5 pt-5 pr-5 pb-5"}>
+                        <ProfileIcon type={isProfilePage() ? "primary" : "secondary"} />
+                        <p className={[styles.header__button_text,
+                                       "ml-2 text text_type_main-default",
+                                       (isProfilePage()  ? "" : "text_color_inactive")].join(" ")}>Личный кабинет</p>
+                    </li>
+                </ul>
+            </nav>
+        </header>
+    );
 }
 
 AppHeader.propTypes = {
