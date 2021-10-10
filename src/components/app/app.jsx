@@ -13,7 +13,9 @@ class App extends React.Component {
     
     constructor(props){
         super(props);
+        
         let oConstructedBurger = {oBun : null, oContent : [], nPrice : 0};
+        
         oConstructedBurger.oBun = aHardcodedData.find((element) => {
             return element._id === oSampleBurger.oBun;
         });
@@ -26,13 +28,14 @@ class App extends React.Component {
         });
         
         this.state = {constructedBurger : oConstructedBurger,
-                      ingredients : aHardcodedData};
+                      ingredients : aHardcodedData,
+                      currentPage : "burger"};
     }
 
     render() {
         return (
             <div className={AppStyles.wrapper}>
-                <AppHeader />
+                <AppHeader section={this.state.currentPage} />
                 <main className={AppStyles.main}>
                     <BurgerIngredients burger={this.state.constructedBurger} ingredients={this.state.ingredients} />
                     <BurgerConstructor burger={this.state.constructedBurger} />
