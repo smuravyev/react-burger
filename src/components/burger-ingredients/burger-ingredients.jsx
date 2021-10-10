@@ -57,7 +57,7 @@ class BurgerIngredients extends React.Component{
     
     render() {
         return (
-                <section className={styles.section + " mr-5"}> 
+                <section className={`${styles.section} mr-5`}> 
                     <h1 className="pt-10 pb-5 text text_type_main-large">
                         Соберите бургер
                     </h1>
@@ -68,7 +68,7 @@ class BurgerIngredients extends React.Component{
                             </Tab>
                         )}
                     </menu>
-                    <article className={styles.items__scrollable + " mt-8"}>
+                    <article className={`${styles.items__scrollable} mt-8`}>
                         {this.state.types.map((currentType, nTypeIndex) =>
                             <React.Fragment key={nTypeIndex}>
                                 <h2 className="mt-2 mb-6 text text_type_main_medium">
@@ -77,13 +77,13 @@ class BurgerIngredients extends React.Component{
                                 <ul className={styles.items}>
                                 {this.state.ingredients[currentType.type].map((currentElement, nIndex) => 
                                     <React.Fragment key={currentElement._id}>
-                                        <li className={styles.items__component + " ml-4 mr-2 mb-8"}>
+                                        <li className={`${styles.items__component} ml-4 mr-2 mb-8`}>
                                             <Counter count={currentElement.counter} size="default" />
                                             <img src={currentElement.image} alt={currentElement.name} />
-                                            <p className={styles.items__component__price + " text text_type_digits-default"}>
+                                            <p className={`${styles.items__component__price} text text_type_digits-default`}>
                                                <span className={styles.items__component__price_digits}>{currentElement.price}&nbsp;</span><CurrencyIcon type="primary" />
                                             </p>
-                                            <p className={styles.items__component__name + " mt-1 text text_type_main_small"}>
+                                            <p className={`${styles.items__component__name} mt-1 text text_type_main_small`}>
                                                  {currentElement.name}
                                             </p>
                                         </li>
