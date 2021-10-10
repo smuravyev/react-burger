@@ -10,61 +10,72 @@ import {
         DragIcon
        } from '@ya.praktikum/react-developer-burger-ui-components';
 
-import BurgerConstructorStyles from  './burger-constructor.module.css';
+import styles from  './burger-constructor.module.css';
 
-class BurgerConstructor extends React.Component {
-    
-    constructor(props){
-        super(props);
-        
-        this.state =  {burger : props.burger};
-    }
-
-    render() {
-        /* Странности с булкой, показываем цену дважды, считаем 1 раз */ 
-        return (
-                <section className={BurgerConstructorStyles.section + " ml-5 pt-25"}>
-                { this.state.burger && this.state.burger.oBun && this.state.burger.oBun._id &&  <>
-                    <ul className={BurgerConstructorStyles.list}>
-                        <li className={BurgerConstructorStyles.item + " pl-8 pb-4"}>
-                            <ConstructorElement type="top" isLocked={true}
-                                                text={this.state.burger.oBun.name +" (верх)"}
-                                                price={this.state.burger.oBun.price}
-                                                thumbnail={this.state.burger.oBun.image} />
+const BurgerConstructor = props => {
+    return (
+        <section className={`${styles.section} ml-5 pt-25`}>
+        {
+            /* Checking out if there any burger and there is at least a bun */
+            props.burger &&
+            props.burger.oBun &&
+            props.burger.oBun._id && (
+                <>
+                    <ul className={styles.list}>
+                        <li className={`${styles.item} pl-8 pb-4`}>
+                            <ConstructorElement type="top"
+                                                isLocked={true}
+                                                text={props.burger.oBun.name
+                                                      +" (верх)"}
+                                                price={props.burger.oBun.price}
+                                                thumbnail=
+                                                    {props.burger.oBun.image} />
                         </li>
                     </ul>
-                    <ul className={BurgerConstructorStyles.list_scrollable}>
-                        {this.state.burger.oContent &&  this.state.burger.oContent.map((oElement, nIndex) => 
-                             <li key={nIndex} className={[BurgerConstructorStyles.item, BurgerConstructorStyles.item_moveable,  "pl-8" + ((this.state.burger.oContent.length > nIndex + 1) ? " pb-4" : "")].join(" ")}>
-                                <DragIcon type="primary" />
-                                <ConstructorElement isLocked={false}
-                                                    text={oElement.name}
-                                                    price={oElement.price}
-                                                    thumbnail={oElement.image} />
-                            </li>
+                    <ul className={styles.list_scrollable}>
+                        {
+                            /* Any burger content content here? */
+                            props.burger.oContent && 
+                            props.burger.oContent.map((oElement, nIndex) => 
+                                <li key={nIndex}
+                                    className={[styles.item,
+                                                styles.item_moveable,
+                                                "pl-8" + ((props.burger.oContent.length > nIndex + 1) ? " pb-4" : "")].join(" ")}>
+                                    <DragIcon type="primary" />
+                                    <ConstructorElement isLocked={false}
+                                                        text={oElement.name}
+                                                        price={oElement.price}
+                                                        thumbnail={oElement.image} />
+                                </li>
                             )
                         }
                      </ul>
-                     
-                     <ul className={BurgerConstructorStyles.list}>
-                        <li className={BurgerConstructorStyles.item + " pt-4 pl-8"}>
-                            <ConstructorElement type="bottom" isLocked={true}
-                                                text={this.state.burger.oBun.name + " (низ)"}
-                                                price={this.state.burger.oBun.price}
-                                                thumbnail={this.state.burger.oBun.image} />
+                     <ul className={styles.list}>
+                        <li className={`${styles.item} pt-4 pl-8`}>
+                            <ConstructorElement type="bottom"
+                                                isLocked={true}
+                                                text={props.burger.oBun.name +
+                                                      " (низ)"}
+                                                price={props.burger.oBun.price}
+                                                thumbnail={props.burger.oBun.image} />
                         </li>
-                        { this.state.burger.nPrice && <li className={BurgerConstructorStyles.item + " pt-10 pr-4 " + BurgerConstructorStyles.item_total}>
-                             <p className={BurgerConstructorStyles.total_price + " pr-10 text text_type_digits-medium"}>
-                                 {this.state.burger.nPrice}&nbsp;<CurrencyIcon type="primary" />
-                             </p>
-                             <Button type="primary" size="medium">
-                                 Оформить заказ
-                             </Button>
-                        </li>} 
-                    </ul> </>}
-                </section> 
-        );
-    }
+                        {
+                             props.burger.nPrice && 
+                                 <li className={`${styles.item} ${styles.item_total} pt-10 pr-4`}>
+                                     <p className={`${styles.total_price} pr-10 text text_type_digits-medium`}>
+                                         {props.burger.nPrice}&nbsp;<CurrencyIcon type="primary" />
+                                     </p>
+                                     <Button type="primary" size="medium">
+                                         Оформить заказ
+                                     </Button>
+                                 </li>
+                        } 
+                    </ul>
+                </>
+            )
+        }
+        </section> 
+    );
 }
 
 /* Непонятно, как верстать, если цены нет или булку не выбрали,

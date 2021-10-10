@@ -64,3 +64,9 @@
     left: 0;
     top: calc(50% - 20px);
 }
+
+.item_moveable:last-child > svg{
+    position: absolute;
+    left: 0;
+    top: calc(50% - 12px);
+}
