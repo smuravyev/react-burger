@@ -1,0 +1,11 @@
+.wrapper{
+    width: 100%;
+    text-align: center;
+}
+
+.main{
+    display: inline-block;
+    width: 100%;
+    max-width: 1240px;
+    min-width: 1240px;
+}
