@@ -1,7 +1,12 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
+import Modal from '../modal/modal';
+import OrderDetails from '../order-details/order-details';
+
 import ingredientsPropTypes from "../../utils/ingredients.proptypes.js";
+
+import {sModalSelector} from "../../utils/constants.js";
 
 import {
         ConstructorElement, 
@@ -13,6 +18,13 @@ import {
 import styles from  './burger-constructor.module.css';
 
 const BurgerConstructor = props => {
+    const [oCurrentOrder, setOCurrentOrder] = React.useState(null);
+    
+    const makeOrderHandler = () => {
+        setOCurrentOrder({orderId :
+                                   100000 + Math.floor(89999 * Math.random())});
+    }
+    
     return (
         <section className={`${styles.section} ml-5 pt-25`}>
         {
@@ -35,12 +47,12 @@ const BurgerConstructor = props => {
                     <ul className={styles.list_scrollable}>
                         {
                             /* Any burger content content here? */
-                            props.burger.oContent && 
-                            props.burger.oContent.map((oElement, nIndex) => 
+                            props.burger.aContent && 
+                            props.burger.aContent.map((oElement, nIndex) => 
                                 <li key={nIndex}
                                     className={[styles.item,
                                                 styles.item_moveable,
-                                                "pl-8" + ((props.burger.oContent.length > nIndex + 1) ? " pb-4" : "")].join(" ")}>
+                                                "pl-8" + ((props.burger.aContent.length > nIndex + 1) ? " pb-4" : "")].join(" ")}>
                                     <DragIcon type="primary" />
                                     <ConstructorElement isLocked={false}
                                                         text={oElement.name}
@@ -65,7 +77,9 @@ const BurgerConstructor = props => {
                                      <p className={`${styles.total_price} pr-10 text text_type_digits-medium`}>
                                          {props.burger.nPrice}&nbsp;<CurrencyIcon type="primary" />
                                      </p>
-                                     <Button type="primary" size="medium">
+                                     <Button type="primary"
+                                             size="medium"
+                                             onClick={makeOrderHandler}>
                                          Оформить заказ
                                      </Button>
                                  </li>
@@ -73,6 +87,13 @@ const BurgerConstructor = props => {
                     </ul>
                 </>
             )
+        }
+        {
+            oCurrentOrder && (
+                <Modal parentElement={document.querySelector(sModalSelector)}
+                       closer={() => setOCurrentOrder(null)}>
+                           <OrderDetails {...oCurrentOrder} />
+                </Modal>)
         }
         </section> 
     );
@@ -83,10 +104,9 @@ const BurgerConstructor = props => {
 BurgerConstructor.propTypes = {
     burger: PropTypes.shape({
         oBun : ingredientsPropTypes,
-        oContent : PropTypes.arrayOf(ingredientsPropTypes),
+        aContent : PropTypes.arrayOf(ingredientsPropTypes),
         nPrice : PropTypes.number,
     })
 };
-
 
 export default BurgerConstructor;

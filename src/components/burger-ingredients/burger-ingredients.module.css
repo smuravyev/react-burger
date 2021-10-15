@@ -45,6 +45,7 @@
     display: inline-block;
     text-align: center;
     position: relative;
+    cursor: pointer;
 }
 
 .items__component__price{

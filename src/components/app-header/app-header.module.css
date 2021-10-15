@@ -22,6 +22,10 @@
     padding: 0;
 }
 
+.clickable_logo{
+    cursor: pointer;
+}
+
 .header__element:first-child{
     text-align: left;
 }
@@ -40,6 +44,7 @@
     text-decoration: none;
     display: inline-block;
     white-space: nowrap;
+    cursor: pointer;
 }
 
 .header__button:visited{
