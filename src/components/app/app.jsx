@@ -3,6 +3,8 @@ import React from 'react';
 import AppHeader from '../app-header/app-header';
 import BurgerIngredients from '../burger-ingredients/burger-ingredients';
 import BurgerConstructor from '../burger-constructor/burger-constructor';
+import OrderDetails from '../order-details/order-details';
+import IngredientDetails from '../ingredient-details/ingredient-details';
 import Modal from '../modal/modal';
 
 import styles from './app.module.css';  
@@ -18,14 +20,20 @@ const App = () => {
     /* Created burger */
     const [oConstructedBurger, setOConstructedBurger] =
                                                 React.useState(oBurgerTemplate);
+    /* Current order details */
+    const [oCurrentOrder, setOCurrentOrder] = React.useState(null);
+
     /* Current page */
     const [sCurrentPage, setSCurrentPage] =
                                          React.useState(oSettings.sDefaultPage);
-    
+
     /* Ingredients available */
     const [oIngredients, setOIngredients] =
                                            React.useState(oIngredientsTemplate);
-    
+
+    const [oCurrentIngredientDetails, setOCurrentIngredientDetails] =
+                                                           React.useState(null);
+
     /* Was the loading successful? */
     const [bIsLoaded, setBIsLoaded] = React.useState(false);
     
@@ -69,9 +77,10 @@ const App = () => {
         }
         return oBurger;
     };
-    
+
     const countIngredients = (oBurger) => {
        const aResult = [];
+       
        if(oBurger && oBurger.oBun && oBurger.oBun["_id"]) {
            aResult[oBurger.oBun._id] = 1;
        }
@@ -135,10 +144,17 @@ const App = () => {
             });    
     }, []);
     
-    const clickOnLogoHandler = () => {
+    //============= EVENT HANDLERS =============================================
+
+    const clickOnLogoHandler = React.useCallback(() => {
         setSCurrentPage(oSettings.sDefaultPage);
-    };
-    
+    }, []);
+
+    const makeOrderHandler = () => {
+        setOCurrentOrder({orderId :
+                                   100000 + Math.floor(89999 * Math.random())});
+    }
+
     return (<>
         {
          bIsLoaded && (<div className={styles.wrapper}>
@@ -146,18 +162,34 @@ const App = () => {
                         onHomeClick={clickOnLogoHandler} />
                  <main className={styles.main}>
                      <BurgerIngredients usedIngredients={aUsedIngredients}
-                                         ingredients={oIngredients} />
-                     <BurgerConstructor burger={oConstructedBurger} />
+                                        ingredients={oIngredients} 
+                                        onIngredientClick={setOCurrentIngredientDetails}/>
+                     <BurgerConstructor burger={oConstructedBurger}
+                                        onPlaceOrderHandler={makeOrderHandler} />
                  </main>
              </div>
          )
         }
+        {oCurrentOrder && (
+                <Modal parentElement={document.querySelector(sModalSelector)}
+                       closer={() => setOCurrentOrder(null)}>
+                           <OrderDetails {...oCurrentOrder} />
+                </Modal>)
+        }
         {erCatchedError && (
                 <Modal parentElement={document.querySelector(sModalSelector)}
                        canClose={false}
-                       caption={erCatchedError.message || "Произошла фигня&hellip;"}>
-                </Modal>
-        )}
+                       caption={erCatchedError.message || "Бургерная выполнила недопустимую операцию и временно закрыта 😢 "}>
+                </Modal>)
+        }
+        {
+                oCurrentIngredientDetails && (
+                    <Modal parentElement={document.querySelector(sModalSelector)}
+                           caption="Детали игредиента"
+                           closer={() => setOCurrentIngredientDetails(null)}>
+                               <IngredientDetails {...oCurrentIngredientDetails} />
+                    </Modal>)
+        }
         </>);
 }
  

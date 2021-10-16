@@ -1,6 +1,8 @@
-# Getting Started with Create React App
+# React-burger educational project
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app)
+and runs with [Yandex.Practicum components](https://practicum.yandex.ru/).
+
 
 ## Available Scripts
 

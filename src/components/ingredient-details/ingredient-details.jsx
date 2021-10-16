@@ -1,8 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-import OrderDetails from '../order-details/order-details'
-
 import styles from  './ingredient-details.module.css';
 
 const IngredientDetails = ({name, calories, carbohydrates, proteins, fat, image_large}) =>{
@@ -47,5 +45,14 @@ const IngredientDetails = ({name, calories, carbohydrates, proteins, fat, image_
         </figure>
     );
 };
+
+IngredientDetails.propTypes = {
+    "name" : PropTypes.string.isRequired,
+    "proteins" : PropTypes.number.isRequired,
+    "fat" : PropTypes.number.isRequired,
+    "carbohydrates" : PropTypes.number.isRequired,
+    "calories" : PropTypes.number.isRequired,
+    "image_large" : PropTypes.string.isRequired
+}
 
 export default IngredientDetails;

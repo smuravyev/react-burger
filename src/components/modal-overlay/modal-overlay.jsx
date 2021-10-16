@@ -9,5 +9,8 @@ const ModalOverlay = ({onClickHandler}) =>{
     );
 };
 
+ModalOverlay.propTypes = {
+    onClickHandler : PropTypes.func
+}
 
 export default ModalOverlay;

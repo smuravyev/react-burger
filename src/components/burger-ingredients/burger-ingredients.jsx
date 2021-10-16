@@ -1,12 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-import Modal from '../modal/modal';
-import IngredientDetails from '../ingredient-details/ingredient-details';
-
 import ingredientsPropTypes from "../../utils/ingredients.proptypes.js";
-
-import {sModalSelector} from "../../utils/constants.js";
 
 import {
         Counter, 
@@ -16,37 +11,37 @@ import {
 
 import styles from  './burger-ingredients.module.css';
 
-const BurgerIngredients = ({ingredients, usedIngredients}) => {
+const BurgerIngredients = ({ingredients, usedIngredients, onIngredientClick}) => {
     const [sCurrentType, setSCurrentType] =
-                                     React.useState(ingredients[0].sType);
-                                     
-    const [oCurrentIngredient, setOCurrentIngredient] = React.useState(null);
+                                           React.useState(ingredients[0].sType);
 
-    const oULRefs = {};
+    const oULRefs = React.useMemo(() =>{
+        const oResultSetOfRefs = {};
+        ingredients.forEach((oType) => {
+            oResultSetOfRefs[oType.sType] = React.createRef(null); 
+        });
+        return oResultSetOfRefs;
+    }, [ingredients]);
     
-    ingredients.forEach((oType) => {
-        oULRefs[oType.sType] = React.createRef(null); 
-    });
-
-    const handleTypeTabClick = (sType) => {
+    const handleTypeTabClick = React.useCallback((sType) => {
         setSCurrentType(sType);
         oULRefs[sType].current.scrollIntoView({behavior: "smooth"});
-    };
+    }, [oULRefs]);
     
     const oScrollerRef = React.createRef(null);
     
-    const handleScroll = () => {
+    const handleScroll = React.useCallback(() => {
         const oScrollerCoords = oScrollerRef.current.getBoundingClientRect();
         for (let sIndex in oULRefs){
             const currentHeaderCoords = 
                                 oULRefs[sIndex].current.getBoundingClientRect();
             const nTopDifference = currentHeaderCoords.top - oScrollerCoords.top;
-            if(nTopDifference > -5  && nTopDifference < oScrollerCoords.height){
+            if(nTopDifference >= 0  && nTopDifference < oScrollerCoords.height){
                 setSCurrentType(sIndex);
                 break;
             }
         };
-    };
+    }, [oULRefs, oScrollerRef]);
 
     return (
             <section className={`${styles.section} mr-5`}> 
@@ -77,7 +72,7 @@ const BurgerIngredients = ({ingredients, usedIngredients}) => {
                                                    (oCurrentElement, nIndex) => ( 
                                     <React.Fragment key={oCurrentElement._id}>
                                         <li className={`${styles.items__component} ml-4 mr-2 mb-8`}
-                                            onClick={() => setOCurrentIngredient(oCurrentElement)}>
+                                            onClick={() => onIngredientClick(oCurrentElement)}>
                                             {(usedIngredients[oCurrentElement._id] &&
                                               usedIngredients[oCurrentElement._id] > 0 && 
                                                  <Counter
@@ -97,20 +92,13 @@ const BurgerIngredients = ({ingredients, usedIngredients}) => {
                             </ul>
                         </React.Fragment>)}
                 </article>
-                {
-                    oCurrentIngredient && (
-                        <Modal parentElement={document.querySelector(sModalSelector)}
-                               caption="Детали игредиента"
-                               closer={() => setOCurrentIngredient(null)}>
-                                   <IngredientDetails {...oCurrentIngredient} />
-                        </Modal>)
-                }
             </section>
         );
 };
 
 BurgerIngredients.propTypes = {
     usedIngredients : PropTypes.arrayOf(PropTypes.number).isRequired,
+    onIngredientClick : PropTypes.func,
     ingredients : PropTypes.arrayOf(PropTypes.shape({
         sName : PropTypes.string.isRequired,
         sType : PropTypes.oneOf(["bun", "sauce", "main"]).isRequired,
