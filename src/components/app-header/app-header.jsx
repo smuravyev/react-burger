@@ -10,11 +10,11 @@ import {
 
 import styles from  './app-header.module.css';
     
-const AppHeader = props => {
+const AppHeader = ({section, onHomeClick}) => {
 
-    const isBurgerPage = () => props.section === "burger";
-    const isListPage = () => props.section === "list";
-    const isProfilePage = () => props.section === "profile";
+    const isBurgerPage = () => section === "burger";
+    const isListPage = () => section === "list";
+    const isProfilePage = () => section === "profile";
 
     return ( 
         <header className={`${styles.header} pt-4 pb-4`}>
@@ -34,8 +34,8 @@ const AppHeader = props => {
                     </li>
                 </ul>
                 <ul className={styles.header__element}>
-                    <li href="/">
-                        <Logo />
+                    <li href="/" className={styles.clickable_logo}>
+                        <Logo onClick={onHomeClick} />
                     </li>
                 </ul>
                 <ul className={styles.header__element}>
@@ -52,7 +52,8 @@ const AppHeader = props => {
 }
 
 AppHeader.propTypes = {
-                       section: PropTypes.oneOf(["burger", "list", "profile"])
+                       section: PropTypes.oneOf(["burger", "list", "profile"]),
+                       onHomeClick: PropTypes.func.isRequired
                       };
 
 export default AppHeader;

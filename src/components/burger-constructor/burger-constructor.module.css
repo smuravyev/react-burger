@@ -16,7 +16,7 @@
 }
 
 .list_scrollable{
-    max-height: 41.2vh;
+    max-height: 35vh;
     overflow-y: auto;
     display: flex;
     flex-direction: column;
@@ -48,10 +48,13 @@
 }
 
 .item {
-    text-align:center;
+    text-align: center;
+   display: flex;
+   justify-content: center;
 }
 
 .item_total{
+    display: inline-block;
     text-align: right;
 }
 
@@ -63,6 +66,7 @@
     position: absolute;
     left: 0;
     top: calc(50% - 20px);
+    cursor: pointer;
 }
 
 .item_moveable:last-child > svg{
