@@ -36,7 +36,7 @@ const BurgerIngredients = ({ingredients, usedIngredients, onIngredientClick}) =>
             const currentHeaderCoords = 
                                 oULRefs[sIndex].current.getBoundingClientRect();
             const nTopDifference = currentHeaderCoords.top - oScrollerCoords.top;
-            if(nTopDifference >= 0  && nTopDifference < oScrollerCoords.height){
+            if(nTopDifference >= -5  && nTopDifference < oScrollerCoords.height){
                 setSCurrentType(sIndex);
                 break;
             }
