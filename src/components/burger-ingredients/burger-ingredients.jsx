@@ -1,20 +1,18 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-import ingredientsPropTypes from "../../utils/ingredients.proptypes.js";
-
-import {
-        Counter, 
+import {Counter, 
         Tab,
-        CurrencyIcon
-       } from '@ya.praktikum/react-developer-burger-ui-components';
+        CurrencyIcon} from '@ya.praktikum/react-developer-burger-ui-components';
+import {IngredientsContext} from "../../utils/appcontext.js";
 
 import styles from  './burger-ingredients.module.css';
 
-const BurgerIngredients = ({ingredients, usedIngredients, onIngredientClick}) => {
+const BurgerIngredients = ({onIngredientClick}) => {
+    const {ingredients, usedIngredients} = React.useContext(IngredientsContext);
     const [sCurrentType, setSCurrentType] =
                                            React.useState(ingredients[0].sType);
-
+                                                      
     const oULRefs = React.useMemo(() =>{
         const oResultSetOfRefs = {};
         ingredients.forEach((oType) => {
@@ -73,15 +71,15 @@ const BurgerIngredients = ({ingredients, usedIngredients, onIngredientClick}) =>
                                     <React.Fragment key={oCurrentElement._id}>
                                         <li className={`${styles.items__component} ml-4 mr-2 mb-8`}
                                             onClick={() => onIngredientClick(oCurrentElement)}>
-                                            {(usedIngredients[oCurrentElement._id] &&
-                                              usedIngredients[oCurrentElement._id] > 0 && 
+                                            {usedIngredients[oCurrentElement._id] > 0 && (  
                                                  <Counter
                                                          count={usedIngredients[oCurrentElement._id]}
                                                          size="default" />
                                              )}
                                         <img src={oCurrentElement.image}
                                              alt={oCurrentElement.name} />
-                                        <p className={`${styles.items__component__price} text text_type_digits-default`}>
+                                        <p className={`${styles.items__component__price} text text_type_digits-default`}
+                                            title={oCurrentType.sType === "bun" ? 'Цена представлена за половинку булки. В заказе может быть только целая булка (верхняя и нижняя части).' : ''}>
                                            <span className={styles.items__component__price_digits}>{oCurrentElement.price}&nbsp;</span><CurrencyIcon type="primary" />
                                         </p>
                                         <p className={`${styles.items__component__name} mt-1 text text_type_main_small`}>
@@ -97,13 +95,7 @@ const BurgerIngredients = ({ingredients, usedIngredients, onIngredientClick}) =>
 };
 
 BurgerIngredients.propTypes = {
-    usedIngredients : PropTypes.arrayOf(PropTypes.number).isRequired,
     onIngredientClick : PropTypes.func,
-    ingredients : PropTypes.arrayOf(PropTypes.shape({
-        sName : PropTypes.string.isRequired,
-        sType : PropTypes.oneOf(["bun", "sauce", "main"]).isRequired,
-        aSet : PropTypes.arrayOf(ingredientsPropTypes).isRequired
-    })).isRequired
 };
 
 
