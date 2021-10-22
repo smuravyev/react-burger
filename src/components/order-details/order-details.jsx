@@ -1,12 +1,11 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 
 import SuccessIcon from "../success-icon/success-icon";
-import {OrderContext} from "../../utils/appcontext.js";
 
 import styles from  './order-details.module.css';
 
-const OrderDetails = () =>{
-    const {orderID} = React.useContext(OrderContext);
+const OrderDetails = ({orderID}) =>{
     
     return (
         <figure className={styles.figure}>
@@ -26,5 +25,9 @@ const OrderDetails = () =>{
         </figure>
     );
 };
+
+OrderDetails.propTypes = {
+    orderID : PropTypes.number
+}
 
 export default OrderDetails;

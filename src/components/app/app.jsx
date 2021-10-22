@@ -10,14 +10,13 @@ import Modal from '../modal/modal';
 import styles from './app.module.css';  
 
 import {oSettings} from "../../config/config.js";
+
 import {oIngredientTypes,
         oErrorCodes,
         oBurgerTemplate,
-        oIngredientsTemplate,
-        sModalSelector} from "../../utils/constants.js";
+        oIngredientsTemplate} from "../../utils/constants.js";
         
-import {OrderContext,
-        BurgerContext,
+import {BurgerContext,
         IngredientsContext} from "../../utils/appcontext.js";
         
 import {aInitialUsedIngredients,
@@ -192,7 +191,7 @@ const App = () => {
                     throw new Error(oErrorCodes.EC_CANNOT_CREATE_ORDER);
                 }
                 setBIsBusy(false);
-                setOCurrentOrder({orderID : oData.order.number});
+                setOCurrentOrder({orderID : parseInt(oData.order.number)});
             })
             .catch((erError) => {
                 setBIsBusy(false);
@@ -237,28 +236,20 @@ const App = () => {
             }
             {
                 (bIsBusy) && (
-                     <Modal parentElement=
-                                        {document.querySelector(sModalSelector)}
-                           canClose={false}
+                    <Modal canClose={false}
                            caption="Загрузка&hellip;" />
                 )
             }
             {
                 oCurrentOrder && (
-                    <Modal parentElement=
-                                        {document.querySelector(sModalSelector)}
-                           closer={resetOrder}>
-                        <OrderContext.Provider value={oCurrentOrder}>
-                            <OrderDetails />
-                        </OrderContext.Provider>
+                    <Modal closer={resetOrder}>
+                        <OrderDetails orderID={oCurrentOrder.orderID} />
                     </Modal>
                 )
             }
             {
                 oCurrentIngredientDetails && (
-                    <Modal parentElement=
-                                        {document.querySelector(sModalSelector)}
-                           caption="Детали игредиента"
+                    <Modal caption="Детали игредиента"
                            closer={() => setOCurrentIngredientDetails(null)}>
                         <IngredientDetails {...oCurrentIngredientDetails} />
                     </Modal>
@@ -266,9 +257,7 @@ const App = () => {
             }
             {
                 erCatchedError && (
-                    <Modal parentElement=
-                                        {document.querySelector(sModalSelector)}
-                           canClose={false}
+                    <Modal canClose={false}
                            caption={erCatchedError.message || 
                                     oErrorCodes.EC_GENERAL_ERROR} />
                 )
