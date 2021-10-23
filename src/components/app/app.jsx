@@ -10,11 +10,19 @@ import Modal from '../modal/modal';
 import styles from './app.module.css';  
 
 import {oSettings} from "../../config/config.js";
+
 import {oIngredientTypes,
         oErrorCodes,
         oBurgerTemplate,
-        oIngredientsTemplate,
-        sModalSelector} from "../../utils/constants.js";
+        oIngredientsTemplate} from "../../utils/constants.js";
+        
+import {BurgerContext,
+        IngredientsContext} from "../../utils/appcontext.js";
+        
+import {aInitialUsedIngredients,
+        usedIngredientsReducer,
+        aInitialPrice,
+        modifyPrice} from "../../utils/reducers.js";
 
 const App = () => {
     /* Created burger */
@@ -36,62 +44,19 @@ const App = () => {
 
     /* Was the loading successful? */
     const [bIsLoaded, setBIsLoaded] = React.useState(false);
+
+    /* Am I busy (i. e. loading something)? */
+    const [bIsBusy, setBIsBusy] = React.useState(false);
+
     
     /* Number of used components (it'll be easier to count them) */
-    const [aUsedIngredients, setAUsedIngredients] = React.useState(null);
-    
+    const [oUsedIngredients, countIngredient] =
+                                      React.useReducer(usedIngredientsReducer,
+                                                       aInitialUsedIngredients);
+    const [oPrice, updatePrice] = React.useReducer(modifyPrice, aInitialPrice);
+        
     /* Was there any errors? */
     const [erCatchedError, setErCatchedError] = React.useState(null);
-    
-    //==========================================================================
-    //TEMPORARY: after the user logic will be created, oSampleBurger will go
-    //           away.
-    //NO useMemo: this will be called only once mounting the App component.
-    const createRandomBurger = (aData) => {
-        const oBurger = {};
-        //Find first available bun and use it:
-        oBurger.oBun = aData.find((oIngredient) =>
-                                    oIngredient.type === oIngredientTypes.sBun);
-        
-        //Add the bun price to the total sum
-        oBurger.nPrice = oBurger.oBun.price;
-        
-        //Still no content:
-        oBurger.aContent = [];
-        
-        //Maximum of 10 components per burger
-        const nMaxComponents = 1 + Math.floor(Math.random() * 10);
-
-        //No buns. We will add ingredients.
-        const aIngredientsWithoutBuns = aData.filter((oElement) =>
-                                       oElement.type !== oIngredientTypes.sBun);
-        for(let nCounter = 0;
-            nCounter < nMaxComponents;
-            nCounter++){
-               const nRandomIndex =
-                     Math.floor(Math.random() * aIngredientsWithoutBuns.length);
-                        
-               oBurger.aContent.push(aIngredientsWithoutBuns[nRandomIndex]);
-               oBurger.nPrice = oBurger.nPrice +
-                                    aIngredientsWithoutBuns[nRandomIndex].price;
-        }
-        return oBurger;
-    };
-
-    const countIngredients = (oBurger) => {
-       const aResult = [];
-       
-       if(oBurger && oBurger.oBun && oBurger.oBun["_id"]) {
-           aResult[oBurger.oBun._id] = 1;
-       }
-       if(oBurger.aContent) {
-           oBurger.aContent.forEach((oIngredient) => {
-               aResult[oIngredient._id] =
-                    aResult[oIngredient._id] ? aResult[oIngredient._id] + 1 : 1; 
-           });
-       }
-       return aResult;
-    }
 
     // WARNING! It will run only once, no need to UseMemo
     const splitByTypes = (aIngredients) => {
@@ -111,6 +76,7 @@ const App = () => {
     
     //Loading 
     React.useEffect(() => {
+        setBIsBusy(true);
         fetch(oSettings.sAPIBaseURL + oSettings.oAPIURIS.sIngredients)
             .then((oResponse) => {
                 if(!(oResponse.ok)){
@@ -123,74 +89,181 @@ const App = () => {
                    (!(Array.isArray(oData.data)))){
                     throw new Error(oErrorCodes.EC_INVALID_INGREDIENTS_DATA);
                 }
-                
-                //==============================================================
-                //TEMPORARY: creating a test burger and count it's ingredients
-                const oCreatedBurger = createRandomBurger(oData.data);
-                const oIngredientsCount = countIngredients(oCreatedBurger);
-                setOConstructedBurger(oCreatedBurger);
-
-                setAUsedIngredients(oIngredientsCount);
-                
-                //split ingredients and save them
-                const oIngredientsLoaded = splitByTypes(oData.data);
-                setOIngredients(oIngredientsLoaded);
-                
-                //We are ready to show the content!
+                setOIngredients(splitByTypes(oData.data));
                 setBIsLoaded(true);
+                setBIsBusy(false);
             })
             .catch((erError) => {
+                setBIsBusy(false);
                 setErCatchedError(erError);
             });    
     }, []);
     
     //============= EVENT HANDLERS =============================================
 
-    const clickOnLogoHandler = React.useCallback(() => {
+    const logoClickHandler = React.useCallback(() => {
         setSCurrentPage(oSettings.sDefaultPage);
     }, []);
+    
+    const addUsedIngredient = React.useCallback((oIngredient) => {
+        countIngredient({ID : oIngredient._id, operation: "add"});
+        updatePrice({amount: oIngredient.price,
+                     operation: oIngredient.type === oIngredientTypes.sBun ? 
+                                "adddoubled" : "add"});
+    }, [countIngredient, updatePrice]);
+    
+    const removeUsedIngredient = React.useCallback((oIngredient) =>{
+        countIngredient({ID : oIngredient._id, operation: "remove"});
+        updatePrice({amount: oIngredient.price,
+                     operation: oIngredient.type === oIngredientTypes.sBun ? 
+                                "reducedoubled" : "reduce"});
+    }, [countIngredient, updatePrice]);
 
+    const ingredientClickHandler = React.useCallback((oIngredient) => {
+        if(oConstructedBurger.oBun &&
+           oConstructedBurger.oBun._id){
+            if(oIngredient.type === oIngredientTypes.sBun){
+                removeUsedIngredient(oConstructedBurger.oBun);
+                addUsedIngredient(oIngredient);
+                setOConstructedBurger({...oConstructedBurger,
+                                       oBun : oIngredient
+                                      });
+            }
+            else{
+                addUsedIngredient(oIngredient);
+                setOConstructedBurger({...oConstructedBurger,
+                                       aContent :
+                                              [...(oConstructedBurger.aContent),
+                                               oIngredient]
+                                      });
+            }
+        }
+        else{
+            if(oIngredient.type === oIngredientTypes.sBun){
+                addUsedIngredient(oIngredient);
+                setOConstructedBurger({...oConstructedBurger,
+                                       oBun : oIngredient
+                                      });
+            }
+        }
+        setOCurrentIngredientDetails(oIngredient);
+    }, [oConstructedBurger,
+        removeUsedIngredient,
+        addUsedIngredient,
+        setOConstructedBurger,
+        setOCurrentIngredientDetails]);
+    
+    const removeIngredientClickHandler = React.useCallback((nIndex) => {
+        removeUsedIngredient(oConstructedBurger.aContent[nIndex]);
+        setOConstructedBurger({...oConstructedBurger,
+                               aContent :
+                  oConstructedBurger.aContent.filter((oElement, nThisIndex) => {
+                      return nThisIndex !== nIndex;
+                  })
+        });
+    }, [oConstructedBurger, removeUsedIngredient, setOConstructedBurger]);
+    
     const makeOrderHandler = () => {
-        setOCurrentOrder({orderId :
-                                   100000 + Math.floor(89999 * Math.random())});
+        //First of all, we are now busy.
+        setBIsBusy(true);
+        const aIngredientsToTheKitchen = [oConstructedBurger.oBun._id];
+        oConstructedBurger.aContent.forEach((oElement) => {
+            aIngredientsToTheKitchen.push(oElement._id);
+        });        
+        fetch(oSettings.sAPIBaseURL + oSettings.oAPIURIS.sOrders,
+                    {method: 'POST',
+                     cache: 'no-cache',
+                     headers: {
+                         'Content-Type': 'application/json'
+                     },
+                     redirect: 'follow',
+                     body: JSON.stringify({ingredients: aIngredientsToTheKitchen})})
+            .then((oResponse) => {
+                if(!(oResponse.ok)){
+                    throw new Error(oErrorCodes.EC_CANNOT_CREATE_ORDER);
+                }
+                return oResponse.json();
+            })
+            .then((oData) => {
+                if((!(oData.success)) ||
+                   (!(oData.order)) ||
+                   (!(oData.order.number))){
+                    throw new Error(oErrorCodes.EC_CANNOT_CREATE_ORDER);
+                }
+                setBIsBusy(false);
+                setOCurrentOrder({orderID : parseInt(oData.order.number)});
+            })
+            .catch((erError) => {
+                setBIsBusy(false);
+                setErCatchedError(erError);
+            });    
+    }
+    
+    const resetOrder = () => {
+        updatePrice({operation: "reset"});
+        countIngredient({operation: "reset"});
+        setOConstructedBurger(oBurgerTemplate);
+        setOCurrentOrder(null)
     }
 
-    return (<>
-        {
-         bIsLoaded && (<div className={styles.wrapper}>
-             <AppHeader section={sCurrentPage}
-                        onHomeClick={clickOnLogoHandler} />
-                 <main className={styles.main}>
-                     <BurgerIngredients usedIngredients={aUsedIngredients}
-                                        ingredients={oIngredients} 
-                                        onIngredientClick={setOCurrentIngredientDetails}/>
-                     <BurgerConstructor burger={oConstructedBurger}
-                                        onPlaceOrderHandler={makeOrderHandler} />
-                 </main>
-             </div>
-         )
-        }
-        {oCurrentOrder && (
-                <Modal parentElement={document.querySelector(sModalSelector)}
-                       closer={() => setOCurrentOrder(null)}>
-                           <OrderDetails {...oCurrentOrder} />
-                </Modal>)
-        }
-        {erCatchedError && (
-                <Modal parentElement={document.querySelector(sModalSelector)}
-                       canClose={false}
-                       caption={erCatchedError.message || "Бургерная выполнила недопустимую операцию и временно закрыта 😢 "}>
-                </Modal>)
-        }
-        {
+    return (
+        <>
+            {
+                bIsLoaded && (
+                    <div className={styles.wrapper}>
+                        <AppHeader section={sCurrentPage}
+                                   onHomeClick={logoClickHandler} />
+                             <main className={styles.main}>
+                             <IngredientsContext.Provider
+                                    value={{ingredients: oIngredients,
+                                            usedIngredients:
+                                                        oUsedIngredients.list}}>
+                                 <BurgerIngredients onIngredientClick=
+                                                      {ingredientClickHandler}/>
+                                 <BurgerContext.Provider value={{
+                                                     burger: oConstructedBurger,
+                                                     price: oPrice.value}}>
+                                     <BurgerConstructor
+                                             onPlaceOrderHandler=
+                                                              {makeOrderHandler}
+                                             removeIngredientHandler=
+                                               {removeIngredientClickHandler} />
+                                 </BurgerContext.Provider>
+                             </IngredientsContext.Provider>
+                        </main>
+                    </div>
+                )
+            }
+            {
+                (bIsBusy) && (
+                    <Modal canClose={false}
+                           caption="Загрузка&hellip;" />
+                )
+            }
+            {
+                oCurrentOrder && (
+                    <Modal closer={resetOrder}>
+                        <OrderDetails orderID={oCurrentOrder.orderID} />
+                    </Modal>
+                )
+            }
+            {
                 oCurrentIngredientDetails && (
-                    <Modal parentElement={document.querySelector(sModalSelector)}
-                           caption="Детали игредиента"
+                    <Modal caption="Детали игредиента"
                            closer={() => setOCurrentIngredientDetails(null)}>
-                               <IngredientDetails {...oCurrentIngredientDetails} />
-                    </Modal>)
-        }
-        </>);
+                        <IngredientDetails {...oCurrentIngredientDetails} />
+                    </Modal>
+                )
+            }
+            {
+                erCatchedError && (
+                    <Modal canClose={false}
+                           caption={erCatchedError.message || 
+                                    oErrorCodes.EC_GENERAL_ERROR} />
+                )
+            }
+        </>
+    );
 }
  
 export default App;

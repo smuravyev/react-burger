@@ -34,8 +34,8 @@ const AppHeader = ({section, onHomeClick}) => {
                     </li>
                 </ul>
                 <ul className={styles.header__element}>
-                    <li href="/" className={styles.clickable_logo}>
-                        <Logo onClick={onHomeClick} />
+                    <li href="/" onClick={onHomeClick} className={styles.clickable_logo}>
+                        <Logo />
                     </li>
                 </ul>
                 <ul className={styles.header__element}>

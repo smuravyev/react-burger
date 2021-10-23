@@ -4,14 +4,17 @@ import PropTypes from 'prop-types';
 
 import { CloseIcon } from '@ya.praktikum/react-developer-burger-ui-components';
 
+import {sModalSelector} from "../../utils/constants.js";
+
 import ModalOverlay from "../modal-overlay/modal-overlay";
 
 import styles from  './modal.module.css';
 
-const Modal = ({parentElementSelector, canClose, closer, caption, children}) =>{
-    const ePortal = document.querySelector(parentElementSelector || "body") ||
-                                                 document.querySelector("body");
-                                                 
+const ePortal = document.querySelector(sModalSelector || "body") ||
+                document.querySelector("body");
+ 
+const Modal = ({canClose, closer, caption, children}) =>{
+                                                
     const bCanClose = (canClose === undefined) ? true : canClose;
 
     const closeWindow = React.useCallback(() => {
@@ -62,7 +65,6 @@ const Modal = ({parentElementSelector, canClose, closer, caption, children}) =>{
 
 Modal.propTypes = {
     caption: PropTypes.string,
-    parentElement : PropTypes.object,
     canClose : PropTypes.bool,
     closer : PropTypes.func
 }

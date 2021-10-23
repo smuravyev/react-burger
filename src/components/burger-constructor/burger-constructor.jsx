@@ -1,18 +1,19 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-import ingredientsPropTypes from "../../utils/ingredients.proptypes.js";
-
 import {
         ConstructorElement, 
         Button,
         CurrencyIcon,
         DragIcon
        } from '@ya.praktikum/react-developer-burger-ui-components';
+import {BurgerContext} from "../../utils/appcontext.js";
 
 import styles from  './burger-constructor.module.css';
 
-const BurgerConstructor = ({burger, onPlaceOrderHandler}) => {
+const BurgerConstructor = ({onPlaceOrderHandler, removeIngredientHandler}) => {
+    const {burger, price} = React.useContext(BurgerContext);
+    
     return (
         <section className={`${styles.section} ml-5 pt-25`}>
         {
@@ -45,7 +46,8 @@ const BurgerConstructor = ({burger, onPlaceOrderHandler}) => {
                                     <ConstructorElement isLocked={false}
                                                         text={oElement.name}
                                                         price={oElement.price}
-                                                        thumbnail={oElement.image} />
+                                                        thumbnail={oElement.image}
+                                                        handleClose={() => removeIngredientHandler(nIndex)} />
                                 </li>
                             )
                         }
@@ -60,10 +62,10 @@ const BurgerConstructor = ({burger, onPlaceOrderHandler}) => {
                                                 thumbnail={burger.oBun.image} />
                         </li>
                         {
-                             burger.nPrice && 
+                             price && 
                                  <li className={`${styles.item} ${styles.item_total} pt-10 pr-4`}>
                                      <p className={`${styles.total_price} pr-10 text text_type_digits-medium`}>
-                                         {burger.nPrice}&nbsp;<CurrencyIcon type="primary" />
+                                         {price}&nbsp;<CurrencyIcon type="primary" />
                                      </p>
                                      <Button type="primary"
                                              size="medium"
@@ -84,12 +86,8 @@ const BurgerConstructor = ({burger, onPlaceOrderHandler}) => {
 /* Непонятно, как верстать, если цены нет или булку не выбрали,
    пока все необязательно, если чего-то нет, мы это что-то не рендерим */
 BurgerConstructor.propTypes = {
-    onPlaceOrderHandler : PropTypes.func,
-    burger: PropTypes.shape({
-        oBun : ingredientsPropTypes,
-        aContent : PropTypes.arrayOf(ingredientsPropTypes),
-        nPrice : PropTypes.number
-    })
+    onPlaceOrderHandler : PropTypes.func.isRequired, 
+    removeIngredientHandler : PropTypes.func.isRequired
 };
 
 export default BurgerConstructor;
