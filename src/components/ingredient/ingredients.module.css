@@ -1,0 +1,29 @@
+.component {
+    display: inline-block;
+    text-align: center;
+    position: relative;
+    cursor: pointer;
+}
+
+.dragging {
+    opacity: 0.6;
+}
+
+.price {
+    margin: 0;
+    padding: 0;
+}
+
+.name {
+    margin: 0;
+    padding: 0;
+    height: 2.6em;
+    
+}
+
+.digits {
+    margin: 0;
+    padding: 0;
+    display: inline;
+    vertical-align: top;
+}

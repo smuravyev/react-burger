@@ -1,0 +1,35 @@
+.item_moveable {
+    position: relative;
+}
+
+.item {
+    text-align: center;
+    display: flex;
+    justify-content: center;
+}
+
+.hover_top {
+    padding-top: 50px;
+}
+
+.hover_bottom {
+    padding-bottom: 50px;
+}
+
+.dragging {
+    display: none;
+}
+
+.handler{
+    display: inline-block;
+    flex-grow: 1;
+    height: 100%;
+    max-width: 24px;
+    margin: auto;
+    padding-right: 12px;
+}
+
+.handler > svg{
+    cursor: pointer;
+
+}

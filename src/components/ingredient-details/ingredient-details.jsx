@@ -1,12 +1,19 @@
-import React from 'react';
-import PropTypes from 'prop-types';
+import { useSelector, shallowEqual } from 'react-redux';
 
 import styles from  './ingredient-details.module.css';
 
-const IngredientDetails = ({name, calories, carbohydrates, proteins, fat, image_large}) =>{
+const IngredientDetails = () =>{
+    const { name,
+            calories,
+            carbohydrates,
+            proteins,
+            fat,
+            image_large } = useSelector(store => store.currentIngredient,
+                                       shallowEqual);
+    
     return (
         <figure className={styles.figure}>
-            <img src={image_large} alt={name} />
+            <img src={image_large} alt={name} className={styles.image} />
             <h2 className="text text_type_main-medium pt-4 pb-8">{name}</h2>
             <ul className={styles.table}>
                 <li className={styles.property}>
@@ -45,14 +52,5 @@ const IngredientDetails = ({name, calories, carbohydrates, proteins, fat, image_
         </figure>
     );
 };
-
-IngredientDetails.propTypes = {
-    "name" : PropTypes.string.isRequired,
-    "proteins" : PropTypes.number.isRequired,
-    "fat" : PropTypes.number.isRequired,
-    "carbohydrates" : PropTypes.number.isRequired,
-    "calories" : PropTypes.number.isRequired,
-    "image_large" : PropTypes.string.isRequired
-}
 
 export default IngredientDetails;
