@@ -15,7 +15,7 @@ export const reducerErrorMessage = (state = stateInitialErrors, action) => {
             return { ...state,
                      bCanProceedWithError : state.bCanProceedWithError &&
                                             action.payload.bCanProceed,
-                     aErrors : [...state.aErrors, action.payload.erError]
+                     aErrors : [...state.aErrors, action.payload.sMessage]
             };
         }
         

@@ -26,8 +26,7 @@
     min-height: 20px;
     width: 100%;
     width: calc(100% + 12px);
-    overflow-y: auto;
-    scrollbar-gutter : stable;
+    overflow-y: scroll;
     display: flex;
     flex-direction: column;
     margin-left: -24px;
@@ -84,4 +83,5 @@
     width: 215px;
     display: inline-block; 
     vertical-align: top;
+    text-align: left;
 }

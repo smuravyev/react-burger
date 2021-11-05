@@ -19,7 +19,7 @@ const ErrorMessage = () => {
    
    const closer = useCallback(() => {
        dispatch({type : ERROR_CLEAR});
-   }, [dispatch]); 
+   }, [ dispatch ]); 
 
    return (   
        (aErrors.length > 0) && (
@@ -27,10 +27,10 @@ const ErrorMessage = () => {
                   closer={closer}
                   caption="Произошла ошибка">
                {
-                   aErrors.map((erError, nIndex) => (
+                   aErrors.map((sMessage, nIndex) => (
                        <p key={nIndex} className=
                           {`${styles.message} text text_type_main-small pl-10`}>
-                           {erError.message}
+                           {sMessage}
                        </p>
                    ))
                }

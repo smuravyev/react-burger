@@ -43,10 +43,7 @@ const Ingredient = ({ onClickHandler,
                                    payload : { oBun: oIngredient }});
                     }
                     else{
-                        if(oResult.bBunPresent){
-                            dispatch(addIngredient({ oIngredient :
-                                                                oIngredient }));
-                        }
+                        dispatch(addIngredient({ oIngredient : oIngredient }));
                     }
                 }
                 else{
@@ -64,7 +61,7 @@ const Ingredient = ({ onClickHandler,
     }, [oIngredient.sDragType, oIngredient]);
 
     return (
-         <li draggable="draggable" ref={refDrag} className=
+         <li draggable="true" ref={refDrag} className=
  {`${styles.component} ${(bIsDrag ? styles.dragging + ' ' : '')}ml-4 mr-2 mb-8`}
              onClick={onClickHandler}>
              {

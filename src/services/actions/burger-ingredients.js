@@ -51,8 +51,9 @@ export const getIngredients = () => async (dispatch, getState) => {
                 dispatch(setError(oErrorCodes.EC_INVALID_INGREDIENTS_DATA));
             }
             else {
-                dispatch({type: GET_INGREDIENTS_SUCCESS,
-                          payload: { aIngredients: splitByTypes(oData.data) }});
+                dispatch({ type: GET_INGREDIENTS_SUCCESS,
+                           payload:
+                                   { aIngredients: splitByTypes(oData.data) }});
             }
         }
         else{
@@ -64,6 +65,7 @@ export const getIngredients = () => async (dispatch, getState) => {
         dispatch({ type: GET_INGREDIENTS_FAILED });
         dispatch(setError(oErrorCodes.EC_COULD_NOT_FETCH_INGREDIENTS));
     }
-    // Always end with clear our busy status.
-    dispatch({type: BUSY_CLEAR});
+    finally{
+        dispatch({ type: BUSY_CLEAR });
+    }
 };

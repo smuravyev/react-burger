@@ -5,8 +5,7 @@ import { CLEAR_BURGER,
          SET_BUN } from '../actions/burger-constructor';
 
 const stateInitialBurgerConstructor = { oBun : {},
-                                        aContent : [],
-                                        bAlreadyDropped : false};
+                                        aContent : [] };
 
 export const reducerBurgerConstructor =
                            (state  = stateInitialBurgerConstructor, action) => {
@@ -17,9 +16,6 @@ export const reducerBurgerConstructor =
         }
         
         case ADD_INGREDIENT: {
-            if((!(state.oBun)) || (!(state.oBun._id))){
-                return state; //No bun, no ingredients could be added
-            }
             // Adds the ingredient to the specific posiiton (index)
             const aContent = [...state.aContent];
             // I'm paranoid

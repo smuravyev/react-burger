@@ -1,7 +1,7 @@
 import { BUSY_SET,
          BUSY_CLEAR } from './app.js';
 
-import { ERROR_RAISE } from './error-message.js';
+import { setError } from './error-message.js';
 
 import { oErrorCodes } from '../../utils/constants.js';
 
@@ -15,21 +15,24 @@ export const ORDER_FAILED = '@OrderDetails/ORDER_FAILED';
 
 
 export const sendOrder = () => async (dispatch, getState) => {
-    // We are busy
     dispatch({type: BUSY_SET});
-    dispatch({type: ORDER_REQUEST});
-    
-    // Prepare ingredients list for the kitchen in the correct order
-    const { constructedBurger } = getState();
-    const aIngredientsToTheKitchen = [constructedBurger.oBun._id];
-    
-    constructedBurger.aContent.forEach((oElement) => {
-        aIngredientsToTheKitchen.push(oElement._id);
-    });
-    
-    //Make a request
     try{
-        const oResponse =
+        const { constructedBurger } = getState();
+        if(!(constructedBurger.oBun && constructedBurger.oBun._id)){
+            //Suddenly we have no bun (I don't know why, but it so)
+            dispatch(setError(oErrorCodes.EC_MUST_HAVE_A_BUN, true));
+            //We did not started a request, so we won't dispath anything else.
+        }
+        else {
+            // Prepare ingredients list for the kitchen in the correct order
+            const aIngredientsToTheKitchen = [constructedBurger.oBun._id];
+            constructedBurger.aContent.forEach((oElement) => {
+                aIngredientsToTheKitchen.push(oElement._id);
+            });
+        
+            //Start requesting...
+            dispatch({type: ORDER_REQUEST});
+            const oResponse =
                  await fetch(oSettings.sAPIBaseURL + oSettings.oAPIURIS.sOrders,
                              { method: 'POST',
                                cache: 'no-cache',
@@ -37,26 +40,31 @@ export const sendOrder = () => async (dispatch, getState) => {
                                redirect: 'follow',
                                body: JSON.stringify({ingredients:
                                                    aIngredientsToTheKitchen})});
-        if(oResponse.ok){
-            const oData = await oResponse.json();
-            if((!(oData.success)) ||
-                (!(oData.order)) ||
-                (!(oData.order.number))){
-                throw new Error(oErrorCodes.EC_CANNOT_CREATE_ORDER);
-            }
-            dispatch({type: ORDER_SUCCESS,
-                      payload: { nOrderNumber: parseInt(oData.order.number) }});
-        }
-        else{
-            throw new Error(oErrorCodes.EC_CANNOT_CREATE_ORDER);
-        }
+            if(oResponse.ok){
+                const oData = await oResponse.json();
+                if((!(oData.success)) ||
+                    (!(oData.order)) ||
+                    (!(oData.order.number))){
+                    dispatch({ type: ORDER_FAILED });
+                    dispatch(setError(oErrorCodes.EC_CANNOT_CREATE_ORDER));
+                }
+                else{
+                    dispatch({type: ORDER_SUCCESS,
+                              payload:
+                               { nOrderNumber: parseInt(oData.order.number) }});
+                }
+             }
+             else{
+                dispatch({ type: ORDER_FAILED });
+                dispatch(setError(oErrorCodes.EC_CANNOT_CREATE_ORDER));
+             }
+         }
     }
     catch(erError){
         dispatch({ type: ORDER_FAILED });
-        dispatch({ type: ERROR_RAISE,
-                   payload: { erError : erError,
-                              bCanProceed : true }});
+        dispatch(setError(oErrorCodes.EC_CANNOT_CREATE_ORDER));
     }
-    // Always end with clear our busy status.
-    dispatch({type: BUSY_CLEAR});
+    finally{
+        dispatch({ type: BUSY_CLEAR });
+    }
 };

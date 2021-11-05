@@ -23,7 +23,9 @@
 .items__scrollable {
     padding-right: 8px;
     height: 65vh;
-    overflow-y: auto;
+    overflow-y: scroll;
+    scrollbar-width: 8px;
+    scrollbar-color: #8585AD #2E2E37;
 }
 
 .items__scrollable::-webkit-scrollbar {

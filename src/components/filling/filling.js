@@ -109,7 +109,7 @@ const Filling = ({oIngredient, bIsLast}) => {
 
     return(
         <li ref={refThis}
-            className={sLiClassName}>
+            className={sLiClassName} draggable="true">
             <div className={styles.handler}>
                 <DragIcon type="primary" />
             </div>

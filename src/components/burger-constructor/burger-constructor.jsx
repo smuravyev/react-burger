@@ -26,10 +26,10 @@ const priceSelector = (store) => {
    if((store.constructedBurger.oBun) &&
        (store.constructedBurger.oBun.price)){
         nResult = nResult + store.constructedBurger.oBun.price * 2;
-        store.constructedBurger.aContent.forEach(oElement => {
-            nResult = nResult + oElement.price;
-        });
     }
+    store.constructedBurger.aContent.forEach(oElement => {
+        nResult = nResult + oElement.price;
+    });
     return nResult;
 }; 
 
@@ -44,94 +44,99 @@ const BurgerConstructor = () => {
     
     const dispatch = useDispatch(); 
 
-    const [{ bIsDragging } , refDrop] = useDrop({
-        accept : (oBun._id) ? [ oIngredientDragTypes.sBun,
-                                oIngredientDragTypes.sFilling ] :
-                                oIngredientDragTypes.sBun,
-                     // Accept all, if it'll be ingredient, then we'll drop it
-                     // to the top, if there is a bun.
+    const [{ bNeedHelper } , refDrop] = useDrop({
+        accept : [ oIngredientDragTypes.sBun,
+                   oIngredientDragTypes.sFilling ],
         collect: monitor => ({
-            bIsDragging: monitor.canDrop() && (!oBun._id), // Only will set this
-                                                           // status as a helper
-                                                           // if we have no bun
+            bNeedHelper: monitor.canDrop() && (!oBun._id)
+                         && (aContent.length === 0) //Show the helper if nothing
+                                                    //added
         }),
         drop: (oData, monitor) => {
             return monitor.getDropResult() ||
-                   { bDefaultDrop: true,
-                     bBunPresent : (oBun && oBun._id) ? true : false};
+                   { bDefaultDrop: true };
         }
-    }, [oBun._id,
-        oIngredientDragTypes.sBun, oIngredientDragTypes.sFilling]);
-
+    }, [ oBun._id,
+         aContent.length,
+         oIngredientDragTypes.sBun,
+         oIngredientDragTypes.sFilling ]);
+    console.log(aContent);
     return (
         <section ref={refDrop} className=
-      {`${styles.section}${bIsDragging ? ' ' + styles.target : ''} ml-5 pt-25`}>
+      {`${styles.section}${bNeedHelper ? ' ' + styles.target : ''} ml-5 pt-25`}>
             {
                 (oBun && oBun._id) && (
-                    <>
-                        <ul className={`${styles.list} pr-4`}>
-                            <li className={`${styles.item} pl-8 pb-4`}>
-                                <ConstructorElement type="top"
-                                                    isLocked={true}
-                                                    text={oBun.name +" (верх)"}
-                                                    price={oBun.price}
-                                                    thumbnail={oBun.image} />
-                            </li>
-                        </ul>
-                        <ul className={`${styles.list_scrollable} pr-2`}> 
-                            {
-                                // Any burger content content here? 
-                                aContent && 
-                                aContent.map((oElement, nIndex) => (
+                    <ul className={`${styles.list} pr-4`}>
+                        <li className={`${styles.item} pl-8 pb-4`}>
+                            <ConstructorElement type="top"
+                                                isLocked={true}
+                                                text={oBun.name +" (верх)"}
+                                                price={oBun.price}
+                                                thumbnail={oBun.image} />
+                        </li>
+                    </ul>
+                )
+            }
+            {
+                (aContent.length > 0) && (
+                    <ul className={`${styles.list_scrollable} pr-2`}> 
+                        {
+                            aContent.map((oElement, nIndex) => (
                                      <Filling oIngredient={oElement}
                                               key={oElement.sInnerID}
                                               bIsLast={(aContent.length >
                                                             (nIndex + 1))} /> ))
-                            }
-                        </ul>
-                        <ul className={`${styles.list} pr-4`}>
-                            <li className={`${styles.item} pt-4 pl-8`}>
-                                <ConstructorElement type="bottom"
-                                                    isLocked={true}
-                                                    text={oBun.name + " (низ)"}
-                                                    price={oBun.price}
-                                                    thumbnail={oBun.image} />
-                            </li>
-                            {
-                                (nPrice > 0) && ( 
-                                    <li className=
-                             {`${styles.item} ${styles.item_total} pt-10 pr-4`}>
-                                    <p className=
-                   {`${styles.total_price} pr-10 text text_type_digits-medium`}>
-                                        {nPrice}&nbsp;<CurrencyIcon
-                                                               type="primary" />
-                                    </p>
-                                    {
-                                        bIsBusy && (
-                                            <div className=
-                                                      {styles.loader_container}>
-                                                <Loader message="Загрузка" />
-                                            </div>
-                                        )
-                                    }
-                                    {
-                                        (!bIsBusy) && (
-                                            <Button type="primary"
-                                                    size="medium"
-                                                    onClick={() => {
-                                                        dispatch(sendOrder());
-                                                    }}>
-                                                Оформить заказ
-                                            </Button>
-                                        )
-                                    }
-                                    </li>
-                                )
-                            } 
-                        </ul>
-                    </>
+                        }
+                    </ul>
                 )
             }
+            {
+                (oBun && oBun._id) && (
+                    <ul className={`${styles.list} pr-4`}>
+                        <li className={`${styles.item} pt-4 pl-8`}>
+                            <ConstructorElement type="bottom"
+                                                isLocked={true}
+                                                text={oBun.name + " (низ)"}
+                                                price={oBun.price}
+                                                thumbnail={oBun.image} />
+                        </li>
+                    </ul>
+                )
+            }
+            <ul className={`${styles.list} pr-4`}>
+                <li className=
+                             {`${styles.item} ${styles.item_total} pt-10 pr-4`}>
+                    <p className=
+                   {`${styles.total_price} pr-10 text text_type_digits-medium`}>
+                        {nPrice}&nbsp;<CurrencyIcon type="primary" />
+                    </p>
+                    {
+                        bIsBusy && (
+                            <div className={styles.loader_container}>
+                                <Loader message="Загрузка" />
+                            </div>
+                        )
+                    }
+                    {
+                        (!(oBun && oBun._id)) && (
+                            <div className={styles.loader_container}>
+                                Добавьте, пожалуйста, булку
+                            </div>
+                        )
+                    }
+                    {
+                        ((!bIsBusy) && oBun && oBun._id) && (
+                            <Button type="primary"
+                                    size="medium"
+                                    onClick={() => {
+                                        dispatch(sendOrder());
+                                    }}>
+                                Оформить заказ
+                            </Button>
+                        )
+                    }
+                </li>
+            </ul>
             {
                 (nOrderNumber >= 0) && (
                     <Modal
