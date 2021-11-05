@@ -31,7 +31,7 @@ const priceSelector = (store) => {
         nResult = nResult + oElement.price;
     });
     return nResult;
-}; 
+};
 
 const BurgerConstructor = () => {
     const bIsBusy = useSelector(store => store.app.bIsBusy);                                     
@@ -60,7 +60,6 @@ const BurgerConstructor = () => {
          aContent.length,
          oIngredientDragTypes.sBun,
          oIngredientDragTypes.sFilling ]);
-    console.log(aContent);
     return (
         <section ref={refDrop} className=
       {`${styles.section}${bNeedHelper ? ' ' + styles.target : ''} ml-5 pt-25`}>

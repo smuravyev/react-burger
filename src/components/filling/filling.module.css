@@ -1,5 +1,6 @@
 .item_moveable {
     position: relative;
+    padding-right: 0px;
 }
 
 .item {
@@ -20,7 +21,7 @@
     display: none;
 }
 
-.handler{
+.handler {
     display: inline-block;
     flex-grow: 1;
     height: 100%;
@@ -29,7 +30,24 @@
     padding-right: 12px;
 }
 
-.handler > svg{
+.handler > svg {
     cursor: pointer;
 
+}
+/* SAFARI */
+@media not all and (min-resolution:.001dpcm) {
+    @supports (-webkit-appearance:none) and (stroke-color:transparent) {
+        .item_moveable {
+            position: relative;
+            padding-right: 8px;
+        }
+    }
+}
+
+/* FF */
+@supports (-moz-appearance:none) {
+        .item_moveable {
+            position: relative;
+            padding-right: 8px;
+        } 
 }
