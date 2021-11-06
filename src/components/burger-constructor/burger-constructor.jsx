@@ -1,8 +1,13 @@
+import { useEffect,
+         useCallback } from 'react';
+
 import { useSelector,
          shallowEqual,
          useDispatch } from 'react-redux';
 
 import { useDrop } from 'react-dnd';
+
+import { ActionCreators as UndoActionCreators } from 'redux-undo';
 
 import { ConstructorElement, 
          Button,
@@ -23,11 +28,11 @@ import styles from  './burger-constructor.module.css';
 
 const priceSelector = (store) => {
     let nResult = 0;
-   if((store.constructedBurger.oBun) &&
-       (store.constructedBurger.oBun.price)){
-        nResult = nResult + store.constructedBurger.oBun.price * 2;
+   if((store.constructedBurger.present.oBun) &&
+       (store.constructedBurger.present.oBun.price)){
+        nResult = nResult + store.constructedBurger.present.oBun.price * 2;
     }
-    store.constructedBurger.aContent.forEach(oElement => {
+    store.constructedBurger.present.aContent.forEach(oElement => {
         nResult = nResult + oElement.price;
     });
     return nResult;
@@ -36,7 +41,7 @@ const priceSelector = (store) => {
 const BurgerConstructor = () => {
     const bIsBusy = useSelector(store => store.app.bIsBusy);                                     
     const { oBun,
-            aContent } = useSelector(store => store.constructedBurger,
+            aContent } = useSelector(store => store.constructedBurger.present,
                                      shallowEqual);
     const nPrice = useSelector(priceSelector);
     
@@ -60,6 +65,34 @@ const BurgerConstructor = () => {
          aContent.length,
          oIngredientDragTypes.sBun,
          oIngredientDragTypes.sFilling ]);
+         
+    const keyboardHandler =  useCallback((eEvent) => {
+        const nCtrlZCode = 90;
+        const nCtrlYCode = 89;
+        if(eEvent.ctrlKey || eEvent.metaKey){
+            switch (eEvent.keyCode){
+                case nCtrlZCode: {
+                    dispatch(UndoActionCreators.undo());
+                    eEvent.preventDefault();
+                    break;
+                }
+                case nCtrlYCode: {
+                    dispatch(UndoActionCreators.redo());
+                    eEvent.preventDefault();
+                    break;
+                }
+                default: // Do nothing
+            }
+        }
+    }, [dispatch]);
+
+    useEffect(() => {
+        document.addEventListener("keydown", keyboardHandler);
+        return () => {
+            document.removeEventListener("keydown", keyboardHandler)
+        }
+    }, [ keyboardHandler ]);
+
     return (
         <section ref={refDrop} className=
       {`${styles.section}${bNeedHelper ? ' ' + styles.target : ''} ml-5 pt-25`}>

@@ -27,10 +27,10 @@ import styles from  './burger-ingredients.module.css';
 
 const usedIngredientsSelector = (store) => {
     const oResult = [];
-    if((store.constructedBurger.oBun) &&
-       (store.constructedBurger.oBun._id)){
-        oResult[store.constructedBurger.oBun._id] = 1
-        store.constructedBurger.aContent.forEach(oElement => {
+    if((store.constructedBurger.present.oBun) &&
+       (store.constructedBurger.present.oBun._id)){
+        oResult[store.constructedBurger.present.oBun._id] = 1
+        store.constructedBurger.present.aContent.forEach(oElement => {
             if(oResult[oElement._id]){
                oResult[oElement._id] = oResult[oElement._id] + 1;
             }

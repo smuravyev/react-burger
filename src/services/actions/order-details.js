@@ -18,15 +18,17 @@ export const sendOrder = () => async (dispatch, getState) => {
     dispatch({type: BUSY_SET});
     try{
         const { constructedBurger } = getState();
-        if(!(constructedBurger.oBun && constructedBurger.oBun._id)){
+        if(!(constructedBurger.present.oBun &&
+             constructedBurger.present.oBun._id)){
             //Suddenly we have no bun (I don't know why, but it so)
             dispatch(setError(oErrorCodes.EC_MUST_HAVE_A_BUN, true));
             //We did not started a request, so we won't dispath anything else.
         }
         else {
             // Prepare ingredients list for the kitchen in the correct order
-            const aIngredientsToTheKitchen = [constructedBurger.oBun._id];
-            constructedBurger.aContent.forEach((oElement) => {
+            const aIngredientsToTheKitchen =
+                                           [constructedBurger.present.oBun._id];
+            constructedBurger.present.aContent.forEach((oElement) => {
                 aIngredientsToTheKitchen.push(oElement._id);
             });
         

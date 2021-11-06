@@ -1,4 +1,5 @@
 import { combineReducers } from 'redux';
+import undoable from 'redux-undo';
 
 import { reducerBurgerIngredients } from './burger-ingredients';
 import { reducerBurgerConstructor } from './burger-constructor';
@@ -10,7 +11,7 @@ import { reducerErrorMessage } from './error-message'
 export const reducerRoot = combineReducers({
     app: reducerApp,
     burgerIngredients: reducerBurgerIngredients,
-    constructedBurger: reducerBurgerConstructor,
+    constructedBurger: undoable(reducerBurgerConstructor),
     currentIngredient : reducerIngredientDetails,
     orderDetails : reducerOrderDetails,
     errorMessage: reducerErrorMessage
