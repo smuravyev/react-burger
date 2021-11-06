@@ -25,6 +25,8 @@ import IngredientDetails from '../ingredient-details/ingredient-details';
 import Ingredient from '../ingredient/ingredient';
 import Loader from '../loader/loader';
 
+import { nScrollThrottleDelay } from '../../utils/constants';
+
 import styles from  './burger-ingredients.module.css';
 
 const usedIngredientsSelector = (store) => {
@@ -122,7 +124,8 @@ const BurgerIngredients = () => {
                     </menu>
                     <article className={`${styles.items__scrollable} mt-8`}
                              ref={oScrollerRef}
-                             onScroll={ throttle(handleScroll, 500) }>
+                             onScroll={ throttle(handleScroll,
+                                                 nScrollThrottleDelay) }>
                         {
                             aIngredients.map((oCurrentType, nTypeIndex) => (
                                 <Fragment key={nTypeIndex}>

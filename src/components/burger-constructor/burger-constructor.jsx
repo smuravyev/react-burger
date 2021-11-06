@@ -22,7 +22,8 @@ import { CLEAR_ORDER_NUMBER,
          sendOrder } from '../../services/actions/order-details';
 import { CLEAR_BURGER } from '../../services/actions/burger-constructor';
 
-import { oIngredientDragTypes } from '../../utils/constants';
+import { oIngredientDragTypes,
+         oKeyCodes } from '../../utils/constants';
 
 import styles from  './burger-constructor.module.css';
 
@@ -67,16 +68,14 @@ const BurgerConstructor = () => {
          oIngredientDragTypes.sFilling ]);
          
     const keyboardHandler =  useCallback((eEvent) => {
-        const nCtrlZCode = 90;
-        const nCtrlYCode = 89;
         if(eEvent.ctrlKey || eEvent.metaKey){
             switch (eEvent.keyCode){
-                case nCtrlZCode: {
+                case oKeyCodes.nUndo: {
                     dispatch(UndoActionCreators.undo());
                     eEvent.preventDefault();
                     break;
                 }
-                case nCtrlYCode: {
+                case oKeyCodes.nRedo: {
                     dispatch(UndoActionCreators.redo());
                     eEvent.preventDefault();
                     break;

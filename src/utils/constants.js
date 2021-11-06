@@ -28,6 +28,13 @@ export const oIngredientTypes = {
     } 
 };
 
+export const oKeyCodes = {
+    nUndo : 90,
+    nRedo : 89
+};
+
+export const nScrollThrottleDelay = 500; 
+
 export const oIngredientDragTypes = {
     sBun : "bun",
     sFilling : "filling",
