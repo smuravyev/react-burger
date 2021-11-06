@@ -1,16 +1,17 @@
-import React from 'react';
-import PropTypes from 'prop-types';
+import { useSelector } from 'react-redux';
 
 import SuccessIcon from "../success-icon/success-icon";
 
 import styles from  './order-details.module.css';
 
-const OrderDetails = ({orderID}) =>{
+const OrderDetails = () =>{
+    
+    const nOrderId = useSelector(state => state.orderDetails.nOrderNumber);
     
     return (
         <figure className={styles.figure}>
             <h2 className={`${styles.order} text text_type_digits-large pb-8`}>
-                {orderID}
+                {nOrderId}
             </h2>
             <h3 className={`${styles.order__description} text text_type_main-medium pb-15`}>
                 идентификатор заказа
@@ -25,9 +26,5 @@ const OrderDetails = ({orderID}) =>{
         </figure>
     );
 };
-
-OrderDetails.propTypes = {
-    orderID : PropTypes.number
-}
 
 export default OrderDetails;

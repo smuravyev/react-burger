@@ -1,12 +1,18 @@
-.section{
+.section {
     display: inline-block;
     max-width: 600px;
     width: 100%;
     height: 100%;
     vertical-align: top;
+    min-height: 500px;
 }
 
-.list{
+.target {
+    background-color:rgba(76, 76, 255, 0.1);
+    border-radius: 40px;
+}
+
+.list {
     display: flex;
     flex-direction: column;
     margin: 0;
@@ -15,25 +21,37 @@
     padding: 0 8px 0 0;
 }
 
-.list_scrollable{
+.list_scrollable {
     max-height: 35vh;
+    min-height: 20px;
+    width: 100%;
+    width: calc(100% + 12px);
     overflow-y: auto;
+    scrollbar-gutter: stable; /* Chrome */
+    scrollbar-width: thin; /* FF */
+    scrollbar-color: #8585AD #2E2E37;
     display: flex;
     flex-direction: column;
-    margin: 0;
+    margin-left: -24px;
+    margin-top: 0;
+    margin-bottom: 0;
+    margin-right: 0;
     text-align: center;
     list-style-type: none;
-    padding: 0;
+    padding-left: 0;
+    padding-top: 0;
+    padding-bottom: 0;
 
 }
 
-.total_price{
+.total_price {
     display: inline-block;
     vertical-align: middle;
 }
 
 .list_scrollable::-webkit-scrollbar {
     width: 8px;
+    margin-right: -8px;
     background-color:#2E2E37;
 }
 
@@ -49,28 +67,24 @@
 
 .item {
     text-align: center;
-   display: flex;
-   justify-content: center;
+    display: flex;
+    justify-content: center;
 }
 
-.item_total{
+.item_total {
     display: inline-block;
     text-align: right;
 }
 
-.item_moveable{
-    position: relative;
-}
-
-.item_moveable > svg{
-    position: absolute;
-    left: 0;
-    top: calc(50% - 20px);
-    cursor: pointer;
-}
-
-.item_moveable:last-child > svg{
+.item_moveable:last-child > svg {
     position: absolute;
     left: 0;
     top: calc(50% - 12px);
+}
+
+.loader_container {
+    width: 215px;
+    display: inline-block; 
+    vertical-align: top;
+    text-align: left;
 }

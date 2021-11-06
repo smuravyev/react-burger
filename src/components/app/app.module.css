@@ -1,9 +1,9 @@
-.wrapper{
+.wrapper {
     width: 100%;
     text-align: center;
 }
 
-.main{
+.main {
     display: inline-block;
     width: 100%;
     max-width: 1240px;

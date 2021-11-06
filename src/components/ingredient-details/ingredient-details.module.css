@@ -1,15 +1,15 @@
-.figure{
+.figure {
     max-width: 520px;
     display: inline-block;
     padding: 0;
     margin: 0;
 }
 
-.name{
+.name {
     margin: 0;
 }
 
-.table{
+.table {
     display: grid;
     list-style-type: none;
     padding: 0;
@@ -21,15 +21,19 @@
     align-items: center;
 }
 
-.property{
+.property {
     display: inline-block;
 }
 
-.property__name{
+.property__name {
     padding-bottom: 0.35em;
 }
 
-.property__value{
+.property__value {
     padding: 0;
     margin: 0;
+}
+.image {
+    width: 480px;
+    height: 240px;
 }

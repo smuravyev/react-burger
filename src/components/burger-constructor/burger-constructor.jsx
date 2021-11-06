@@ -1,93 +1,155 @@
-import React from 'react';
-import PropTypes from 'prop-types';
+import { useSelector,
+         shallowEqual,
+         useDispatch } from 'react-redux';
 
-import {
-        ConstructorElement, 
-        Button,
-        CurrencyIcon,
-        DragIcon
-       } from '@ya.praktikum/react-developer-burger-ui-components';
-import {BurgerContext} from "../../utils/appcontext.js";
+import { useDrop } from 'react-dnd';
+
+import { ConstructorElement, 
+         Button,
+         CurrencyIcon } from '@ya.praktikum/react-developer-burger-ui-components';
+
+import Loader from '../loader/loader';
+import Filling from '../filling/filling';
+import Modal from '../modal/modal';
+import OrderDetails from '../order-details/order-details';
+
+import { CLEAR_ORDER_NUMBER,
+         sendOrder } from '../../services/actions/order-details';
+import { CLEAR_BURGER } from '../../services/actions/burger-constructor';
+
+import { oIngredientDragTypes } from '../../utils/constants';
 
 import styles from  './burger-constructor.module.css';
 
-const BurgerConstructor = ({onPlaceOrderHandler, removeIngredientHandler}) => {
-    const {burger, price} = React.useContext(BurgerContext);
+const priceSelector = (store) => {
+    let nResult = 0;
+   if((store.constructedBurger.oBun) &&
+       (store.constructedBurger.oBun.price)){
+        nResult = nResult + store.constructedBurger.oBun.price * 2;
+    }
+    store.constructedBurger.aContent.forEach(oElement => {
+        nResult = nResult + oElement.price;
+    });
+    return nResult;
+};
+
+const BurgerConstructor = () => {
+    const bIsBusy = useSelector(store => store.app.bIsBusy);                                     
+    const { oBun,
+            aContent } = useSelector(store => store.constructedBurger,
+                                     shallowEqual);
+    const nPrice = useSelector(priceSelector);
     
+    const nOrderNumber = useSelector(store => store.orderDetails.nOrderNumber);
+    
+    const dispatch = useDispatch(); 
+
+    const [{ bNeedHelper } , refDrop] = useDrop({
+        accept : [ oIngredientDragTypes.sBun,
+                   oIngredientDragTypes.sFilling ],
+        collect: monitor => ({
+            bNeedHelper: monitor.canDrop() && (!oBun._id)
+                         && (aContent.length === 0) //Show the helper if nothing
+                                                    //added
+        }),
+        drop: (oData, monitor) => {
+            return monitor.getDropResult() ||
+                   { bDefaultDrop: true };
+        }
+    }, [ oBun._id,
+         aContent.length,
+         oIngredientDragTypes.sBun,
+         oIngredientDragTypes.sFilling ]);
     return (
-        <section className={`${styles.section} ml-5 pt-25`}>
-        {
-            /* Checking out if there any burger and there is at least a bun */
-            burger &&
-            burger.oBun &&
-            burger.oBun._id && (
-                <>
-                    <ul className={styles.list}>
+        <section ref={refDrop} className=
+      {`${styles.section}${bNeedHelper ? ' ' + styles.target : ''} ml-5 pt-25`}>
+            {
+                (oBun && oBun._id) && (
+                    <ul className={`${styles.list} pr-4`}>
                         <li className={`${styles.item} pl-8 pb-4`}>
                             <ConstructorElement type="top"
                                                 isLocked={true}
-                                                text={burger.oBun.name
-                                                      +" (верх)"}
-                                                price={burger.oBun.price}
-                                                thumbnail=
-                                                    {burger.oBun.image} />
+                                                text={oBun.name +" (верх)"}
+                                                price={oBun.price}
+                                                thumbnail={oBun.image} />
                         </li>
                     </ul>
-                    <ul className={styles.list_scrollable}>
+                )
+            }
+            {
+                (aContent.length > 0) && (
+                    <ul className={`${styles.list_scrollable} pr-2`}> 
                         {
-                            /* Any burger content content here? */
-                            burger.aContent && 
-                            burger.aContent.map((oElement, nIndex) => 
-                                <li key={nIndex}
-                                    className={[styles.item,
-                                                styles.item_moveable,
-                                                "pl-8" + ((burger.aContent.length > nIndex + 1) ? " pb-4" : "")].join(" ")}>
-                                    <DragIcon type="primary" />
-                                    <ConstructorElement isLocked={false}
-                                                        text={oElement.name}
-                                                        price={oElement.price}
-                                                        thumbnail={oElement.image}
-                                                        handleClose={() => removeIngredientHandler(nIndex)} />
-                                </li>
-                            )
+                            aContent.map((oElement, nIndex) => (
+                                     <Filling oIngredient={oElement}
+                                              key={oElement.sInnerID}
+                                              bIsLast={(aContent.length >
+                                                            (nIndex + 1))} /> ))
                         }
-                     </ul>
-                     <ul className={styles.list}>
+                    </ul>
+                )
+            }
+            {
+                (oBun && oBun._id) && (
+                    <ul className={`${styles.list} pr-4`}>
                         <li className={`${styles.item} pt-4 pl-8`}>
                             <ConstructorElement type="bottom"
                                                 isLocked={true}
-                                                text={burger.oBun.name +
-                                                      " (низ)"}
-                                                price={burger.oBun.price}
-                                                thumbnail={burger.oBun.image} />
+                                                text={oBun.name + " (низ)"}
+                                                price={oBun.price}
+                                                thumbnail={oBun.image} />
                         </li>
-                        {
-                             price && 
-                                 <li className={`${styles.item} ${styles.item_total} pt-10 pr-4`}>
-                                     <p className={`${styles.total_price} pr-10 text text_type_digits-medium`}>
-                                         {price}&nbsp;<CurrencyIcon type="primary" />
-                                     </p>
-                                     <Button type="primary"
-                                             size="medium"
-                                             onClick={onPlaceOrderHandler}>
-                                         Оформить заказ
-                                     </Button>
-                                 </li>
-                        } 
                     </ul>
-                </>
-            )
-        }
-        
+                )
+            }
+            <ul className={`${styles.list} pr-4`}>
+                <li className=
+                             {`${styles.item} ${styles.item_total} pt-10 pr-4`}>
+                    <p className=
+                   {`${styles.total_price} pr-10 text text_type_digits-medium`}>
+                        {nPrice}&nbsp;<CurrencyIcon type="primary" />
+                    </p>
+                    {
+                        bIsBusy && (
+                            <div className={styles.loader_container}>
+                                <Loader message="Загрузка" />
+                            </div>
+                        )
+                    }
+                    {
+                        (!(oBun && oBun._id)) && (
+                            <div className={styles.loader_container}>
+                                Добавьте, пожалуйста, булку
+                            </div>
+                        )
+                    }
+                    {
+                        ((!bIsBusy) && oBun && oBun._id) && (
+                            <Button type="primary"
+                                    size="medium"
+                                    onClick={() => {
+                                        dispatch(sendOrder());
+                                    }}>
+                                Оформить заказ
+                            </Button>
+                        )
+                    }
+                </li>
+            </ul>
+            {
+                (nOrderNumber >= 0) && (
+                    <Modal
+                        closer={() => {
+                            dispatch({ type: CLEAR_ORDER_NUMBER });
+                            dispatch({ type: CLEAR_BURGER });
+                        }}>
+                        <OrderDetails />
+                    </Modal>
+                )
+            }
+            
         </section> 
-    );
-}
-
-/* Непонятно, как верстать, если цены нет или булку не выбрали,
-   пока все необязательно, если чего-то нет, мы это что-то не рендерим */
-BurgerConstructor.propTypes = {
-    onPlaceOrderHandler : PropTypes.func.isRequired, 
-    removeIngredientHandler : PropTypes.func.isRequired
+    )
 };
 
 export default BurgerConstructor;

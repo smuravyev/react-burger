@@ -1,101 +1,169 @@
-import React from 'react';
-import PropTypes from 'prop-types';
+import { useState,
+         useRef,
+         useEffect,
+         useMemo,
+         createRef,
+         useCallback,
+         Fragment } from 'react';
+         
+import { useSelector,
+         useDispatch,
+         shallowEqual } from 'react-redux';
 
-import {Counter, 
-        Tab,
-        CurrencyIcon} from '@ya.praktikum/react-developer-burger-ui-components';
-import {IngredientsContext} from "../../utils/appcontext.js";
+import { getIngredients } from '../../services/actions/burger-ingredients';
+
+import { CLEAR_CURRENT_INGREDIENT,
+         SET_CURRENT_INGREDIENT }
+                               from '../../services/actions/ingredient-details';
+
+import { Tab } from '@ya.praktikum/react-developer-burger-ui-components';
+
+import Modal from '../modal/modal';
+import IngredientDetails from '../ingredient-details/ingredient-details';
+import Ingredient from '../ingredient/ingredient';
+import Loader from '../loader/loader';
 
 import styles from  './burger-ingredients.module.css';
 
-const BurgerIngredients = ({onIngredientClick}) => {
-    const {ingredients, usedIngredients} = React.useContext(IngredientsContext);
-    const [sCurrentType, setSCurrentType] =
-                                           React.useState(ingredients[0].sType);
+const usedIngredientsSelector = (store) => {
+    const oResult = [];
+    if((store.constructedBurger.oBun) &&
+       (store.constructedBurger.oBun._id)){
+        oResult[store.constructedBurger.oBun._id] = 1
+        store.constructedBurger.aContent.forEach(oElement => {
+            if(oResult[oElement._id]){
+               oResult[oElement._id] = oResult[oElement._id] + 1;
+            }
+            else{
+                oResult[oElement._id] = 1;
+            }
+        });
+    }
+    return oResult;
+};
+
+const BurgerIngredients = () => {
+    const { aIngredients,
+            bIsRequesting,
+            bIsRequestFailed } = useSelector(store => store.burgerIngredients, 
+                                             shallowEqual);
+    const oUsedIngredients = useSelector(usedIngredientsSelector, shallowEqual);
+    const oCurrentIngredient = useSelector(store => store.currentIngredient,
+                                           shallowEqual);
+    const dispatch = useDispatch();
+
+    // This is used only here, locally,
+    // no need to push this to the redux (for now)
+    const [sCurrentType, setSCurrentType] = useState(aIngredients[0].sType);
                                                       
-    const oULRefs = React.useMemo(() =>{
+    const oULRefs = useMemo(() =>{
         const oResultSetOfRefs = {};
-        ingredients.forEach((oType) => {
-            oResultSetOfRefs[oType.sType] = React.createRef(null); 
+        aIngredients.forEach((oType) => {
+            oResultSetOfRefs[oType.sType] = createRef(null); 
         });
         return oResultSetOfRefs;
-    }, [ingredients]);
+    }, [aIngredients]);
     
-    const handleTypeTabClick = React.useCallback((sType) => {
+    const handleTypeTabClick = useCallback((sType) => {
         setSCurrentType(sType);
         oULRefs[sType].current.scrollIntoView({behavior: "smooth"});
     }, [oULRefs]);
     
-    const oScrollerRef = React.createRef(null);
+    useEffect(() => {
+        dispatch(getIngredients());
+    }, [dispatch]);
     
-    const handleScroll = React.useCallback(() => {
+    const oScrollerRef = useRef(null);
+    
+    const handleScroll = useCallback(() => {
         const oScrollerCoords = oScrollerRef.current.getBoundingClientRect();
+        let nMinimumDifference = Number.MAX_SAFE_INTEGER;
+        let sMinimumIndex = null;
         for (let sIndex in oULRefs){
             const currentHeaderCoords = 
                                 oULRefs[sIndex].current.getBoundingClientRect();
-            const nTopDifference = currentHeaderCoords.top - oScrollerCoords.top;
-            if(nTopDifference >= -5  && nTopDifference < oScrollerCoords.height){
-                setSCurrentType(sIndex);
-                break;
-            }
+            const nTopDifference =
+                        Math.abs(currentHeaderCoords.top - oScrollerCoords.top);
+            if(nTopDifference < nMinimumDifference){
+                nMinimumDifference = nTopDifference;
+                sMinimumIndex = sIndex;
+            }            
         };
+        setSCurrentType(sMinimumIndex);
     }, [oULRefs, oScrollerRef]);
-
+    
     return (
-            <section className={`${styles.section} mr-5`}> 
-               <h1 className="pt-10 pb-5 text text_type_main-large">
-                    Соберите бургер
-                </h1>
-                <menu className={styles.menu}>
-                    {ingredients.map((currentType, nIndex) => 
-                        <Tab value={currentType.sType}
-                             key={nIndex} 
-                             active={(currentType.sType === sCurrentType)}
-                             onClick={handleTypeTabClick}>
-                            {currentType.sName}
-                        </Tab>
-                    )}
-                </menu>
-                <article className={`${styles.items__scrollable} mt-8`}
-                         ref={oScrollerRef}
-                         onScroll={handleScroll}>
-                    {ingredients.map((oCurrentType, nTypeIndex) =>
-                        <React.Fragment key={nTypeIndex}>
-                            <h2 ref={oULRefs[oCurrentType.sType]}
-                               className="mt-2 mb-6 text text_type_main_medium">
-                                {oCurrentType.sName}
-                            </h2>
-                            <ul className={styles.items}>
-                                {oCurrentType.aSet.map(
-                                                   (oCurrentElement, nIndex) => ( 
-                                    <React.Fragment key={oCurrentElement._id}>
-                                        <li className={`${styles.items__component} ml-4 mr-2 mb-8`}
-                                            onClick={() => onIngredientClick(oCurrentElement)}>
-                                            {usedIngredients[oCurrentElement._id] > 0 && (  
-                                                 <Counter
-                                                         count={usedIngredients[oCurrentElement._id]}
-                                                         size="default" />
-                                             )}
-                                        <img src={oCurrentElement.image}
-                                             alt={oCurrentElement.name} />
-                                        <p className={`${styles.items__component__price} text text_type_digits-default`}
-                                            title={oCurrentType.sType === "bun" ? 'Цена представлена за половинку булки. В заказе может быть только целая булка (верхняя и нижняя части).' : ''}>
-                                           <span className={styles.items__component__price_digits}>{oCurrentElement.price}&nbsp;</span><CurrencyIcon type="primary" />
-                                        </p>
-                                        <p className={`${styles.items__component__name} mt-1 text text_type_main_small`}>
-                                             {oCurrentElement.name}
-                                        </p>
-                                    </li>
-                                </React.Fragment> ))}
-                            </ul>
-                        </React.Fragment>)}
-                </article>
-            </section>
-        );
-};
-
-BurgerIngredients.propTypes = {
-    onIngredientClick : PropTypes.func,
+        <section className={`${styles.section} mr-5`}>
+            {
+                bIsRequesting && (
+                    <Loader message="Загрузка ингредиентов&hellip;" />
+                )
+            }
+            {(!bIsRequesting && !bIsRequestFailed) &&  (
+               <>
+                   <h1 className="pt-10 pb-5 text text_type_main-large">
+                       Соберите бургер
+                    </h1>
+                    <menu className={styles.menu}>
+                        {
+                            aIngredients.map((oCurrentType, nIndex) => ( 
+                                <Tab value={oCurrentType.sType}
+                                     key={nIndex} 
+                                     active={(oCurrentType.sType
+                                                              === sCurrentType)}
+                                     onClick={handleTypeTabClick}>
+                                     {oCurrentType.sName}
+                                </Tab>
+                            ))
+                        }
+                    </menu>
+                    <article className={`${styles.items__scrollable} mt-8`}
+                             ref={oScrollerRef}
+                             onScroll={handleScroll}>
+                        {
+                            aIngredients.map((oCurrentType, nTypeIndex) => (
+                                <Fragment key={nTypeIndex}>
+                                    <h2 ref={oULRefs[oCurrentType.sType]}
+                                         className=
+                                         "mt-2 mb-6 text text_type_main_medium">
+                                        {oCurrentType.sName}
+                                    </h2>
+                                    <ul className={styles.items}>
+                                        {
+                                             oCurrentType.aSet.map(
+                                                          (oThisElement) => (
+                                                 <Ingredient
+                                                     key={oThisElement._id}
+                                                     nCounter=
+                                            {oUsedIngredients[oThisElement._id]}
+                                                     onClickHandler={() =>
+                                                         dispatch({ type :
+                                                         SET_CURRENT_INGREDIENT,
+                                                                    payload :
+                                                                  { oIngredient:
+                                                               oThisElement}}) }
+                                                      oIngredient={oThisElement}
+                                                 />
+                                             ))
+                                         }
+                                     </ul>
+                                 </Fragment>
+                             ))
+                         }
+                    </article>
+                </> )
+            }
+            {
+                oCurrentIngredient && (
+                    <Modal caption="Детали игредиента"
+                           closer={() =>
+                             { dispatch({ type : CLEAR_CURRENT_INGREDIENT}) } }>
+                        <IngredientDetails />
+                    </Modal>
+                )
+            }
+        </section>
+    );
 };
 
 
