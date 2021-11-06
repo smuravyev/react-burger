@@ -38,7 +38,7 @@ const Filling = ({oIngredient, bIsLast}) => {
         collect: monitor => ( {bIsOver : monitor.isOver()} ),
 
         //We need to show the customer where he is dropping item
-        hover: (oItem, monitor) => {
+        hover: (_, monitor) => {
             if(refThis.current){
                 const oDimensions = refThis.current.getBoundingClientRect();
                 const oCursor = monitor.getClientOffset();

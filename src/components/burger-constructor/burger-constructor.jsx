@@ -52,7 +52,7 @@ const BurgerConstructor = () => {
                          && (aContent.length === 0) //Show the helper if nothing
                                                     //added
         }),
-        drop: (oData, monitor) => {
+        drop: (_, monitor) => {
             return monitor.getDropResult() ||
                    { bDefaultDrop: true };
         }
