@@ -81,7 +81,6 @@ const BurgerIngredients = () => {
     
     const handleScroll = useCallback(() => {
         const oScrollerCoords = oScrollerRef.current.getBoundingClientRect();
-        console.log("Scroll handled");
         let nMinimumDifference = Number.MAX_SAFE_INTEGER;
         let sMinimumIndex = null;
         for (let sIndex in oULRefs){

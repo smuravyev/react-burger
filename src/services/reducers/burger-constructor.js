@@ -4,6 +4,9 @@ import { CLEAR_BURGER,
          SWAP_INGREDIENTS,
          SET_BUN } from '../actions/burger-constructor';
 
+/**
+ * Will be with past, present, future!
+ */
 const stateInitialBurgerConstructor = { oBun : {},
                                         aContent : [] };
 
