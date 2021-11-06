@@ -18,6 +18,8 @@ import { CLEAR_CURRENT_INGREDIENT,
 
 import { Tab } from '@ya.praktikum/react-developer-burger-ui-components';
 
+import throttle from 'lodash/throttle';
+
 import Modal from '../modal/modal';
 import IngredientDetails from '../ingredient-details/ingredient-details';
 import Ingredient from '../ingredient/ingredient';
@@ -77,6 +79,7 @@ const BurgerIngredients = () => {
     
     const handleScroll = useCallback(() => {
         const oScrollerCoords = oScrollerRef.current.getBoundingClientRect();
+        console.log("Scroll handled");
         let nMinimumDifference = Number.MAX_SAFE_INTEGER;
         let sMinimumIndex = null;
         for (let sIndex in oULRefs){
@@ -119,7 +122,7 @@ const BurgerIngredients = () => {
                     </menu>
                     <article className={`${styles.items__scrollable} mt-8`}
                              ref={oScrollerRef}
-                             onScroll={handleScroll}>
+                             onScroll={ throttle(handleScroll, 500) }>
                         {
                             aIngredients.map((oCurrentType, nTypeIndex) => (
                                 <Fragment key={nTypeIndex}>

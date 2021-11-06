@@ -175,6 +175,7 @@ const BurgerConstructor = () => {
                         closer={() => {
                             dispatch({ type: CLEAR_ORDER_NUMBER });
                             dispatch({ type: CLEAR_BURGER });
+                            dispatch(UndoActionCreators.clearHistory());
                         }}>
                         <OrderDetails />
                     </Modal>
