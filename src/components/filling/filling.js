@@ -15,7 +15,7 @@ import { oIngredientDragTypes } from '../../utils/constants';
 
 import styles from './filling.module.css';
 
-const Filling = ({oIngredient, bIsLast}) => {
+const Filling = ({oIngredient, nIndex, bIsNotLast}) => {
     
     const [sDropPosition, setSDropPosition] = useState('');
 
@@ -24,12 +24,12 @@ const Filling = ({oIngredient, bIsLast}) => {
     const refThis = useRef(null);
 
     const [{ bIsDragging }, refDrag] = useDrag({
-        item: ({oIngredient}),
+        item: ({nIndex}),
         type: oIngredientDragTypes.sExistingFilling,
         collect: monitor => ({
             bIsDragging: monitor.isDragging()
         }),
-    }, [oIngredientDragTypes.sExistingFilling]);
+    }, [oIngredientDragTypes.sExistingFilling, nIndex]);
     
     const [{bIsOver}, refDrop] = useDrop({
         accept : [oIngredientDragTypes.sExistingFilling,
@@ -60,17 +60,14 @@ const Filling = ({oIngredient, bIsLast}) => {
         drop: (oDropData) => {
             // If there is an existing component in the burger,
             // it SHOULD have sInnerID. So now we are MOVING it
-            if(oDropData.oIngredient.sInnerID){
-                if(oDropData.oIngredient.sInnerID !== oIngredient.sInnerID){
+            if(oDropData.nIndex !== undefined){
+                if(oDropData.nIndex !== nIndex){
                     if(sDropPosition === 'top'){
-                        dispatch(
-                            moveIngredientBefore(oDropData.oIngredient.sInnerID,
-                                                 oIngredient.sInnerID));                                         
+                        dispatch(moveIngredientBefore(oDropData.nIndex,
+                                                      nIndex));
                     }
                     else{
-                        dispatch(
-                            moveIngredientAfter(oDropData.oIngredient.sInnerID,
-                                                oIngredient.sInnerID));                                         
+                        dispatch(moveIngredientAfter(oDropData.nIndex, nIndex));
                     }
                 }
             }
@@ -85,15 +82,14 @@ const Filling = ({oIngredient, bIsLast}) => {
         }
     }, [oIngredientDragTypes.sExistingFilling,
         oIngredientDragTypes.sFilling,
-        sDropPosition,
-        oIngredient.sInnerID]);
+        sDropPosition, nIndex]);
 
     // https://www.meme-arsenal.com/memes/abdec0f730ff8b5ff4b3f1ff1e367fcb.jpg
     refDrag(refDrop(refThis)); // Combining refs!
     
     //Construct the long list of classes
     let sLiClassName = `${styles.item} ${styles.item_moveable} pl-8`
-    bIsLast && (sLiClassName = `${sLiClassName} pb-4`);
+    bIsNotLast && (sLiClassName = `${sLiClassName} pb-4`);
     bIsDragging && (sLiClassName = `${sLiClassName} ${styles.dragging}`);
     if(bIsOver){
         switch(sDropPosition){
@@ -133,7 +129,8 @@ Filling.propTypes = {
         price : PropTypes.number,
         image : PropTypes.string //Other parameters will be there, not required 
     }),
-    bIsLast : PropTypes.bool 
+    nIndex : PropTypes.number,
+    bIsNotLast : PropTypes.bool 
 };
 
 export default Filling;

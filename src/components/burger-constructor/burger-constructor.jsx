@@ -115,7 +115,8 @@ const BurgerConstructor = () => {
                             aContent.map((oElement, nIndex) => (
                                      <Filling oIngredient={oElement}
                                               key={oElement.sInnerID}
-                                              bIsLast={(aContent.length >
+                                              nIndex={nIndex}
+                                              bIsNotLast={(aContent.length >
                                                             (nIndex + 1))} /> ))
                         }
                     </ul>

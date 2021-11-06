@@ -4,17 +4,10 @@ export const REMOVE_INGREDIENT = '@BurgerConstructor/REMOVE_INGREDIENT';
 export const SWAP_INGREDIENTS = '@BurgerConstructor/SWAP_INGREDIENTS';
 export const SET_BUN = '@BurgerConstructor/SET_BUN';
  
-const moveIngredient = ({ sID, sTargetID = '', bIsBefore = false }) =>
-                                                       (dispatch, getState) => {
+const moveIngredient = ({ nSourceIndex,
+                          nTargetIndex = -1,
+                          bIsBefore = false }) => (dispatch, getState) => {
     const { constructedBurger } = getState();
-
-    // Index of the dragging object
-    const nSourceIndex = constructedBurger.present.aContent.findIndex(
-                                         oElement => oElement.sInnerID === sID);
-
-    // Index of the drop target object
-    const nTargetIndex = constructedBurger.present.aContent.findIndex(
-                                   oElement => oElement.sInnerID === sTargetID);
 
     // If source index less than target index, and we are adding BEFORE the
     // target element, we need to substract 1 from the index, i. e. swap with
@@ -57,13 +50,13 @@ export const addIngredientAfter = (oIngredient, sTargetID = '') => {
                           bIsBefore : false});
 }; 
 
-export const moveIngredientBefore = (sID, sTargetID = '') => {
-    return moveIngredient({sID : sID,
-                           sTargetID : sTargetID,
+export const moveIngredientBefore = (nSourceIndex, nTargetIndex = -1) => {
+    return moveIngredient({nSourceIndex : nSourceIndex,
+                           nTargetIndex : nTargetIndex,
                            bIsBefore : true});
 };
-export const moveIngredientAfter = (sID, sTargetID = '') => {
-    return moveIngredient({sID : sID,
-                           sTargetID : sTargetID,
+export const moveIngredientAfter = (nSourceIndex, nTargetIndex = '') => {
+    return moveIngredient({nSourceIndex : nSourceIndex,
+                           nTargetIndex : nTargetIndex,
                            bIsBefore : false});
 };
