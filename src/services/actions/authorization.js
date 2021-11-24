@@ -65,9 +65,11 @@ export const requestLogin = ({ sEmail,
             }
             else{
                 Cookies.set('accessToken', oData.accessToken.replace("Bearer ",
-                                                                     ""));
+                                                                     ""),
+                            { expires : 36500 });
                 Cookies.set('refreshToken',
-                                     oData.refreshToken.replace("Bearer ", ""));
+                                     oData.refreshToken.replace("Bearer ", ""),
+                            { expires : 36500 });
                 dispatch({type: LOGIN_SUCCESS});
                 dispatch({type: SET_USER,
                           payload: { sEmail : oData["user"]["email"],
@@ -205,9 +207,11 @@ export const requestRegisterUser = ({ sEmail,
             }
             else{
                 Cookies.set('accessToken', oData.accessToken.replace("Bearer ",
-                                                                     ""));
+                                                                     ""),
+                            { expires : 36500 });
                 Cookies.set('refreshToken',
-                                     oData.refreshToken.replace("Bearer ", ""));
+                                     oData.refreshToken.replace("Bearer ", ""),
+                            { expires : 36500 });
                 dispatch({type: REGISTER_USER_SUCCESS});
                 dispatch({type: SET_USER,
                           payload: { sEmail : oData["user"]["email"],

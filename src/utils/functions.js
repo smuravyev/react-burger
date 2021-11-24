@@ -26,9 +26,11 @@ const tryToRefreshToken = async () => {
         const oData = await oResponse.json();
         if(oData.success){
             Cookies.set("accessToken",
-                        oData.accessToken.replace("Bearer ", ""));
+                        oData.accessToken.replace("Bearer ", ""), 
+                        { expires : 36500 });
             Cookies.set("refreshToken",
-                        oData.refreshToken.replace("Bearer ", ""));
+                        oData.refreshToken.replace("Bearer ", ""), 
+                        { expires : 36500 });
             return true;
         }
     }
