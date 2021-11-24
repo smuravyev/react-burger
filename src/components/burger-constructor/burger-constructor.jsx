@@ -4,6 +4,9 @@ import { useEffect,
 import { useSelector,
          shallowEqual,
          useDispatch } from 'react-redux';
+         
+import { useLocation,
+         useNavigate } from 'react-router-dom';
 
 import { useDrop } from 'react-dnd';
 
@@ -13,13 +16,14 @@ import { ConstructorElement,
          Button,
          CurrencyIcon } from '@ya.praktikum/react-developer-burger-ui-components';
 
-import Loader from '../loader/loader';
-import Filling from '../filling/filling';
-import Modal from '../modal/modal';
-import OrderDetails from '../order-details/order-details';
+import { Loader,
+         Filling, 
+         Modal,
+         OrderDetails } from '../';
 
 import { CLEAR_ORDER_NUMBER,
          sendOrder } from '../../services/actions/order-details';
+import { SET_RETURN_PATH } from '../../services/actions/authorization';
 import { CLEAR_BURGER } from '../../services/actions/burger-constructor';
 
 import { oIngredientDragTypes,
@@ -40,7 +44,9 @@ const priceSelector = (store) => {
 };
 
 const BurgerConstructor = () => {
-    const bIsBusy = useSelector(store => store.app.bIsBusy);                                     
+    const bIsBusy = useSelector(store => store.app.bIsBusy);     
+    const bIsOrderRequesting =
+                         useSelector(store => store.orderDetails.bIsRequesting);                                
     const { oBun,
             aContent } = useSelector(store => store.constructedBurger.present,
                                      shallowEqual);
@@ -49,10 +55,16 @@ const BurgerConstructor = () => {
     const nOrderNumber = useSelector(store => store.orderDetails.nOrderNumber);
     
     const dispatch = useDispatch(); 
+    
+    const navigate = useNavigate();
+    
+    const location = useLocation();
+
+    const bIsAuthorized = useSelector(store => store.authorization.bIsUserSet);
 
     const [{ bNeedHelper } , refDrop] = useDrop({
-        accept : [ oIngredientDragTypes.sBun,
-                   oIngredientDragTypes.sFilling ],
+        accept : bIsOrderRequesting ? "" : [ oIngredientDragTypes.sBun,
+                                             oIngredientDragTypes.sFilling ],
         collect: monitor => ({
             bNeedHelper: monitor.canDrop() && (!oBun._id)
                          && (aContent.length === 0) //Show the helper if nothing
@@ -63,27 +75,30 @@ const BurgerConstructor = () => {
                    { bDefaultDrop: true };
         }
     }, [ oBun._id,
+         bIsOrderRequesting,
          aContent.length,
          oIngredientDragTypes.sBun,
          oIngredientDragTypes.sFilling ]);
          
     const keyboardHandler =  useCallback((eEvent) => {
-        if(eEvent.ctrlKey || eEvent.metaKey){
-            switch (eEvent.keyCode){
-                case oKeyCodes.nUndo: {
-                    dispatch(UndoActionCreators.undo());
-                    eEvent.preventDefault();
-                    break;
+        if(!(bIsOrderRequesting)){
+            if(eEvent.ctrlKey || eEvent.metaKey){
+                switch (eEvent.keyCode){
+                    case oKeyCodes.nUndo: {
+                        dispatch(UndoActionCreators.undo());
+                        eEvent.preventDefault();
+                        break;
+                    }
+                    case oKeyCodes.nRedo: {
+                        dispatch(UndoActionCreators.redo());
+                        eEvent.preventDefault();
+                        break;
+                    }
+                    default: // Do nothing
                 }
-                case oKeyCodes.nRedo: {
-                    dispatch(UndoActionCreators.redo());
-                    eEvent.preventDefault();
-                    break;
-                }
-                default: // Do nothing
             }
         }
-    }, [dispatch]);
+    }, [dispatch, bIsOrderRequesting]);
 
     useEffect(() => {
         document.addEventListener("keydown", keyboardHandler);
@@ -91,10 +106,29 @@ const BurgerConstructor = () => {
             document.removeEventListener("keydown", keyboardHandler)
         }
     }, [ keyboardHandler ]);
+    
+    const clickHandler = useCallback((eEvent) => {
+        if(bIsAuthorized){
+            dispatch(sendOrder());
+        }
+        else{
+            dispatch({type : SET_RETURN_PATH,
+                      payload : { sReturnPath : location.pathname }});
+            navigate("/login", { replace : true });
+        }
+    }, [ navigate,
+         dispatch,
+         bIsAuthorized,
+         location.pathname]);
+    
+    let sSectionClassName =
+        `${styles.section}${bNeedHelper ? ' ' + styles.target : ''} ml-5 pt-25`;
+    if(bIsOrderRequesting){
+        sSectionClassName = `${sSectionClassName} ${styles.busy}`;  
+    }
 
     return (
-        <section ref={refDrop} className=
-      {`${styles.section}${bNeedHelper ? ' ' + styles.target : ''} ml-5 pt-25`}>
+        <section ref={refDrop} className={sSectionClassName}>
             {
                 (oBun && oBun._id) && (
                     <ul className={`${styles.list} pr-4`}>
@@ -160,9 +194,7 @@ const BurgerConstructor = () => {
                         ((!bIsBusy) && oBun && oBun._id) && (
                             <Button type="primary"
                                     size="medium"
-                                    onClick={() => {
-                                        dispatch(sendOrder());
-                                    }}>
+                                    onClick={clickHandler}>
                                 Оформить заказ
                             </Button>
                         )

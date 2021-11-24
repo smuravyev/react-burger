@@ -1,0 +1,28 @@
+.profile_section{
+    width: 100%;
+    display: grid;
+    grid-template-columns: auto 1fr;
+    grid-column-gap: 0;
+    justify-items: start;
+    align-items: start;
+}
+
+.profile_navigation{
+    min-width: 320px; 
+    max-width: 320px;
+    width: 100%;
+}
+
+.link{
+    width: 100%;
+    display: flex;
+    align-items: center;
+    min-height: 64px;
+    text-align: left;
+    text-decoration: none;
+}
+
+.link_active{
+    color: #F2F2F3;
+
+}

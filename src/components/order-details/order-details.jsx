@@ -1,6 +1,6 @@
 import { useSelector } from 'react-redux';
 
-import SuccessIcon from "../success-icon/success-icon";
+import { SuccessIcon }  from "../";
 
 import styles from  './order-details.module.css';
 

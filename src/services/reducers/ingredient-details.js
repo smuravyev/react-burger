@@ -4,7 +4,7 @@ import { SET_CURRENT_INGREDIENT,
 export const reducerIngredientDetails = (state = null, action) => {
     switch(action.type){
         case SET_CURRENT_INGREDIENT: {
-            return action.payload.oIngredient;
+            return action.payload.oIngredient || null;
         }
         
         case CLEAR_CURRENT_INGREDIENT: {

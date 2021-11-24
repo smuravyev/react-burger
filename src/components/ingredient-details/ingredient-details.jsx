@@ -9,7 +9,7 @@ const IngredientDetails = () =>{
             proteins,
             fat,
             image_large } = useSelector(store => store.currentIngredient,
-                                       shallowEqual);
+                                        shallowEqual);
     
     return (
         <figure className={styles.figure}>

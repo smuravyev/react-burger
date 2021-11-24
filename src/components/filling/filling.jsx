@@ -1,6 +1,7 @@
 import { useRef,
          useState} from 'react';
-import { useDispatch } from 'react-redux';
+import { useDispatch,
+         useSelector } from 'react-redux';
 import { useDrag, useDrop } from 'react-dnd';
 import PropTypes from 'prop-types';
 
@@ -21,6 +22,8 @@ const Filling = ({oIngredient, nIndex, bIsNotLast}) => {
 
     const dispatch = useDispatch();
     
+    const bIsBusy = useSelector(store => store.orderDetails.bIsRequesting);
+    
     const refThis = useRef(null);
 
     const [{ bIsDragging }, refDrag] = useDrag({
@@ -32,8 +35,8 @@ const Filling = ({oIngredient, nIndex, bIsNotLast}) => {
     }, [oIngredientDragTypes.sExistingFilling, nIndex]);
     
     const [{bIsOver}, refDrop] = useDrop({
-        accept : [oIngredientDragTypes.sExistingFilling,
-                  oIngredientDragTypes.sFilling],
+        accept : bIsBusy ? "" : [ oIngredientDragTypes.sExistingFilling,
+                                  oIngredientDragTypes.sFilling],
         
         collect: monitor => ( {bIsOver : monitor.isOver()} ),
 
@@ -82,7 +85,9 @@ const Filling = ({oIngredient, nIndex, bIsNotLast}) => {
         }
     }, [oIngredientDragTypes.sExistingFilling,
         oIngredientDragTypes.sFilling,
-        sDropPosition, nIndex]);
+        sDropPosition,
+        nIndex,
+        bIsBusy]);
 
     // https://www.meme-arsenal.com/memes/abdec0f730ff8b5ff4b3f1ff1e367fcb.jpg
     refDrag(refDrop(refThis)); // Combining refs!

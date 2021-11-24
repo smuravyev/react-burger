@@ -1,35 +1,43 @@
-import { useSelector } from 'react-redux';
+import { useEffect } from 'react';
 
-import { DndProvider } from "react-dnd";
-import { HTML5Backend } from "react-dnd-html5-backend";
+import { BrowserRouter } from 'react-router-dom';
 
-import AppHeader from '../app-header/app-header';
-import BurgerIngredients from '../burger-ingredients/burger-ingredients';
-import BurgerConstructor from '../burger-constructor/burger-constructor';
-import ErrorMessage from '../error-message/error-message';
+import { useDispatch } from 'react-redux';
 
-import styles from './app.module.css';  
+import { AppHeader,
+         ErrorMessage,
+         AppRoutes } from '../';
+         
+import { getIngredients } from '../../services/actions/burger-ingredients';
 
-import { oPages } from "../../utils/constants.js";
+import { requestAuthorizationCheck }
+                                    from '../../services/actions/authorization';
+
+import styles from './app.module.css';
 
 const App = () => {
     
-    const { sCurrentPage } = useSelector((store) => store.app);
+    const dispatch = useDispatch();
+    
+    
+    useEffect(() => {
+        //Every time you eat...
+        // We need the ingredients list
+        dispatch(getIngredients());
+        // And the authorization data
+        dispatch(requestAuthorizationCheck());
+        // Читайте "ТВ-Парк", и ваши волосы будут мягкими и шелковистыми 
+    }, [dispatch]);
 
     return (
         <div className={styles.wrapper}>
-            <AppHeader />
-            <main className={styles.main}>
-                { sCurrentPage === oPages.sBurgerPage && 
-                    (
-                     <DndProvider backend={HTML5Backend}>
-                         <BurgerIngredients />
-                         <BurgerConstructor />
-                     </DndProvider>
-                    )
-                }
-                <ErrorMessage />
-            </main>
+            <BrowserRouter>
+                <AppHeader />
+                <main className={styles.main}>
+                    <AppRoutes />
+                    <ErrorMessage />
+                </main>
+            </BrowserRouter>
         </div>
     );
 };

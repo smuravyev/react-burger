@@ -1,6 +1,5 @@
 import { useState,
          useRef,
-         useEffect,
          useMemo,
          createRef,
          useCallback,
@@ -9,21 +8,19 @@ import { useState,
 import { useSelector,
          useDispatch,
          shallowEqual } from 'react-redux';
+         
+import { useNavigate,
+         useLocation } from 'react-router-dom';
 
-import { getIngredients } from '../../services/actions/burger-ingredients';
-
-import { CLEAR_CURRENT_INGREDIENT,
-         SET_CURRENT_INGREDIENT }
+import { SET_CURRENT_INGREDIENT }
                                from '../../services/actions/ingredient-details';
 
 import { Tab } from '@ya.praktikum/react-developer-burger-ui-components';
 
 import throttle from 'lodash/throttle';
 
-import Modal from '../modal/modal';
-import IngredientDetails from '../ingredient-details/ingredient-details';
-import Ingredient from '../ingredient/ingredient';
-import Loader from '../loader/loader';
+import { Ingredient,
+         Loader } from '../';
 
 import { nScrollThrottleDelay } from '../../utils/constants';
 
@@ -52,9 +49,10 @@ const BurgerIngredients = () => {
             bIsRequestFailed } = useSelector(store => store.burgerIngredients, 
                                              shallowEqual);
     const oUsedIngredients = useSelector(usedIngredientsSelector, shallowEqual);
-    const oCurrentIngredient = useSelector(store => store.currentIngredient,
-                                           shallowEqual);
+    
+    const navigate = useNavigate();
     const dispatch = useDispatch();
+    const oLocation = useLocation();
 
     // This is used only here, locally,
     // no need to push this to the redux (for now)
@@ -73,9 +71,14 @@ const BurgerIngredients = () => {
         oULRefs[sType].current.scrollIntoView({behavior: "smooth"});
     }, [oULRefs]);
     
-    useEffect(() => {
-        dispatch(getIngredients());
-    }, [dispatch]);
+    const handleIngredientClick = useCallback((oThisElement) => {
+        return () => {
+            dispatch({ type : SET_CURRENT_INGREDIENT,
+                       payload : { oIngredient: oThisElement}});
+            navigate("/ingredients/" + oThisElement._id, 
+                     {state: { oBackground : oLocation }});
+        }
+    }, [dispatch, navigate, oLocation]);
     
     const oScrollerRef = useRef(null);
     
@@ -141,13 +144,9 @@ const BurgerIngredients = () => {
                                                      key={oThisElement._id}
                                                      nCounter=
                                             {oUsedIngredients[oThisElement._id]}
-                                                     onClickHandler={() =>
-                                                         dispatch({ type :
-                                                         SET_CURRENT_INGREDIENT,
-                                                                    payload :
-                                                                  { oIngredient:
-                                                               oThisElement}}) }
-                                                      oIngredient={oThisElement}
+                                                     onClickHandler=
+                                           {handleIngredientClick(oThisElement)}
+                                                     oIngredient={oThisElement}
                                                  />
                                              ))
                                          }
@@ -157,15 +156,6 @@ const BurgerIngredients = () => {
                          }
                     </article>
                 </> )
-            }
-            {
-                oCurrentIngredient && (
-                    <Modal caption="Детали игредиента"
-                           closer={() =>
-                             { dispatch({ type : CLEAR_CURRENT_INGREDIENT}) } }>
-                        <IngredientDetails />
-                    </Modal>
-                )
             }
         </section>
     );

@@ -1,0 +1,27 @@
+.centered_section {
+    display: inline-block;
+    min-width: 480px;
+    max-width: 480px;
+    text-align: center;
+    width: 100%;
+}
+
+.header {
+    text-align: center;
+}
+
+.fields_list{
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+}
+
+.field_container{
+    width: 100%;
+    display: flex;
+    justify-content: center;
+}
+
+.bottom_links{
+    font-weight: bold;
+}

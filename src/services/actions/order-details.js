@@ -3,6 +3,8 @@ import { BUSY_SET,
 
 import { setError } from './error-message.js';
 
+import { fetchWithAuth } from '../../utils/functions';
+
 import { oErrorCodes } from '../../utils/constants.js';
 
 import { oSettings } from '../../config/config.js'; 
@@ -34,37 +36,32 @@ export const sendOrder = () => async (dispatch, getState) => {
         
             //Start requesting...
             dispatch({type: ORDER_REQUEST});
-            const oResponse =
-                 await fetch(oSettings.sAPIBaseURL + oSettings.oAPIURIS.sOrders,
-                             { method: 'POST',
-                               cache: 'no-cache',
-                               headers: { 'Content-Type': 'application/json' },
-                               redirect: 'follow',
-                               body: JSON.stringify({ingredients:
+            const oData =
+                 await fetchWithAuth(oSettings.sAPIBaseURL +
+                                     oSettings.oAPIURIS.sOrders,
+                                     { method: 'POST',
+                                       cache: 'no-cache',
+                                       headers: new Headers({'Content-Type':
+                                                          'application/json' }),
+                                       redirect: 'follow',
+                                       body: JSON.stringify({ingredients:
                                                    aIngredientsToTheKitchen})});
-            if(oResponse.ok){
-                const oData = await oResponse.json();
-                if((!(oData.success)) ||
-                    (!(oData.order)) ||
-                    (!(oData.order.number))){
-                    dispatch({ type: ORDER_FAILED });
-                    dispatch(setError(oErrorCodes.EC_CANNOT_CREATE_ORDER));
-                }
-                else{
-                    dispatch({type: ORDER_SUCCESS,
-                              payload:
-                               { nOrderNumber: parseInt(oData.order.number) }});
-                }
-             }
-             else{
+            if((!(oData.success)) ||
+               (!(oData.order)) ||
+               (!(oData.order.number))){
                 dispatch({ type: ORDER_FAILED });
-                dispatch(setError(oErrorCodes.EC_CANNOT_CREATE_ORDER));
-             }
-         }
+                dispatch(setError(oErrorCodes.EC_CANNOT_CREATE_ORDER, true));
+            }
+            else{
+                dispatch({type: ORDER_SUCCESS,
+                          payload:
+                               { nOrderNumber: parseInt(oData.order.number) }});
+            }
+        }
     }
     catch(erError){
         dispatch({ type: ORDER_FAILED });
-        dispatch(setError(oErrorCodes.EC_CANNOT_CREATE_ORDER));
+        dispatch(setError(oErrorCodes.EC_CANNOT_CREATE_ORDER, true));
     }
     finally{
         dispatch({ type: BUSY_CLEAR });

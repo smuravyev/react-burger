@@ -4,9 +4,9 @@ import PropTypes from 'prop-types';
 
 import { CloseIcon } from '@ya.praktikum/react-developer-burger-ui-components';
 
-import {sModalSelector} from "../../utils/constants.js";
+import { sModalSelector } from "../../utils/constants.js";
 
-import ModalOverlay from "../modal-overlay/modal-overlay";
+import { ModalOverlay } from "../";
 
 import styles from  './modal.module.css';
 
@@ -27,6 +27,7 @@ const Modal = ({canClose, closer, caption, children}) =>{
         if(eEvent.key === "Escape"){
             closeWindow();
         }
+        eEvent.preventDefault();
     }, [closeWindow]);
     
     const checkForClick = React.useCallback((eEvent) => {
@@ -35,11 +36,17 @@ const Modal = ({canClose, closer, caption, children}) =>{
         eEvent.preventDefault();
     }, [closeWindow]);
     
+    const preventAllKeypresses = (eEvent) => {
+        eEvent.preventDefault();
+    };
+    
     React.useEffect(() => {
         if(bCanClose){
             document.addEventListener("keyup", checkForEsc);
+            document.addEventListener("keypress", preventAllKeypresses)
             return () => {
                 document.removeEventListener("keyup", checkForEsc);
+                document.removeEventListener("keypress", preventAllKeypresses)
             }
         }
     }, [checkForEsc, bCanClose])
