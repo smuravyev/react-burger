@@ -67,8 +67,8 @@ const IngredientDetailsPage = () => {
     const navigate = useNavigate();
     
     const closeModalHandler = () => {
-        dispatch({ type : CLEAR_CURRENT_INGREDIENT})
-        navigate("/"); 
+        navigate("/");
+        dispatch({ type : CLEAR_CURRENT_INGREDIENT});
     };
 
     return (

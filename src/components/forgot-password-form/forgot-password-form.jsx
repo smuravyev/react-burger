@@ -56,15 +56,17 @@ const ForgotPasswordForm = () => {
         oEmailInputRef.current.focus();
     }, [])
     
-    const buttonClickHandler = useCallback((eEvent) => {
+    const formSubmitHandler = useCallback((eEvent) => {
         eEvent.preventDefault();
-        if(oFormData.email){
-            dispatch(requestForgotPassword({ sEmail : oFormData.email }));
+        if(!(bIsBusy)){
+            if(oFormData.email){
+                dispatch(requestForgotPassword({ sEmail : oFormData.email }));
+            }
+            else{
+                 dispatch(setError(oErrorCodes.EC_INVALID_FORM_DATA, true));
+            }
         }
-        else{
-             dispatch(setError(oErrorCodes.EC_INVALID_FORM_DATA, true));
-        }
-    }, [ dispatch, oFormData.email]);
+    }, [ dispatch, oFormData.email, bIsBusy]);
 
     return bIsForgotPasswordRequestSuccess ? (
         <Navigate to='/reset-password' replace={true}
@@ -74,7 +76,8 @@ const ForgotPasswordForm = () => {
             <h1 className="text text_type_main-medium">
                 Восстановление пароля
          </h1>
-         <form className="pt-6 pb-20 width_480px_form">
+         <form className="pt-6 pb-20 width_480px_form"
+               onSubmit={formSubmitHandler}>
              <ul className={styles.fields_list}>
                  <li className={`${styles.field_container} pb-6`}>
                      <CheckableInput changeHandler={onChange}
@@ -97,8 +100,7 @@ const ForgotPasswordForm = () => {
              }
              {
                  (!bIsBusy) && (
-                     <Button type="primary" size="medium"
-                              onClick={buttonClickHandler}>
+                     <Button type="primary" size="medium">
                          Восстановить
                      </Button>
                  )

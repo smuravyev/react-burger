@@ -1,6 +1,7 @@
 import { useRef,
          useEffect,
-         useState } from 'react';
+         useState, 
+         useCallback } from 'react';
 
 import { useSelector,
          useDispatch,
@@ -72,7 +73,7 @@ const ProfileEditor = () => {
                                        sValue : oData.sValue }});
     };
 
-    const iconClickHandler = (sField) => {
+    const iconClickHandler = useCallback((sField) => {
         if(!(bIsSavingProfile)){
             const bIsDisabled = oFields[sField].bIsDisabled;
 
@@ -92,10 +93,18 @@ const ProfileEditor = () => {
                                      sValue : bIsDisabled ?
                                      oFields[sField].sValue : sDefaultValue }});
         }
-    };
+    }, [bIsSavingProfile, sName, sEmail, nActiveElements, oFields]);
     
-    const cancelHandler = (eEvent) => {
+    const cancelHandler = useCallback((eEvent) => {
+        // This is the handler for CANCEL button. 
+        // But the buttons are rendered by the Yandex's components without
+        // type attribute and we have two ways:
+        // - create own component or check the events;
+        // - swap the buttons, so "Save" button will be first in the tree.
+        // The second way chosen.
+        
         eEvent.preventDefault();
+        eEvent.stopPropagation();
         setNActiveElements(0);
         setOFields({ name : { ...oFields.name,
                               bIsDisabled  : true,
@@ -106,44 +115,53 @@ const ProfileEditor = () => {
                      password : { ...oFields.password,
                               bIsDisabled  : true,
                               sValue : "" } });
-    };
+    }, [oFields, sName, sEmail]);
     
-    const saveHandler = (eEvent) => {
-        
+    const saveHandler = useCallback((eEvent) => {
         //0. No default handler.
         eEvent.preventDefault();
-
-        // 1. Check all fields if they are disabled. Will send request only on
-        //    enabled fields.
-        const oData = {};
-        let bNullsExist = false;
-        Object.entries(oFields).forEach(([sIndex]) => {
-            if(!(oFields[sIndex].bIsDisabled)){
-                //Check if there are any errors...
-                if(oFields[sIndex].sValue === null){
-                    bNullsExist = true;
-                }
-                oData[sIndex] = oFields[sIndex].sValue;
-            }
-        });
         
-        if(bNullsExist){
-            dispatch(setError(oErrorCodes.EC_INVALID_FORM_DATA, true));
-        }
-        else{
-            // 2. Disable all the fields
-            setNActiveElements(0);
-            setOFields({ name : { ...oFields.name,
-                                   bIsDisabled  : true},
-                         email : { ...oFields.email,
-                                   bIsDisabled  : true},
-                         password : { ...oFields.password,
-                                      bIsDisabled  : true } });
+        if((nActiveElements > 0) &&
+           (!(bIsBusy))){
+            // 1. Check all fields if they are disabled. Will send request only on
+            //    enabled fields.
+            const oData = {};
+            let bNullsExist = false;
+            Object.entries(oFields).forEach(([sIndex]) => {
+                if(!(oFields[sIndex].bIsDisabled)){
+                    //Check if there are any errors...
+                    if(oFields[sIndex].sValue === null){
+                        bNullsExist = true;
+                    }
+                    oData[sIndex] = oFields[sIndex].sValue;
+                }
+            });
+        
+            if(bNullsExist){
+                dispatch(setError(oErrorCodes.EC_INVALID_FORM_DATA, true));
+            }
+            else{
+                // 2. Disable all the fields
+                setNActiveElements(0);
+                setOFields({ name : { ...oFields.name,
+                                      bIsDisabled  : true},
+                             email : { ...oFields.email,
+                                       bIsDisabled  : true},
+                             password : { ...oFields.password,
+                                          bIsDisabled  : true } });
              
-            // 3. Dispatch the request to the server.
-            dispatch(updateUser({ oProfile : oData }));
+                // 3. Dispatch the request to the server.
+                dispatch(updateUser({ oProfile : oData }));
+            }
         }
-    }
+    }, [bIsBusy, dispatch, nActiveElements, oFields]);
+    
+    const escHandler = useCallback((eEvent) => {
+        eEvent.preventDefault();
+        if((eEvent.key === "Escape") && (nActiveElements > 0)){
+            cancelHandler(eEvent);
+        }
+    }, [cancelHandler, nActiveElements]);
 
     useEffect(() => {
         for (let oItem in oFields) {
@@ -152,6 +170,10 @@ const ProfileEditor = () => {
                                                      oFields[oItem].bIsDisabled;
             }
         }
+        document.addEventListener("keyup", escHandler);
+        return () => {
+            document.removeEventListener("keyup", escHandler);
+        };
     });
     
     let sFormClassName = `${styles.form} width_480px_form`;
@@ -160,7 +182,7 @@ const ProfileEditor = () => {
     } 
 
     return (
-        <form className={sFormClassName}>
+        <form className={sFormClassName} onSubmit={saveHandler}>
             <ul className={styles.fields}>
                 { Object.entries(oFields).map(([sIndex, oElement]) => (
                     <li className={`pb-6`} key={sIndex}>
@@ -184,24 +206,27 @@ const ProfileEditor = () => {
             </ul>
             {
                  (nActiveElements > 0) && (
-                    <>
-                         <Button type="secondary" size="medium"
-                                 onClick={cancelHandler}>
-                             Отменить
-                         </Button>
+                     <>
+                         <div className={styles.float_right}>
                          {
+                            
                              bIsBusy ? (
+                                
                                  <div className={styles.loader_container}>
                                      <Loader message="Загрузка" />
                                  </div>
                              ) : (
-                                <Button type="primary" size="medium"
-                                        onClick={saveHandler}>
+                                <Button type="primary" size="medium">
                                     Сохранить
                                 </Button>
                             )
                      
                          }
+                         </div>
+                           <Button type="secondary" size="medium"
+                                onClick={cancelHandler}>
+                             Отменить
+                         </Button>
                      </>
                  )
             }

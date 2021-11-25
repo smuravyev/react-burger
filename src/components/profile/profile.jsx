@@ -1,7 +1,6 @@
 import { Routes,
          Route,
-         NavLink,
-         Navigate } from 'react-router-dom';
+         NavLink } from 'react-router-dom';
 
 import { useSelector,
          useDispatch } from 'react-redux';
@@ -9,6 +8,7 @@ import { useSelector,
 import { ProfileBlockDescription,
          ProfileEditor,
          OrdersHistory,
+         InvalidRouteMessage,
          Loader } from '../';
 
 import { exitRequest } from '../../services/actions/authorization';
@@ -69,8 +69,7 @@ const Profile = () => {
                 <Routes>
                     <Route index element={ (<ProfileEditor />) } />
                     <Route path="orders" element={ (<OrdersHistory />) } />
-                    <Route path="*" element={ (<Navigate to="/invalid-page"
-                                                replace={true} />) } />
+                    <Route path="*" element={ ( <InvalidRouteMessage /> ) } />
                 </Routes>
             </article>
         </section>

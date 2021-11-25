@@ -19,14 +19,12 @@ const App = () => {
     
     const dispatch = useDispatch();
     
-    
     useEffect(() => {
-        //Every time you eat...
-        // We need the ingredients list
+        // We need the ingredients list at least on two routes, so why don't
+        // ask for it now...
         dispatch(getIngredients());
         // And the authorization data
         dispatch(requestAuthorizationCheck());
-        // Читайте "ТВ-Парк", и ваши волосы будут мягкими и шелковистыми 
     }, [dispatch]);
 
     return (

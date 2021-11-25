@@ -8,5 +8,7 @@ export const oSettings = {
                  sRefreshToken: "/auth/token",
                  sUserData: "/auth/user",
                  sLogin: "/auth/login",
-                 sExit: "/auth/logout"}
+                 sExit: "/auth/logout"},
+    oCookiesLifetime : { nRefresh : 365000,
+                         nAccess : 365000 }
 };

@@ -9,7 +9,7 @@ import { oErrorCodes } from '../../utils/constants';
 
 import { oSettings } from '../../config/config';
 
-import { fetchWithAuth } from '../../utils/functions'; 
+import { fetchWithAuth, saveTokens } from '../../utils/functions'; 
 
 export const SAVE_ENTERED_EMAIL = '@Authorization/SAVE_ENTERED_EMAIL';
 export const FORGOT_PASSWORD_REQUEST = '@Authorization/FORGOT_PASSWORD_REQUEST';
@@ -64,12 +64,7 @@ export const requestLogin = ({ sEmail,
                 dispatch(setError(oErrorCodes.EC_CANNOT_LOGIN, true));
             }
             else{
-                Cookies.set('accessToken', oData.accessToken.replace("Bearer ",
-                                                                     ""),
-                            { expires : 36500 });
-                Cookies.set('refreshToken',
-                                     oData.refreshToken.replace("Bearer ", ""),
-                            { expires : 36500 });
+                saveTokens(oData);
                 dispatch({type: LOGIN_SUCCESS});
                 dispatch({type: SET_USER,
                           payload: { sEmail : oData["user"]["email"],
@@ -206,12 +201,7 @@ export const requestRegisterUser = ({ sEmail,
                 dispatch(setError(oErrorCodes.EC_CANNOT_REGISTER_USER, true));
             }
             else{
-                Cookies.set('accessToken', oData.accessToken.replace("Bearer ",
-                                                                     ""),
-                            { expires : 36500 });
-                Cookies.set('refreshToken',
-                                     oData.refreshToken.replace("Bearer ", ""),
-                            { expires : 36500 });
+                saveTokens(oData);
                 dispatch({type: REGISTER_USER_SUCCESS});
                 dispatch({type: SET_USER,
                           payload: { sEmail : oData["user"]["email"],

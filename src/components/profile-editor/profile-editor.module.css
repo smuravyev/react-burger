@@ -1,4 +1,4 @@
-.fields{
+.fields {
     list-style-type: none;
     margin: 0;
     padding: 0;
@@ -8,7 +8,7 @@
     text-align:left;
 }
 
-.form{
+.form {
     text-align: right;
 }
 
@@ -19,6 +19,10 @@
     
 }
 
-.busy{
+.busy {
     cursor: wait;
+}
+
+.float_right {
+    float: right;
 }

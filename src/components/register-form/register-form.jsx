@@ -58,17 +58,24 @@ const RegisterForm = () => {
         setBPasswordShown(!bPasswordShown);
     }
 
-    const buttonClickHandler = useCallback((eEvent) => {
+    const formSubmitHandler = useCallback((eEvent) => {
         eEvent.preventDefault();
-        if(oFormData.name && oFormData.email && oFormData.password){
-            dispatch(requestRegisterUser({ sEmail : oFormData.email,
-                                           sName : oFormData.name, 
-                                           sPassword : oFormData.password }));
+        if(!bIsBusy){
+            if(oFormData.name && oFormData.email && oFormData.password){
+                dispatch(requestRegisterUser({ sEmail : oFormData.email,
+                                               sName : oFormData.name, 
+                                               sPassword : oFormData.password
+                                             }));
+            }
+            else{
+                 dispatch(setError(oErrorCodes.EC_INVALID_FORM_DATA, true));
+            }
         }
-        else{
-             dispatch(setError(oErrorCodes.EC_INVALID_FORM_DATA, true));
-        }
-    }, [ dispatch, oFormData.email, oFormData.name, oFormData.password]);
+    }, [ dispatch,
+         oFormData.email, 
+         oFormData.name, 
+         oFormData.password, 
+         bIsBusy]);
 
     useEffect(() => {
         oNameInputRef &&
@@ -81,7 +88,8 @@ const RegisterForm = () => {
             <h1 className="text text_type_main-medium">
                 Регистрация
             </h1>
-            <form className="pt-6 pb-20 width_480px_form">
+            <form className="pt-6 pb-20 width_480px_form"
+                  onSubmit={formSubmitHandler}>
                 <ul className={styles.fields_list}>
                     <li className={`${styles.field_container} pb-6`}
                         title="Английские буквы и цифры, минимум 2 символа">
@@ -130,8 +138,7 @@ const RegisterForm = () => {
                 }
                 {
                     (!bIsBusy) && (
-                        <Button type="primary" size="medium"
-                                onClick={buttonClickHandler}>
+                        <Button type="primary" size="medium">
                             Зарегистрироваться
                         </Button>
                     )

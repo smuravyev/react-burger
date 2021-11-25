@@ -56,16 +56,18 @@ const LoginForm = () => {
         }
     }
 
-    const buttonClickHandler = useCallback((eEvent) => {
+    const formSubmitHandler = useCallback((eEvent) => {
         eEvent.preventDefault();
-        if(oFormData.email && oFormData.password){
-            dispatch(requestLogin({ sEmail : oFormData.email,
-                                    sPassword : oFormData.password }));
+        if(!bIsBusy){
+            if(oFormData.email && oFormData.password){
+                dispatch(requestLogin({ sEmail : oFormData.email,
+                                        sPassword : oFormData.password }));
+            }
+            else{
+                 dispatch(setError(oErrorCodes.EC_INVALID_FORM_DATA, true));
+            }
         }
-        else{
-             dispatch(setError(oErrorCodes.EC_INVALID_FORM_DATA, true));
-        }
-    }, [ dispatch, oFormData.email, oFormData.password]);
+    }, [ dispatch, oFormData.email, oFormData.password, bIsBusy]);
 
     useEffect(() => {
         oEmailInputRef &&
@@ -79,7 +81,8 @@ const LoginForm = () => {
             <h1 className="text text_type_main-medium">
                 Вход
             </h1>
-            <form className="pt-6 pb-20 width_480px_form">
+            <form className="pt-6 pb-20 width_480px_form"
+                  onSubmit={formSubmitHandler}>
                 <ul className={styles.fields_list}>
                     <li className={`${styles.field_container} pb-6`}>
                         <CheckableInput changeHandler={onChange}
@@ -117,8 +120,7 @@ const LoginForm = () => {
                 }
                 {
                     (!bIsBusy) && (
-                        <Button type="primary" size="medium"
-                                onClick={buttonClickHandler}>
+                        <Button type="primary" size="medium">
                             Войти
                         </Button>
                     )

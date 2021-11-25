@@ -13,6 +13,15 @@ const constructHeaders = (oOptions) => {
     return oResult;
 }
 
+export const saveTokens = ({accessToken, refreshToken}) => {
+    Cookies.set("accessToken",
+                accessToken.replace("Bearer ", ""), 
+                { expires : oSettings.oCookiesLifetime.nAccess });
+    Cookies.set("refreshToken",
+                refreshToken.replace("Bearer ", ""), 
+                { expires : oSettings.oCookiesLifetime.nRefresh });
+};
+
 const tryToRefreshToken = async () => {
     const oResponse = await fetch(oSettings.sAPIBaseURL +
                                                oSettings.oAPIURIS.sRefreshToken,
@@ -25,12 +34,7 @@ const tryToRefreshToken = async () => {
     if(oResponse.ok){
         const oData = await oResponse.json();
         if(oData.success){
-            Cookies.set("accessToken",
-                        oData.accessToken.replace("Bearer ", ""), 
-                        { expires : 36500 });
-            Cookies.set("refreshToken",
-                        oData.refreshToken.replace("Bearer ", ""), 
-                        { expires : 36500 });
+            saveTokens(oData);
             return true;
         }
     }
@@ -38,7 +42,6 @@ const tryToRefreshToken = async () => {
 
 export const fetchWithAuth = async (sURL, oOptions) => {
     let oResult = { success : false };
-    
     try{
         const oResponse = await fetch(sURL, {...oOptions,
                                             headers :

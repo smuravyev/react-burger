@@ -58,23 +58,26 @@ const ResetPasswordForm = () => {
         oPasswordInputRef.current.focus();
     }, [])
 
-    const buttonClickHandler = useCallback((eEvent) => {
+    const formSubmitHandler = useCallback((eEvent) => {
         eEvent.preventDefault();
-        if(oFormData.password && oFormData.code){
-            dispatch(requestResetPassword({ sNewPassword: oFormData.password,
-                                            sCode: oFormData.code }));
+        if(!bIsBusy){
+            if(oFormData.password && oFormData.code){
+                dispatch(requestResetPassword({ sNewPassword: oFormData.password,
+                                                sCode: oFormData.code }));
+            }
+            else{
+                 dispatch(setError(oErrorCodes.EC_INVALID_FORM_DATA, true));
+            }
         }
-        else{
-             dispatch(setError(oErrorCodes.EC_INVALID_FORM_DATA, true));
-        }
-    }, [ dispatch, oFormData.password, oFormData.code]);
+    }, [ dispatch, oFormData.password, oFormData.code, bIsBusy]);
 
     return (bWeAllowedToSeeThisPage && oLocation.state.bAllowed) ? (
         <section className={`${styles.centered_section} pt-20 mt-20`}>
             <h1 className="text text_type_main-medium">
                 Восстановление пароля
             </h1>
-            <form className="pt-6 pb-20 width_480px_form">
+            <form className="pt-6 pb-20 width_480px_form"
+                  onSubmit={formSubmitHandler}>
                 <ul className={styles.fields_list}>
                     <li className={`${styles.field_container} pb-6`}
                       title={"Пароль должен содержать не менее 6 символов, " + 
@@ -113,8 +116,7 @@ const ResetPasswordForm = () => {
                 }
                 {
                     (!bIsBusy) && (
-                        <Button type="primary" size="medium"
-                                onClick={buttonClickHandler}>
+                        <Button type="primary" size="medium">
                             Сохранить
                         </Button>
                     )
