@@ -4,7 +4,6 @@ import { compose,
 import { reducerRoot }  from './reducers';
 import thunk from 'redux-thunk';
 
-
 const composeEnhancers =
       (typeof window === 'object') && 
           window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ ?

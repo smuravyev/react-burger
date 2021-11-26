@@ -1,0 +1,28 @@
+.fields {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+    min-width: 480px;
+    max-width: 480px;
+    width: 100%;
+    text-align:left;
+}
+
+.form {
+    text-align: right;
+}
+
+.loader_container {
+    width: 167px;
+    height: 53px;
+    display: inline-flex;
+    
+}
+
+.busy {
+    cursor: wait;
+}
+
+.float_right {
+    float: right;
+}

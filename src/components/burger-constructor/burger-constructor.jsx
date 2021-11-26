@@ -1,68 +1,134 @@
+import { useEffect,
+         useCallback } from 'react';
+
 import { useSelector,
          shallowEqual,
          useDispatch } from 'react-redux';
+         
+import { useLocation,
+         useNavigate } from 'react-router-dom';
 
 import { useDrop } from 'react-dnd';
+
+import { ActionCreators as UndoActionCreators } from 'redux-undo';
 
 import { ConstructorElement, 
          Button,
          CurrencyIcon } from '@ya.praktikum/react-developer-burger-ui-components';
 
-import Loader from '../loader/loader';
-import Filling from '../filling/filling';
-import Modal from '../modal/modal';
-import OrderDetails from '../order-details/order-details';
+import { Loader,
+         Filling, 
+         Modal,
+         OrderDetails } from '../';
 
 import { CLEAR_ORDER_NUMBER,
          sendOrder } from '../../services/actions/order-details';
+import { SET_RETURN_PATH } from '../../services/actions/authorization';
 import { CLEAR_BURGER } from '../../services/actions/burger-constructor';
 
-import { oIngredientDragTypes } from '../../utils/constants';
+import { oIngredientDragTypes,
+         oKeyCodes } from '../../utils/constants';
 
 import styles from  './burger-constructor.module.css';
 
 const priceSelector = (store) => {
     let nResult = 0;
-   if((store.constructedBurger.oBun) &&
-       (store.constructedBurger.oBun.price)){
-        nResult = nResult + store.constructedBurger.oBun.price * 2;
+   if((store.constructedBurger.present.oBun) &&
+       (store.constructedBurger.present.oBun.price)){
+        nResult = nResult + store.constructedBurger.present.oBun.price * 2;
     }
-    store.constructedBurger.aContent.forEach(oElement => {
+    store.constructedBurger.present.aContent.forEach(oElement => {
         nResult = nResult + oElement.price;
     });
     return nResult;
 };
 
 const BurgerConstructor = () => {
-    const bIsBusy = useSelector(store => store.app.bIsBusy);                                     
+    const bIsBusy = useSelector(store => store.app.bIsBusy);     
+    const bIsOrderRequesting =
+                         useSelector(store => store.orderDetails.bIsRequesting);                                
     const { oBun,
-            aContent } = useSelector(store => store.constructedBurger,
+            aContent } = useSelector(store => store.constructedBurger.present,
                                      shallowEqual);
     const nPrice = useSelector(priceSelector);
     
     const nOrderNumber = useSelector(store => store.orderDetails.nOrderNumber);
     
     const dispatch = useDispatch(); 
+    
+    const navigate = useNavigate();
+    
+    const location = useLocation();
+
+    const bIsAuthorized = useSelector(store => store.authorization.bIsUserSet);
 
     const [{ bNeedHelper } , refDrop] = useDrop({
-        accept : [ oIngredientDragTypes.sBun,
-                   oIngredientDragTypes.sFilling ],
+        accept : bIsOrderRequesting ? "" : [ oIngredientDragTypes.sBun,
+                                             oIngredientDragTypes.sFilling ],
         collect: monitor => ({
             bNeedHelper: monitor.canDrop() && (!oBun._id)
                          && (aContent.length === 0) //Show the helper if nothing
                                                     //added
         }),
-        drop: (oData, monitor) => {
+        drop: (_, monitor) => {
             return monitor.getDropResult() ||
                    { bDefaultDrop: true };
         }
     }, [ oBun._id,
+         bIsOrderRequesting,
          aContent.length,
          oIngredientDragTypes.sBun,
          oIngredientDragTypes.sFilling ]);
+         
+    const keyboardHandler =  useCallback((eEvent) => {
+        if(!(bIsOrderRequesting)){
+            if(eEvent.ctrlKey || eEvent.metaKey){
+                switch (eEvent.keyCode){
+                    case oKeyCodes.nUndo: {
+                        dispatch(UndoActionCreators.undo());
+                        eEvent.preventDefault();
+                        break;
+                    }
+                    case oKeyCodes.nRedo: {
+                        dispatch(UndoActionCreators.redo());
+                        eEvent.preventDefault();
+                        break;
+                    }
+                    default: // Do nothing
+                }
+            }
+        }
+    }, [dispatch, bIsOrderRequesting]);
+
+    useEffect(() => {
+        document.addEventListener("keydown", keyboardHandler);
+        return () => {
+            document.removeEventListener("keydown", keyboardHandler)
+        }
+    }, [ keyboardHandler ]);
+    
+    const clickHandler = useCallback((eEvent) => {
+        if(bIsAuthorized){
+            dispatch(sendOrder());
+        }
+        else{
+            dispatch({type : SET_RETURN_PATH,
+                      payload : { sReturnPath : location.pathname }});
+            navigate("/login", { replace : true });
+        }
+    }, [ navigate,
+         dispatch,
+         bIsAuthorized,
+         location.pathname]);
+    
+    let sSectionClassName =
+        `${styles.section}${bNeedHelper ? ' ' + styles.target : ''} ml-5 pt-25`;
+    if(bIsOrderRequesting){
+        sSectionClassName = `${sSectionClassName} ${styles.busy}`;  
+    }
+
     return (
-        <section ref={refDrop} className=
-      {`${styles.section}${bNeedHelper ? ' ' + styles.target : ''} ml-5 pt-25`}>
+        <section ref={refDrop} className={sSectionClassName}>
             {
                 (oBun && oBun._id) && (
                     <ul className={`${styles.list} pr-4`}>
@@ -83,7 +149,8 @@ const BurgerConstructor = () => {
                             aContent.map((oElement, nIndex) => (
                                      <Filling oIngredient={oElement}
                                               key={oElement.sInnerID}
-                                              bIsLast={(aContent.length >
+                                              nIndex={nIndex}
+                                              bIsNotLast={(aContent.length >
                                                             (nIndex + 1))} /> ))
                         }
                     </ul>
@@ -127,9 +194,7 @@ const BurgerConstructor = () => {
                         ((!bIsBusy) && oBun && oBun._id) && (
                             <Button type="primary"
                                     size="medium"
-                                    onClick={() => {
-                                        dispatch(sendOrder());
-                                    }}>
+                                    onClick={clickHandler}>
                                 Оформить заказ
                             </Button>
                         )
@@ -142,6 +207,7 @@ const BurgerConstructor = () => {
                         closer={() => {
                             dispatch({ type: CLEAR_ORDER_NUMBER });
                             dispatch({ type: CLEAR_BURGER });
+                            dispatch(UndoActionCreators.clearHistory());
                         }}>
                         <OrderDetails />
                     </Modal>

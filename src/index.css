@@ -6,3 +6,8 @@ body {
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
 }
+
+.width_480px_form .input__container .input,
+.width_480px_form .input__container{
+    width: 100%;
+}

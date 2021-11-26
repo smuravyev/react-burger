@@ -22,31 +22,10 @@
     padding: 0;
 }
 
-.clickable_logo {
-    cursor: pointer;
-}
-
 .header__element:first-child {
     text-align: left;
 }
 
 .header__element:last-child {
     text-align: right;
-}
-
-.header__button_text {
-    vertical-align: top;
-    display: inline-block;
-}
-
-.header__button {
-   color: inherit;
-    text-decoration: none;
-    display: inline-block;
-    white-space: nowrap;
-    cursor: pointer;
-}
-
-.header__button:visited {
-    color: inherit;
 }

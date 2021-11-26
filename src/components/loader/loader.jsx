@@ -1,8 +1,10 @@
+import { memo } from 'react';
+
 import PropTypes from 'prop-types';
 
 import styles from './loader.module.css';
 
-const Loader = ({message = ''}) => { 
+const Loader = memo(({message = ''}) => { 
     return (
         <div className={`${styles.wrapper} text text_type_main-small`}>
            {message}
@@ -11,7 +13,7 @@ const Loader = ({message = ''}) => {
             </div>
         </div>
     )
-};
+});
 
 Loader.propTypes = {
     message: PropTypes.string 

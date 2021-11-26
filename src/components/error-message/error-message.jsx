@@ -3,7 +3,7 @@ import { useSelector,
          useDispatch,
          shallowEqual } from 'react-redux';
 
-import Modal from '../modal/modal';
+import { Modal } from '../';
 
 import { ERROR_CLEAR } from '../../services/actions/error-message.js';
 
@@ -29,7 +29,7 @@ const ErrorMessage = () => {
                {
                    aErrors.map((sMessage, nIndex) => (
                        <p key={nIndex} className=
-                          {`${styles.message} text text_type_main-small pl-10`}>
+                          {`${styles.message} text text_type_main-small pl-10 pr-10`}>
                            {sMessage}
                        </p>
                    ))

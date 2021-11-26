@@ -1,8 +1,14 @@
-import { oPages } from '../utils/constants';
-
 export const oSettings = {
     sAPIBaseURL: "https://norma.nomoreparties.space/api",
-    sDefaultPage : oPages.sBurgerPage,
     oAPIURIS : { sIngredients: "/ingredients",
-                 sOrders: "/orders" }
+                 sOrders: "/orders",
+                 sForgotPassword: "/password-reset",
+                 sResetPassword: "/password-reset/reset",
+                 sRegisterUser: "/auth/register",
+                 sRefreshToken: "/auth/token",
+                 sUserData: "/auth/user",
+                 sLogin: "/auth/login",
+                 sExit: "/auth/logout"},
+    oCookiesLifetime : { nRefresh : 365000,
+                         nAccess : 365000 }
 };

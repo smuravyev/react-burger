@@ -5,7 +5,8 @@ import { Provider } from 'react-redux';
 
 import './index.css';
 
-import App from './components/app/app';
+import { App } from './components';
+
 import reportWebVitals from './reportWebVitals';
 
 import oStore from './services/store';

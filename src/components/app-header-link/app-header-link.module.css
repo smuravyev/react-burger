@@ -1,0 +1,30 @@
+.header__button_text {
+    vertical-align: top;
+    display: inline-block;
+}
+
+.header__button {
+    color: inherit;
+    text-decoration: none;
+    border-radius: 40px;
+    display: inline-block;
+    white-space: nowrap;
+    cursor: pointer;
+}
+
+.link,
+.link:visited {
+    width: 100%;
+    height: 100%;
+    display: inline-block;
+    color: inherit;
+    cursor: pointer;
+}
+
+.link_inactive {
+    cursor : pointer;
+}
+
+.header__button_current {
+    cursor: pointer;
+}
