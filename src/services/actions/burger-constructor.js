@@ -55,7 +55,7 @@ export const moveIngredientBefore = (nSourceIndex, nTargetIndex = -1) => {
                            nTargetIndex : nTargetIndex,
                            bIsBefore : true});
 };
-export const moveIngredientAfter = (nSourceIndex, nTargetIndex = '') => {
+export const moveIngredientAfter = (nSourceIndex, nTargetIndex = 0) => {
     return moveIngredient({nSourceIndex : nSourceIndex,
                            nTargetIndex : nTargetIndex,
                            bIsBefore : false});

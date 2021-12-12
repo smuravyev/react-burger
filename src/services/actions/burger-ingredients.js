@@ -6,9 +6,9 @@ import { setError } from './error-message.js';
 import { oErrorCodes,
          oIngredientTypes,
          aIngredientsTemplate,
-         oIngredientDragTypes } from '../../utils/constants.js';
+         oIngredientDragTypes } from '../../utils/constants';
 
-import { oSettings } from '../../config/config.js'; 
+import { oSettings } from '../../config/config'; 
 
 export const GET_INGREDIENTS_REQUEST =
                                    '@BurgerIngredients/GET_INGREDIENTS_REQUEST';
