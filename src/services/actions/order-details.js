@@ -1,13 +1,13 @@
 import { BUSY_SET,
          BUSY_CLEAR } from './app.js';
 
-import { setError } from './error-message.js';
+import { setError } from './error-message';
 
 import { fetchWithAuth } from '../../utils/functions';
 
-import { oErrorCodes } from '../../utils/constants.js';
+import { oErrorCodes } from '../../utils/constants';
 
-import { oSettings } from '../../config/config.js'; 
+import { oSettings } from '../../config/config'; 
 
 
 export const CLEAR_ORDER_NUMBER = '@OrderDetails/CLEAR_ORDER_NUMBER';
