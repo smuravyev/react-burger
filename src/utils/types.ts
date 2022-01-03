@@ -6,11 +6,6 @@ export type TBackgroundLocationState = {
     oBackground: ILocation
 } | null | undefined; 
 
-export interface IAction<T> {
-    readonly  type : string;
-    readonly  payload : T;
-};
-
 export type TIngredientType = "bun" | "sauce" | "main";
 
 export interface IIngredient {
@@ -30,61 +25,51 @@ export interface IIngredient {
 
 export interface IDraggableIngredient extends IIngredient{
     nIndex? : number,
-    sInnerID ? : string,
+    sInnerID? : string,
     sDragType? :
                  typeof oIngredientDragTypes[keyof typeof oIngredientDragTypes];
-} 
+};
 
 export type TArrayOfIngredients = Array<{ sName : string;
                                           sType : TIngredientType
                                           aSet: Array<IDraggableIngredient> }>; 
 
-export interface IArrayOfIngredients {
-    aIngredients : TArrayOfIngredients; 
-};
-
-export interface ICurrentIngredient {
-    oIngredient?: IIngredient;
-};
-
-export interface IOrderDetails {
-    nOrderNumber : number;
-};
-
-export interface IErrorMessage {
-    sMessage : string;
-    bCanProceed : boolean;
-};
-
-export interface IAuthorizationPayload {
-    sEmail? : string;
-    sReturnPath? : string;
-    sName? : string;
-};
-
-export interface IBurgerConstructorPayload {
-    nIndex? : number,
-    oIngredient? : IDraggableIngredient,
-    sID? : string,
-    nFirst? : number,
-    nSecond? : number,
-    oBun? : IDraggableIngredient
-}
-
-export type TCurrentIngredientAction =
-                                 IAction<ICurrentIngredient | null | undefined>;
-                                 
-export type TOrderDetailsAction = IAction<IOrderDetails | null | undefined>;
-
-export type TErrorMessageAction = IAction<IErrorMessage | null | undefined>;
-
-export type TAuthorizationAction =
-                              IAction<IAuthorizationPayload | null |undefined >;
-
-export type TBurgerConstructorAction =
-                          IAction<IBurgerConstructorPayload | null | undefined>;
-
-export type TAppAction = IAction<never>;
-
 export type TToASCIIFunction = ((input: string) => string);
 export type TToUnicodeFunction = ((input: string) => string);
+
+export interface IUser {
+    readonly email :  string,
+    readonly name : string
+};
+
+export interface IAPIRequestData {
+    readonly success : boolean;
+};
+
+export interface ILoginRequestData extends IAPIRequestData {
+    readonly user: IUser;
+    readonly accessToken : string;
+    readonly refreshToken : string;
+};
+
+export interface IRegisterUserRequestData extends IAPIRequestData {
+    readonly user: IUser;
+    readonly accessToken : string;
+    readonly refreshToken : string;
+};
+
+export interface IForgotPasswordRequestData extends IAPIRequestData {
+    readonly message?: string;
+};
+
+export interface IResetPasswordRequestData extends IAPIRequestData {
+    readonly message?: string;
+};
+
+export interface IAPIErrorData {
+    readonly message?: string;
+};
+
+export interface IIngredientsRequestData extends IAPIRequestData {
+    readonly data : Array<IIngredient>;
+}

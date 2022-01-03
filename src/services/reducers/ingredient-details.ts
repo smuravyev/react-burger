@@ -1,13 +1,30 @@
 import { SET_CURRENT_INGREDIENT,
-         CLEAR_CURRENT_INGREDIENT } from '../actions/ingredient-details';
-         
-import type { TCurrentIngredientAction, IIngredient } from '../../utils/types'; 
+         CLEAR_CURRENT_INGREDIENT } from '../action-types/ingredient-details';
 
-export const reducerIngredientDetails = (state : IIngredient | null = null,
-                                         action : TCurrentIngredientAction) => {
+import type { TIngredientDetailsAction } from '../actions/ingredient-details';
+         
+import type { IDraggableIngredient } from '../../utils/types';
+
+export type TCurrentIngredientState = IDraggableIngredient | null; 
+
+const stateInitialCurrentIngredient : TCurrentIngredientState = null;
+
+export const reducerIngredientDetails =
+             (state : TCurrentIngredientState = stateInitialCurrentIngredient,
+              action : TIngredientDetailsAction ) : TCurrentIngredientState => {
     switch(action.type){
         case SET_CURRENT_INGREDIENT: {
-            return action.payload?.oIngredient || null;
+            if(action.payload){
+                if(action.payload.oIngredient){
+                    return action.payload.oIngredient;
+                }
+                else{
+                    return null;
+                }
+            }
+            else{
+                return null;
+            }
         }
         
         case CLEAR_CURRENT_INGREDIENT: {

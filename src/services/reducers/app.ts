@@ -1,14 +1,20 @@
 import { BUSY_SET,
          BUSY_CLEAR } from '../actions/app';
 
-import type { TAppAction } from "../../utils/types";
+import type { TAppAction } from '../actions/app';
+         
+export type TAppState = {
+    nBusyCounter : number;
+    bIsBusy: boolean;
+};
 
-const stateInitialApp= {
+const stateInitialApp : TAppState = {
     nBusyCounter : 0,
     bIsBusy : false
 };
         
-export const reducerApp = (state = stateInitialApp, action : TAppAction) => {
+export const reducerApp =
+                 (state = stateInitialApp, action : TAppAction) : TAppState => {
     switch(action.type){
        case BUSY_SET: {
             /* BUSY can be set by different async requests. Every request

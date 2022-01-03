@@ -166,9 +166,7 @@ const ProfileEditor = () : JSX.Element => {
             });
         
             if(bNullsExist){
-                 //TODO: typing in the 5th sprint
-                dispatch(setError(oErrorCodes.EC_INVALID_FORM_DATA, true) as
-                                                                           any);
+                dispatch(setError(oErrorCodes.EC_INVALID_FORM_DATA, true));
             }
             else{
                 // 2. Disable all the fields
@@ -181,8 +179,7 @@ const ProfileEditor = () : JSX.Element => {
                                           bIsDisabled  : true } });
              
                 // 3. Dispatch the request to the server.
-                 //TODO: typing in 5th sprint
-                dispatch(updateUser({ oProfile : oData }) as any);
+                dispatch(updateUser({ oProfile : oData }));
             }
         }
     }, [bIsBusy, dispatch, nActiveElements, oFields]);

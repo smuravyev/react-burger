@@ -57,21 +57,17 @@ const Ingredient = ({ onClickHandler,
                                    payload : { oBun: oIngredient }});
                     }
                     else{
-                         //TODO: typing in the 5th sprint
-                        dispatch(addIngredient({ oIngredient : oIngredient }) as
-                                                                           any);
+                        dispatch(addIngredient({ oIngredient : oIngredient }));
                     }
                 }
                 else{
                     if(oResult.sDropPosition === 'top'){
-                         //TODO: typing in the 5th sprint
                         dispatch(addIngredientBefore(oIngredient,
-                                                     oResult.sTargetID) as any);
+                                                     oResult.sTargetID));
                     }
                     else{
-                         //TODO: typing in the 5th sprint
                         dispatch(addIngredientAfter(oIngredient,
-                                                    oResult.sTargetID) as any);
+                                                    oResult.sTargetID));
                     }
                 }
             }

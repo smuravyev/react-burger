@@ -67,15 +67,11 @@ const LoginForm = () : JSX.Element => {
         eEvent.preventDefault();
         if(!bIsBusy){
             if(oFormData.email && oFormData.password){
-                //TODO: typing in 5th sprint
                 dispatch(requestLogin({ sEmail : oFormData.email,
-                                        sPassword : oFormData.password }) as
-                                                                           any);
+                                        sPassword : oFormData.password }));
             }
             else{
-                 //TODO: typing in 5th sprint
-                 dispatch(setError(oErrorCodes.EC_INVALID_FORM_DATA, true) as
-                                                                           any);
+                 dispatch(setError(oErrorCodes.EC_INVALID_FORM_DATA, true));
             }
         }
     }, [ dispatch, oFormData.email, oFormData.password, bIsBusy]);

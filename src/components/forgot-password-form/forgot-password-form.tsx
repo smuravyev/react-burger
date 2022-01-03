@@ -69,14 +69,10 @@ const ForgotPasswordForm = () : JSX.Element => {
         eEvent.preventDefault();
         if(!(bIsBusy)){
             if(oFormData.email){
-                //TODO: typing in 5th sprint
-                dispatch(requestForgotPassword({ sEmail : oFormData.email }) as
-                                                                           any);
+                dispatch(requestForgotPassword({ sEmail : oFormData.email }));
             }
             else{
-                //TODO: typing in 5th sprint
-                dispatch(setError(oErrorCodes.EC_INVALID_FORM_DATA, true) as
-                                                                           any);
+                dispatch(setError(oErrorCodes.EC_INVALID_FORM_DATA, true));
             }
         }
     }, [ dispatch, oFormData.email, bIsBusy]);

@@ -70,15 +70,12 @@ const ResetPasswordForm = () : JSX.Element => {
         eEvent.preventDefault();
         if(!bIsBusy){
             if(oFormData.password && oFormData.code){
-                //TODO: typing in 5th sprint
                 dispatch(
                         requestResetPassword({ sNewPassword: oFormData.password,
-                                               sCode: oFormData.code }) as any);
+                                               sCode: oFormData.code }));
             }
             else{
-                //TODO: typing in 5th sprint
-                dispatch(setError(oErrorCodes.EC_INVALID_FORM_DATA, true) as
-                                                                           any);
+                dispatch(setError(oErrorCodes.EC_INVALID_FORM_DATA, true));
             }
         }
     }, [ dispatch, oFormData.password, oFormData.code, bIsBusy]);

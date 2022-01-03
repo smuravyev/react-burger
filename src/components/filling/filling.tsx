@@ -82,14 +82,12 @@ const Filling =
             if(oDropData.nIndex !== undefined){
                 if(oDropData.nIndex !== nIndex){
                     if(sDropPosition === 'top'){
-                        //TODO: typing in the 5th sprint
                         dispatch(moveIngredientBefore(oDropData.nIndex,
-                                                      nIndex) as any);
+                                                      nIndex));
                     }
                     else{
-                        //TODO: typing in the 5th sprint
                         dispatch(moveIngredientAfter(oDropData.nIndex,
-                                                     nIndex) as any);
+                                                     nIndex));
                     }
                 }
             }
@@ -137,10 +135,10 @@ const Filling =
                                 price={oIngredient.price}
                                 thumbnail={oIngredient.image}
                                 handleClose=
-                                 {() => dispatch({ type : REMOVE_INGREDIENT,
+                                 {() => {dispatch({ type : REMOVE_INGREDIENT,
                                                    payload :
                                                        { sID :
-                                                   oIngredient.sInnerID } })} />
+                                          oIngredient?.sInnerID || '' } })}} />
         </li>
     );
 }

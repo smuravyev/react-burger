@@ -1,52 +1,58 @@
 import Cookies from 'js-cookie';
 
-import { BUSY_SET,
-         BUSY_CLEAR } from './app';
+import type { TAppThunk, 
+              TAppDispatch,
+              TRootState,
+              TGetStateFunction } from '../store';
 
-import { setError } from './error-message';
+import { BUSY_SET,
+         BUSY_CLEAR } from '../actions/app';
+
+import { LOGIN_REQUEST, 
+         LOGIN_FAILED, 
+         LOGIN_SUCCESS,
+         SET_USER,
+         FORGOT_PASSWORD_REQUEST,
+         FORGOT_PASSWORD_FAILED,
+         FORGOT_PASSWORD_SUCCESS,
+         SAVE_ENTERED_EMAIL,
+         RESET_PASSWORD_REQUEST,
+         RESET_PASSWORD_FAILED,
+         RESET_PASSWORD_SUCCESS,
+         RESET_FORGOT_PASSWORD_DATA,
+         REGISTER_USER_REQUEST,
+         REGISTER_USER_SUCCESS,
+         REGISTER_USER_FAILED,
+         AUTH_CHECK_DONE,
+         RESET_USER,
+         UPDATE_USER_REQUEST,
+         UPDATE_USER_FAILED,
+         UPDATE_USER_SUCCESS } from '../actions/authorization';
+
+import { setError } from '../actions/error-message';
 
 import { oErrorCodes } from '../../utils/constants';
 
 import { oSettings } from '../../config/config';
 
-import { fetchWithAuth, saveTokens } from '../../utils/functions'; 
+import { fetchWithAuth, saveTokens } from '../../utils/functions';
 
-export const SAVE_ENTERED_EMAIL = '@Authorization/SAVE_ENTERED_EMAIL';
-export const FORGOT_PASSWORD_REQUEST = '@Authorization/FORGOT_PASSWORD_REQUEST';
-export const RESET_FORGOT_PASSWORD_DATA =
-                                    '@Authorization/RESET_FORGOT_PASSWORD_DATA';
-export const FORGOT_PASSWORD_SUCCESS = '@Authorization/FORGOT_PASSWORD_SUCCESS';
-export const FORGOT_PASSWORD_FAILED = '@Authorization/FORGOT_PASSWORD_FAILED';
-export const RESET_PASSWORD_REQUEST = '@Authorization/RESET_PASSWORD_RESET';
-export const RESET_RESET_PASSWORD_DATA =
-                                     '@Authorization/RESET_RESET_PASSWORD_DATA';
-export const RESET_PASSWORD_SUCCESS = '@Authorization/RESET_PASSWORD_SUCCESS';
-export const RESET_PASSWORD_FAILED = '@Authorization/RESET_PASSWORD_FAILED';
-export const REGISTER_USER_REQUEST = '@Authorization/REGISTER_USER_REQUEST';
-export const REGISTER_USER_SUCCESS = '@Authorization/REGISTER_USER_SUCCESS';
-export const REGISTER_USER_FAILED = '@Authorization/REGISTER_USER_FAILED';
-export const RESET_REGISTER_USER_DATA =
-                                      '@Authorization/RESET_REGISTER_USER_DATA';
-export const LOGIN_REQUEST = '@Authorization/LOGIN_REQUEST';
-export const LOGIN_SUCCESS = '@Authorization/LOGIN_SUCCESS';
-export const LOGIN_FAILED = '@Authorization/LOGIN_FAILED';
-export const RESET_LOGIN_DATA = '@Authorization/RESET_LOGIN_DATA';
+import type { IUserDataResult } from '../../utils/functions'; 
 
-export const UPDATE_USER_REQUEST = '@Authorization/UPDATE_USER_REQUEST';
-export const UPDATE_USER_SUCCESS = '@Authorization/UPDATE_USER_SUCCESS';
-export const UPDATE_USER_FAILED = '@Authorization/UPDATE_USER_FAILED';
+import type { TToASCIIFunction,
+              IAPIErrorData,
+              IForgotPasswordRequestData,
+              IResetPasswordRequestData,
+              IRegisterUserRequestData,
+              ILoginRequestData } from '../../utils/types';
 
-export const SET_USER = '@Authorization/SET_USER';
-export const RESET_USER = '@Authorization/RESET_USER';
-export const SET_RETURN_PATH = '@Authorization/SET_RETURN_PATH';
-export const AUTH_CHECK_DONE = '@Authorization/AUTH_CHECK_DONE';
-
-export const requestLogin = ({ sEmail,
-                               sPassword }) => async (dispatch) => {
+export const requestLogin : TAppThunk =
+            ({ sEmail, sPassword } : { sEmail : string, sPassword : string }) =>
+                                           async (dispatch : TAppDispatch ) => {
    dispatch({ type: BUSY_SET });
     try{
         dispatch({type: LOGIN_REQUEST});
-        const punycode = require("punycode/");
+        const punycode : { toASCII : TToASCIIFunction } = require("punycode/");
         const oResponse =
             await fetch(oSettings.sAPIBaseURL +
                                              oSettings.oAPIURIS.sLogin,
@@ -58,13 +64,14 @@ export const requestLogin = ({ sEmail,
                                                        punycode.toASCII(sEmail),
                                                      "password" : sPassword})});
        if(oResponse.ok){
-            const oData = await oResponse.json();
+            const oData : ILoginRequestData = await oResponse.json();
             if(!(oData.success)){
                 dispatch({ type: LOGIN_FAILED });
                 dispatch(setError(oErrorCodes.EC_CANNOT_LOGIN, true));
             }
             else{
-                saveTokens(oData);
+                saveTokens({ accessToken: oData.accessToken,
+                             refreshToken: oData.refreshToken });
                 dispatch({type: LOGIN_SUCCESS});
                 dispatch({type: SET_USER,
                           payload: { sEmail : oData["user"]["email"],
@@ -73,7 +80,7 @@ export const requestLogin = ({ sEmail,
         }
         else{
             dispatch({ type: LOGIN_FAILED });
-            const oData = await oResponse.json();
+            const oData : IAPIErrorData = await oResponse.json();
             if(oData.message === "email or password are incorrect"){
                 dispatch(setError(oErrorCodes.EC_INVALID_PASSWORD, true));
             }
@@ -82,7 +89,7 @@ export const requestLogin = ({ sEmail,
             }
         }
     }
-    catch(erError){
+    catch(_){
         dispatch({ type: LOGIN_FAILED });
         dispatch(setError(oErrorCodes.EC_ERROR_LOGGING_IN, true));
     }
@@ -91,11 +98,13 @@ export const requestLogin = ({ sEmail,
     }
 };
 
-export const requestForgotPassword = ({ sEmail }) => async (dispatch) => {
+export const requestForgotPassword : TAppThunk =
+                                            ({ sEmail } : { sEmail : string}) =>
+                                            async (dispatch : TAppDispatch) => {
    dispatch({ type: BUSY_SET });
     try{
         dispatch({type: FORGOT_PASSWORD_REQUEST});
-        const punycode = require("punycode/");
+        const punycode : { toASCII : TToASCIIFunction } = require("punycode/");
         const oResponse =
             await fetch(oSettings.sAPIBaseURL +
                                              oSettings.oAPIURIS.sForgotPassword,
@@ -106,7 +115,7 @@ export const requestForgotPassword = ({ sEmail }) => async (dispatch) => {
                                body: JSON.stringify({"email":
                                                    punycode.toASCII(sEmail)})});
         if(oResponse.ok){
-            const oData = await oResponse.json();
+            const oData : IForgotPasswordRequestData = await oResponse.json();
             if(!(oData.success)){
                 dispatch({ type: FORGOT_PASSWORD_FAILED });
                 dispatch(setError(oErrorCodes.EC_CANNOT_FIND_EMAIL, true));
@@ -122,7 +131,7 @@ export const requestForgotPassword = ({ sEmail }) => async (dispatch) => {
             dispatch(setError(oErrorCodes.EC_ERROR_FORGOT_PASSWORD, true));
         }
     }
-    catch(erError){
+    catch(_){
         dispatch({ type: FORGOT_PASSWORD_FAILED });
         dispatch(setError(oErrorCodes.EC_ERROR_FORGOT_PASSWORD, true));
     }
@@ -131,11 +140,10 @@ export const requestForgotPassword = ({ sEmail }) => async (dispatch) => {
     }
 };
 
-export const requestResetPassword = ({ sNewPassword,
-                                       sCode }) => async (dispatch,
-                                                          getState) => {
+export const requestResetPassword : TAppThunk =
+          ({ sNewPassword, sCode } : { sNewPassword : string, sCode: string}) =>
+              async (dispatch : TAppDispatch, getState : TGetStateFunction) => {
     dispatch({ type: BUSY_SET });
-
     try{
         dispatch({type: RESET_PASSWORD_REQUEST});
         const oResponse =
@@ -148,7 +156,7 @@ export const requestResetPassword = ({ sNewPassword,
                                body: JSON.stringify({"password" : sNewPassword,
                                                      "token" : sCode })});
         if(oResponse.ok){
-            const oData = await oResponse.json();
+            const oData : IResetPasswordRequestData = await oResponse.json();
             if(!(oData.success)){
                 dispatch({ type: RESET_PASSWORD_FAILED });
                 dispatch(setError(oErrorCodes.EC_CANNOT_RESET_PASSWORD, true));
@@ -156,7 +164,7 @@ export const requestResetPassword = ({ sNewPassword,
             else{
                 dispatch({type: RESET_PASSWORD_SUCCESS});
                 dispatch({type: RESET_FORGOT_PASSWORD_DATA});
-                const store = getState();
+                const store : TRootState = getState();
                 const sEmail = store.authorization.sEnteredEmail;
                 dispatch(requestLogin({sEmail : sEmail,
                                        sPassword: sNewPassword}));
@@ -167,7 +175,7 @@ export const requestResetPassword = ({ sNewPassword,
             dispatch(setError(oErrorCodes.EC_ERROR_RESET_PASSWORD, true));
         }
     }
-    catch(erError){
+    catch(_){
         dispatch({ type: RESET_PASSWORD_FAILED });
         dispatch(setError(oErrorCodes.EC_ERROR_RESET_PASSWORD, true));
     }
@@ -176,13 +184,14 @@ export const requestResetPassword = ({ sNewPassword,
     }
 };
 
-export const requestRegisterUser = ({ sEmail,
-                                      sPassword,
-                                      sName}) => async (dispatch) => {
+export const requestRegisterUser : TAppThunk =
+                      ({ sEmail, sPassword, sName } :
+                       { sEmail: string, sPassword: string, sName: string }) =>
+                                            async (dispatch : TAppDispatch) => {
     dispatch({ type: BUSY_SET });
     try{
         dispatch({type: REGISTER_USER_REQUEST});
-        const punycode = require("punycode/");
+        const punycode : { toASCII : TToASCIIFunction } = require("punycode/");
         const oResponse =
             await fetch(oSettings.sAPIBaseURL +
                                                oSettings.oAPIURIS.sRegisterUser,
@@ -195,7 +204,7 @@ export const requestRegisterUser = ({ sEmail,
                                                      "password" : sPassword,
                                                      "name" : sName })});
         if(oResponse.ok){
-            const oData = await oResponse.json();
+            const oData : IRegisterUserRequestData = await oResponse.json();
             if(!(oData.success)){
                 dispatch({ type: REGISTER_USER_FAILED });
                 dispatch(setError(oErrorCodes.EC_CANNOT_REGISTER_USER, true));
@@ -210,7 +219,7 @@ export const requestRegisterUser = ({ sEmail,
         }
         else{
             dispatch({ type: REGISTER_USER_FAILED });
-            const oData = await oResponse.json();
+            const oData : IAPIErrorData = await oResponse.json();
             if(oData.message === "User already exists"){
                 dispatch(setError(oErrorCodes.EC_USER_ALREADY_EXISTS, true));
             }
@@ -219,7 +228,7 @@ export const requestRegisterUser = ({ sEmail,
             }
         }
     }
-    catch(erError){
+    catch(_){
         dispatch({ type: REGISTER_USER_FAILED });
         dispatch(setError(oErrorCodes.EC_ERROR_REGISTERING_USER, true));
     }
@@ -228,7 +237,8 @@ export const requestRegisterUser = ({ sEmail,
     }
 };
 
-export const requestAuthorizationCheck = () => async (dispatch) => {
+export const requestAuthorizationCheck : TAppThunk = () =>
+                                            async (dispatch : TAppDispatch) => {
     dispatch({ type: BUSY_SET });
     try{
         if(Cookies.get('accessToken')){
@@ -238,13 +248,14 @@ export const requestAuthorizationCheck = () => async (dispatch) => {
                                           headers:
                            new Headers({"Content-Type" : "application/json"})});
             if(oUser.success){
+                const oUserData = oUser as IUserDataResult;
                 dispatch({ type: SET_USER,
-                           payload: { sEmail : oUser["user"]["email"],
-                                     sName : oUser["user"]["name"] }});
+                           payload: { sEmail : oUserData["user"]["email"],
+                                      sName : oUserData["user"]["name"] }});
             }
         } 
     }
-    catch(erError){
+    catch(_){
         //Do nothing, we are not authorized, so... Silently ignoring
     }
     finally{
@@ -253,7 +264,11 @@ export const requestAuthorizationCheck = () => async (dispatch) => {
     }
 };
 
-export const updateUser = ({ oProfile }) => async (dispatch) => {
+export const updateUser : TAppThunk = ({ oProfile } :
+                                           { oProfile : { name: string,
+                                                          email: string,
+                                                          password: string}}) =>
+                                            async (dispatch : TAppDispatch) => {
     dispatch({type: BUSY_SET});
     try{
         //Start requesting...
@@ -272,14 +287,14 @@ export const updateUser = ({ oProfile }) => async (dispatch) => {
             dispatch(setError(oErrorCodes.EC_CANNOT_UPDATE_USER, true));
         }
         else{
+            const oUserData  = oData as IUserDataResult;
             dispatch({ type: UPDATE_USER_SUCCESS });
             dispatch({ type: SET_USER,
-                       payload: { sEmail : oData["user"]["email"],
-                                  sName : oData["user"]["name"] }});
+                       payload: { sEmail : oUserData["user"]["email"],
+                                  sName : oUserData["user"]["name"] }});
         }
     }
-    catch(erError){
-        alert(erError.message);
+    catch(_){
         dispatch({ type: UPDATE_USER_FAILED });
         dispatch(setError(oErrorCodes.EC_ERROR_UPDATING_USER, true));
     }
@@ -288,7 +303,7 @@ export const updateUser = ({ oProfile }) => async (dispatch) => {
     }
 };
 
-export const exitRequest = () => async (dispatch) => {
+export const exitRequest : TAppThunk = () => async (dispatch : TAppDispatch) => {
     dispatch({ type: BUSY_SET });
     
     // No error handling/response processing. Request sent to the bacekend,
@@ -302,7 +317,7 @@ export const exitRequest = () => async (dispatch) => {
                       body: JSON.stringify({"token" :
                                                 Cookies.get("refreshToken")})});
     }
-    catch(erError){
+    catch(_){
         //Do nothing! Error? Does not matter.
     }
     finally{

@@ -115,8 +115,7 @@ const BurgerConstructor = () : JSX.Element => {
     
     const clickHandler = useCallback(() => {
         if(bIsAuthorized){
-            // TODO: typing in spring 5
-            dispatch(sendOrder() as any);
+            dispatch(sendOrder());
         }
         else{
             dispatch({type : SET_RETURN_PATH,

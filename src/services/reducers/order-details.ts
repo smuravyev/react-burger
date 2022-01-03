@@ -3,17 +3,23 @@ import { CLEAR_ORDER_NUMBER,
          ORDER_SUCCESS,
          ORDER_FAILED } from '../actions/order-details';
          
-import { TOrderDetailsAction } from '../../utils/types'
+import { TOrderDetailsAction } from '../actions/order-details'
 
-const stateInitialOrderDetails = {
+export type TOrderDetailsState = {
+    nOrderNumber : number;
+    bIsRequesting : boolean;
+    bIsRequestFailed : boolean;
+}
+
+const stateInitialOrderDetails : TOrderDetailsState = {
     nOrderNumber : -1,
     bIsRequesting : false,
     bIsRequestFailed : false
 }
 
 export const reducerOrderDetails =
-                                 (state = stateInitialOrderDetails,
-                                  action : TOrderDetailsAction) => {
+                        (state = stateInitialOrderDetails,
+                         action : TOrderDetailsAction) : TOrderDetailsState => {
     switch(action.type){
         case CLEAR_ORDER_NUMBER: {
             return {...state,

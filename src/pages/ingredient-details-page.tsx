@@ -23,7 +23,6 @@ import type { IIngredient } from '../utils/types';
 
 const IngredientDetailsPage = () : JSX.Element => {
 
-   //Let it be any until the next spint
    const oCurrentIngredient = useSelector((store : TRootState) =>
                                                        store.currentIngredient);
    
@@ -38,7 +37,6 @@ const IngredientDetailsPage = () : JSX.Element => {
        useSelector((store : TRootState) => store.burgerIngredients.aIngredients,
                    shallowEqual);
 
-   //Let it be Dispatch<any> until next sprint
    const dispatch = useAppDispatch();
    
    //sID = string | undefined, already, automatically, that's we needed

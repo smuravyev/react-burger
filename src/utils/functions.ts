@@ -4,23 +4,21 @@ import { oErrorCodes } from '../utils/constants';
 
 import { oSettings } from '../config/config';
 
-export interface IRequestResult {
-    success: boolean;
-}
+import type { IAPIRequestData } from './types';
 
-export interface IRefreshTokenResult extends IRequestResult {
+export interface IRefreshTokenResult extends IAPIRequestData {
     accessToken? : string;
     refreshToken? : string;
 };
 
-export interface IUserDataResult extends IRequestResult {
+export interface IUserDataResult extends IAPIRequestData {
     user : {
         email: string;
         name : string;
     }
 };
 
-export interface IOrderRequestResult extends IRequestResult {
+export interface IOrderRequestResult extends IAPIRequestData {
     name: string;
     order: {
         number : number;
@@ -28,10 +26,10 @@ export interface IOrderRequestResult extends IRequestResult {
 };
 
 export type TAuthorizedRequestResult = IOrderRequestResult | IUserDataResult |
-                                       IRequestResult;
+                                       IAPIRequestData;
 
 export interface IFetchRequestOptions {
-    method : 'GET '| 'POST' | 'PATCH' | 'DELETE' | 'PUT' | 'HEAD' |
+    method : 'GET'| 'POST' | 'PATCH' | 'DELETE' | 'PUT' | 'HEAD' |
              'CONNECT' | 'OPTIONS' | 'TRACE';
     headers?: Headers;
     body?: string;
@@ -116,7 +114,7 @@ export const fetchWithAuth : TFetchWithAuthFunction =
             throw(new Error(oData.message || ""));
         }
     }
-    catch(erError : any){
+    catch(erError : unknown /* it's required to be such type */){
         // Check type first ad we can not set it in catch clause
         if((erError instanceof Error) && erError.message === "jwt expired"){
             //Need to refresh token!

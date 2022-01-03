@@ -70,16 +70,13 @@ const RegisterForm = () : JSX.Element => {
         eEvent.preventDefault();
         if(!bIsBusy){
             if(oFormData.name && oFormData.email && oFormData.password){
-                //TODO: typing in 5th sprint
                 dispatch(requestRegisterUser({ sEmail : oFormData.email,
                                                sName : oFormData.name, 
                                                sPassword : oFormData.password
-                                             }) as any);
+                                             }));
             }
             else{
-                //TODO: typing in 5th sprint
-                dispatch(setError(oErrorCodes.EC_INVALID_FORM_DATA, true) as
-                                                                           any);
+                dispatch(setError(oErrorCodes.EC_INVALID_FORM_DATA, true));
             }
         }
     }, [ dispatch,

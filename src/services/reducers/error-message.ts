@@ -1,15 +1,21 @@
 import { ERROR_RAISE,
          ERROR_CLEAR } from '../actions/error-message';
 
-import type { TErrorMessageAction } from '../../utils/types'; 
-         
-const stateInitialErrors = {
-    aErrors : [] as Array<string>,
+import type { TErrorMessageAction } from '../actions/error-message'; 
+
+export type TErrorsState = {
+    aErrors : Array<string>;
+    bCanProceedWithError : boolean;
+};
+
+const stateInitialErrors : TErrorsState = {
+    aErrors : [],
     bCanProceedWithError : true
 };
 
-export const reducerErrorMessage = (state = stateInitialErrors,
-                                    action :TErrorMessageAction) => {
+export const reducerErrorMessage =
+                              (state = stateInitialErrors,
+                               action : TErrorMessageAction) : TErrorsState => {
     switch(action.type){
         case ERROR_RAISE: {
             // There could be several errors, so we have to save them all.

@@ -31,7 +31,7 @@ export interface ICheckableInputProps<T = string> {
     sDefaultValue? : string,
     bIsRequired? : boolean,
     sName? : string;
-    [propName: string] : any;
+    [propName: string] : any; //Sorry, it can be any.. :-)
 };
 
 export type TCheckableInput<T = string> =

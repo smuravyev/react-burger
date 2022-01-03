@@ -12,7 +12,7 @@ import { reducerAuthorization } from './authorization';
 export const reducerRoot = combineReducers({
     app: reducerApp,
     authorization: reducerAuthorization,
-    constructedBurger: (undoable(reducerBurgerConstructor)),
+    constructedBurger: undoable(reducerBurgerConstructor),
     burgerIngredients: reducerBurgerIngredients,
     currentIngredient : reducerIngredientDetails,
     orderDetails : reducerOrderDetails,

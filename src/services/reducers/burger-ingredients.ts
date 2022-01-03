@@ -1,13 +1,21 @@
 import { GET_INGREDIENTS_REQUEST,
          GET_INGREDIENTS_SUCCESS,
-         GET_INGREDIENTS_FAILED} from '../actions/burger-ingredients';
+         GET_INGREDIENTS_FAILED } from '../actions/burger-ingredients';
+
+import type { TBurgerIngredientsAction } from '../actions/burger-ingredients';
+
+import type { TArrayOfIngredients } from '../../utils/types';
 
 import { aIngredientsTemplate } from "../../utils/constants";
 
-import type { IAction,
-              IArrayOfIngredients } from "../../utils/types";
+export type TBurgerIngredientsState = {
+    aIngredients : TArrayOfIngredients;
+    bIsRequesting : boolean;
+    bIsRequestFailed : boolean;
+    bLoadedSuccessful : boolean;
+};
 
-const stateInitialBurgerIngredients = {
+const stateInitialBurgerIngredients : TBurgerIngredientsState = {
     aIngredients : aIngredientsTemplate,
     bIsRequesting : false,
     bIsRequestFailed : false,
@@ -15,8 +23,8 @@ const stateInitialBurgerIngredients = {
 }
 
 export const reducerBurgerIngredients =
-                          (state = stateInitialBurgerIngredients,
-                           action : IAction<IArrayOfIngredients>) => {
+              (state = stateInitialBurgerIngredients,
+               action : TBurgerIngredientsAction) : TBurgerIngredientsState => {
     switch(action.type){
 
         case GET_INGREDIENTS_REQUEST: {

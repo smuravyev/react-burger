@@ -8,7 +8,7 @@ import { useAppDispatch } from '../../services/hooks';
 
 import type { TRootState } from '../../services/store';
 
-import { ERROR_CLEAR } from '../../services/actions/error-message.js';
+import { ERROR_CLEAR } from '../../services/actions/error-message';
 
 import styles from './error-message.module.css';
 

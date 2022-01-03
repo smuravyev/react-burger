@@ -33,9 +33,8 @@ const Profile = () : JSX.Element => {
     
     const exitClickHandler = (eEvent : SyntheticEvent) : void => {
         eEvent.preventDefault();
-        
-         //TODO: typing in the 5th sprint
-        dispatch(exitRequest() as any);
+
+        dispatch(exitRequest());
     };
 
     return (
