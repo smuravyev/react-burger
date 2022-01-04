@@ -1,9 +1,7 @@
 import Cookies from 'js-cookie';
 
 import type { TAppThunk, 
-              TAppDispatch,
-              TRootState,
-              TGetStateFunction } from '../store';
+              TRootState } from '../store';
 
 import { BUSY_SET,
          BUSY_CLEAR } from '../actions/app';
@@ -48,7 +46,7 @@ import type { TToASCIIFunction,
 
 export const requestLogin : TAppThunk =
             ({ sEmail, sPassword } : { sEmail : string, sPassword : string }) =>
-                                           async (dispatch : TAppDispatch ) => {
+                                                             async dispatch => {
    dispatch({ type: BUSY_SET });
     try{
         dispatch({type: LOGIN_REQUEST});
@@ -99,8 +97,8 @@ export const requestLogin : TAppThunk =
 };
 
 export const requestForgotPassword : TAppThunk =
-                                            ({ sEmail } : { sEmail : string}) =>
-                                            async (dispatch : TAppDispatch) => {
+                                           ({ sEmail } : { sEmail : string }) =>
+                                                             async dispatch => {
    dispatch({ type: BUSY_SET });
     try{
         dispatch({type: FORGOT_PASSWORD_REQUEST});
@@ -142,7 +140,7 @@ export const requestForgotPassword : TAppThunk =
 
 export const requestResetPassword : TAppThunk =
           ({ sNewPassword, sCode } : { sNewPassword : string, sCode: string}) =>
-              async (dispatch : TAppDispatch, getState : TGetStateFunction) => {
+                                                 async (dispatch, getState) => {
     dispatch({ type: BUSY_SET });
     try{
         dispatch({type: RESET_PASSWORD_REQUEST});
@@ -187,7 +185,7 @@ export const requestResetPassword : TAppThunk =
 export const requestRegisterUser : TAppThunk =
                       ({ sEmail, sPassword, sName } :
                        { sEmail: string, sPassword: string, sName: string }) =>
-                                            async (dispatch : TAppDispatch) => {
+                                                             async dispatch => {
     dispatch({ type: BUSY_SET });
     try{
         dispatch({type: REGISTER_USER_REQUEST});
@@ -237,8 +235,7 @@ export const requestRegisterUser : TAppThunk =
     }
 };
 
-export const requestAuthorizationCheck : TAppThunk = () =>
-                                            async (dispatch : TAppDispatch) => {
+export const requestAuthorizationCheck : TAppThunk = () => async dispatch => {
     dispatch({ type: BUSY_SET });
     try{
         if(Cookies.get('accessToken')){
@@ -268,7 +265,7 @@ export const updateUser : TAppThunk = ({ oProfile } :
                                            { oProfile : { name: string,
                                                           email: string,
                                                           password: string}}) =>
-                                            async (dispatch : TAppDispatch) => {
+                                                             async dispatch => {
     dispatch({type: BUSY_SET});
     try{
         //Start requesting...
@@ -303,7 +300,7 @@ export const updateUser : TAppThunk = ({ oProfile } :
     }
 };
 
-export const exitRequest : TAppThunk = () => async (dispatch : TAppDispatch) => {
+export const exitRequest : TAppThunk = () => async dispatch => {
     dispatch({ type: BUSY_SET });
     
     // No error handling/response processing. Request sent to the bacekend,

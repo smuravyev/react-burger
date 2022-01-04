@@ -1,9 +1,7 @@
 import { SWAP_INGREDIENTS,
          ADD_INGREDIENT } from '../actions/burger-constructor';
 
-import type { TAppThunk, 
-              TAppDispatch,
-              TGetStateFunction } from '../store';
+import type { TAppThunk } from '../store';
 
 import type { IDraggableIngredient } from '../../utils/types';
               
@@ -13,7 +11,7 @@ export const moveIngredient : TAppThunk = ({ nSourceIndex,
                                                      { nSourceIndex : number,
                                                        nTargetIndex? : number,
                                                        bIsBefore? : boolean}) =>
-                    (dispatch : TAppDispatch, getState : TGetStateFunction) => {
+                                                       (dispatch, getState) => {
     
     const { constructedBurger } = getState();
 
@@ -40,7 +38,7 @@ export const addIngredient : TAppThunk = ({ oIngredient,
                                            { oIngredient : IDraggableIngredient,
                                              sTargetID? : string, 
                                              bIsBefore : boolean }) =>
-                    (dispatch : TAppDispatch, getState : TGetStateFunction) => {
+                                                       (dispatch, getState) => {
     const { constructedBurger } = getState();
     const nTargetIndex = constructedBurger.present.aContent.findIndex(
                                    oElement => oElement.sInnerID === sTargetID);

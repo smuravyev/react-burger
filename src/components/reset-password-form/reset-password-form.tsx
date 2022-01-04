@@ -9,9 +9,8 @@ import { Link } from 'react-router-dom';
 
 import { Button } from '@ya.praktikum/react-developer-burger-ui-components';
 
-import { useSelector } from 'react-redux';
-
-import { useAppDispatch } from '../../services/hooks';
+import { useAppDispatch,
+         useAppSelector } from '../../services/hooks';
          
 import { Navigate,
          useLocation } from 'react-router-dom';
@@ -25,8 +24,6 @@ import { setError } from '../../services/actions/error-message';
 
 import { requestResetPassword } from '../../services/actions/authorization';
 
-import type { TRootState } from '../../services/store';
-
 import type { SyntheticEvent } from 'react';
 
 import styles from './reset-password-form.module.css';
@@ -34,9 +31,9 @@ import styles from './reset-password-form.module.css';
 const ResetPasswordForm = () : JSX.Element => {
     const oPasswordInputRef = useRef<HTMLInputElement>(null);
 
-    const bIsBusy = useSelector((store : TRootState)=> store.app.bIsBusy);
+    const bIsBusy = useAppSelector(store => store.app.bIsBusy);
     
-    const bWeAllowedToSeeThisPage = useSelector((store : TRootState) =>
+    const bWeAllowedToSeeThisPage = useAppSelector(store =>
                             (store.authorization.bIsForgotPasswordRequestSuccess
                             && (!(store.authorization.bIsUserSet))));
 

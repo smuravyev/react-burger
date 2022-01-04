@@ -2,11 +2,8 @@ import { Routes,
          Route,
          NavLink } from 'react-router-dom';
 
-import { useSelector } from 'react-redux';
-
-import { useAppDispatch } from '../../services/hooks';
-
-import type { TRootState } from '../../services/store';
+import { useAppDispatch,
+         useAppSelector } from '../../services/hooks';
 
 import type { SyntheticEvent } from 'react'; 
 
@@ -23,7 +20,7 @@ import styles from './profile.module.css';
 const Profile = () : JSX.Element => {
     
     const dispatch = useAppDispatch();
-    const bIsBusy = useSelector((store : TRootState) => store.app.bIsBusy);
+    const bIsBusy = useAppSelector(store => store.app.bIsBusy);
 
     const getLinkClassName = ({ isActive } : {isActive : boolean}) : string => {
         return isActive ?

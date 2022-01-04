@@ -1,7 +1,6 @@
 import { useEffect } from 'react';
 
-import { useSelector,
-         shallowEqual } from 'react-redux';
+import { shallowEqual } from 'react-redux';
          
 import { useNavigate,
          useLocation,
@@ -16,26 +15,24 @@ import { IngredientDetails,
 import { CLEAR_CURRENT_INGREDIENT,
          SET_CURRENT_INGREDIENT } from '../services/actions/ingredient-details';
 
-import { useAppDispatch } from '../services/hooks';
-         
-import type { TRootState } from '../services/store';
+import { useAppDispatch,
+         useAppSelector } from '../services/hooks';
+
 import type { IIngredient } from '../utils/types'; 
 
 const IngredientDetailsPage = () : JSX.Element => {
 
-   const oCurrentIngredient = useSelector((store : TRootState) =>
-                                                       store.currentIngredient);
+   const oCurrentIngredient = useAppSelector(store => store.currentIngredient);
    
    //boolean, ok
-   const bIsBusy = useSelector((store : TRootState) => store.app.bIsBusy);
+   const bIsBusy = useAppSelector(store => store.app.bIsBusy);
    
    //boolean, ok
    const bLoadedIngredients =
-                useSelector((store : TRootState) =>
-                                     store.burgerIngredients.bLoadedSuccessful);
+             useAppSelector(store => store.burgerIngredients.bLoadedSuccessful);
    const aIngredients =
-       useSelector((store : TRootState) => store.burgerIngredients.aIngredients,
-                   shallowEqual);
+                   useAppSelector(store => store.burgerIngredients.aIngredients,
+                                  shallowEqual);
 
    const dispatch = useAppDispatch();
    

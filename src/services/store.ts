@@ -8,7 +8,7 @@ import thunk from 'redux-thunk';
 
 import type { TApplicationAction } from './actions';
 
-import type { ThunkAction, ThunkDispatch} from 'redux-thunk';
+import type { ThunkAction} from 'redux-thunk';
 import type { ActionCreator } from 'redux';
 
 declare global {
@@ -22,18 +22,19 @@ const composeEnhancers =
           window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ ?
             window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ : compose;
 
-const oStore = createStore(reducerRoot,
-                           composeEnhancers(applyMiddleware(thunk)));
-
-export type TGetStateFunction = typeof oStore.getState;
-
-export type TRootState = ReturnType<TGetStateFunction>;
-
 export type TAppThunk<TReturn = void> =
                                 ActionCreator<ThunkAction<TReturn,
                                                           TRootState,
                                                           unknown,
                                                           TApplicationAction >>;
-export type TAppDispatch = ThunkDispatch<TRootState, void, TApplicationAction>;
+
+const oStore = createStore(reducerRoot,
+                           composeEnhancers(applyMiddleware<TAppThunk>(thunk)));
+
+export type TGetStateFunction = typeof oStore.getState;
+
+export type TRootState = ReturnType<TGetStateFunction>;
+
+export type TAppDispatch = typeof oStore.dispatch; 
 
 export default oStore;

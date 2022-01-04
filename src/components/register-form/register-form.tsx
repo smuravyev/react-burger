@@ -5,8 +5,6 @@ import { useRef,
          
 import { Link } from 'react-router-dom';
 
-import { useSelector } from 'react-redux';
-
 import { Button } from '@ya.praktikum/react-developer-burger-ui-components';
 
 import { CheckableInput,
@@ -24,9 +22,9 @@ import type { TChangeHandler } from '../checkable-input/checkable-input';
 import { SAVE_ENTERED_EMAIL,
          requestRegisterUser } from '../../services/actions/authorization';
 
-import { useAppDispatch } from '../../services/hooks';
+import { useAppDispatch,
+         useAppSelector } from '../../services/hooks';
 
-import type { TRootState } from '../../services/store';
 
 import type { SyntheticEvent } from 'react';
 
@@ -35,10 +33,10 @@ import styles from './register-form.module.css';
 const RegisterForm = () : JSX.Element => {
     const oNameInputRef = useRef<HTMLInputElement>(null);
 
-    const sEnteredEmail = useSelector((store : TRootState) =>
+    const sEnteredEmail = useAppSelector(store =>
                                              store.authorization.sEnteredEmail);
 
-    const bIsBusy = useSelector((store : TRootState) => store.app.bIsBusy);
+    const bIsBusy = useAppSelector(store => store.app.bIsBusy);
 
     const [oFormData, setFormData] = useState({name : "",
                                                email : sEnteredEmail,

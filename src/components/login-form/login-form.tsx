@@ -7,11 +7,8 @@ import type { SyntheticEvent } from 'react';
 
 import { Link } from 'react-router-dom';
 
-import { useSelector } from 'react-redux';
-
-import { useAppDispatch } from '../../services/hooks';
-
-import type { TRootState } from '../../services/store';
+import { useAppDispatch,
+         useAppSelector } from '../../services/hooks';
 
 import { Button } from '@ya.praktikum/react-developer-burger-ui-components';
 
@@ -34,10 +31,10 @@ import styles from './login-form.module.css';
 const LoginForm = () : JSX.Element => {
     const oEmailInputRef = useRef<HTMLInputElement>(null);
     
-    const sEnteredEmail = useSelector((store : TRootState) =>
+    const sEnteredEmail = useAppSelector(store =>
                                              store.authorization.sEnteredEmail);
 
-    const bIsBusy = useSelector((store : TRootState) => store.app.bIsBusy);
+    const bIsBusy = useAppSelector(store => store.app.bIsBusy);
 
     const [oFormData, setFormData] = useState({email : sEnteredEmail,
                                                password : ""});

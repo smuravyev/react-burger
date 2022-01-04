@@ -14,9 +14,7 @@ import { GET_INGREDIENTS_REQUEST,
          GET_INGREDIENTS_FAILED,
          GET_INGREDIENTS_SUCCESS } from '../actions/burger-ingredients';
 
-import type { TAppThunk, 
-              TAppDispatch,
-              TGetStateFunction,
+import type { TAppThunk,
               TRootState } from '../store';
 
 import type { IIngredient,
@@ -43,9 +41,7 @@ const splitByTypes :
     return aData;
 };
 
-export const getIngredients : TAppThunk = () =>
-                                      async (dispatch : TAppDispatch,
-                                             getState : TGetStateFunction ) => {
+export const getIngredients : TAppThunk = () => async (dispatch, getState ) => {
     const state : TRootState = getState();
     
     if(state.burgerIngredients.bLoadedSuccessful) return; // Do not load twice!

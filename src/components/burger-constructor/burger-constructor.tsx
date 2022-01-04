@@ -1,15 +1,15 @@
 import { useEffect,
          useCallback } from 'react';
 
-import { useSelector,
-         shallowEqual} from 'react-redux';
-         
-import type { TRootState } from '../../services/store';
+import { shallowEqual } from 'react-redux';
 
-import { useAppDispatch } from '../../services/hooks';
+import { useAppDispatch,
+         useAppSelector } from '../../services/hooks';
          
 import { useLocation,
          useNavigate } from 'react-router-dom';
+         
+import { TRootState } from '../../services/store';
 
 import { useDrop } from 'react-dnd';
 
@@ -47,27 +47,25 @@ const priceSelector = (store : TRootState) : number => {
 };
 
 const BurgerConstructor = () : JSX.Element => {
-    const bIsBusy = useSelector((store : TRootState) => store.app.bIsBusy);     
+    const bIsBusy = useAppSelector(store => store.app.bIsBusy);     
     const bIsOrderRequesting =
-          useSelector((store : TRootState) => store.orderDetails.bIsRequesting);                                
+                      useAppSelector(store => store.orderDetails.bIsRequesting);
     const { oBun,
-            aContent } = useSelector((store : TRootState) =>
+            aContent } = useAppSelector(store =>
                                                 store.constructedBurger.present,
                                                 shallowEqual);
-    const nPrice = useSelector(priceSelector);
+    const nPrice = useAppSelector<number>(priceSelector);
     
-    const nOrderNumber = useSelector((store : TRootState) =>
+    const nOrderNumber = useAppSelector(store =>
                                                store.orderDetails.nOrderNumber);
-    
+    const bIsAuthorized = useAppSelector(store =>
+                                                store.authorization.bIsUserSet);
     const dispatch = useAppDispatch(); 
     
     const navigate = useNavigate();
     
     const location = useLocation();
-
-    const bIsAuthorized = useSelector((store : TRootState) =>
-                                                store.authorization.bIsUserSet);
-
+    
     const [{ bNeedHelper } , refDrop] = useDrop({
         accept : bIsOrderRequesting ? "" : [ oIngredientDragTypes.sBun,
                                              oIngredientDragTypes.sFilling ],

@@ -1,14 +1,12 @@
-import { useSelector } from 'react-redux';
+import { useAppSelector } from '../../services/hooks';
 
 import { SuccessIcon }  from "../";
-
-import type { TRootState } from '../../services/store';
 
 import styles from  './order-details.module.css';
 
 const OrderDetails = () : JSX.Element =>{
     
-    const nOrderId = useSelector((store : TRootState) => store.orderDetails.nOrderNumber);
+    const nOrderId = useAppSelector(store => store.orderDetails.nOrderNumber);
     
     return (
         <figure className={styles.figure}>

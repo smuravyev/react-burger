@@ -6,12 +6,10 @@ import { useRef,
 import type { SyntheticEvent,
               RefObject } from 'react';
 
-import { useSelector,
-         shallowEqual } from 'react-redux';
+import { shallowEqual } from 'react-redux';
 
-import { useAppDispatch } from '../../services/hooks';
-         
-import type { TRootState } from '../../services/store';
+import { useAppDispatch,
+         useAppSelector } from '../../services/hooks';
 
 import type { TChangeHandler,
               TChecker } from '../checkable-input/checkable-input';
@@ -52,14 +50,13 @@ const ProfileEditor = () : JSX.Element => {
     const oEmailRef = useRef<HTMLInputElement>(null);
     const oPasswordRef = useRef<HTMLInputElement>(null);
     
-    const {sName, sEmail} = useSelector((store : TRootState) =>
-                                                     store.authorization.oUser,
-                                        shallowEqual);
-    const bIsBusy = useSelector((store : TRootState) => store.app.bIsBusy);
+    const {sName, sEmail} = useAppSelector(store => store.authorization.oUser,
+                                           shallowEqual);
+    const bIsBusy = useAppSelector(store => store.app.bIsBusy);
     
     const dispatch = useAppDispatch();
     
-    const bIsSavingProfile = useSelector((store : TRootState) =>
+    const bIsSavingProfile = useAppSelector(store =>
                                    store.authorization.bIsUpdateUserRequesting);
     
     const [nActiveElements, setNActiveElements] = useState(0);

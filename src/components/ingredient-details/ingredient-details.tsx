@@ -1,6 +1,6 @@
-import { useSelector, shallowEqual } from 'react-redux';
+import { shallowEqual } from 'react-redux';
 
-import type { TRootState } from '../../services/store';
+import { useAppSelector } from '../../services/hooks';
 
 import styles from  './ingredient-details.module.css';
 
@@ -10,7 +10,7 @@ const IngredientDetails = () : JSX.Element =>{
             carbohydrates,
             proteins,
             fat,
-            image_large } = useSelector((store : TRootState) =>
+            image_large } = useAppSelector(store =>
                         store.currentIngredient === null ? { name : "",
                                                              calories : 0,
                                                              carbohydrates : 0,

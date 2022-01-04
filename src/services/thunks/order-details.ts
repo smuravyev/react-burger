@@ -13,15 +13,11 @@ import { ORDER_REQUEST,
          ORDER_SUCCESS,
          ORDER_FAILED } from '../actions/order-details';
 
-import type { TAppThunk, 
-              TAppDispatch,
-              TGetStateFunction} from '../store';
+import type { TAppThunk} from '../store';
 
 import type { IOrderRequestResult } from '../../utils/functions';
 
-export const sendOrder : TAppThunk = () =>
-                                       async (dispatch : TAppDispatch,
-                                              getState : TGetStateFunction) => {
+export const sendOrder : TAppThunk = () => async (dispatch, getState) => {
     dispatch({type: BUSY_SET});
     try{
         const { constructedBurger } = getState();

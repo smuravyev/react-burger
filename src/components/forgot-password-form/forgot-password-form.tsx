@@ -11,14 +11,12 @@ import { oErrorCodes } from '../../utils/constants';
 import { Link,
          Navigate } from 'react-router-dom';
          
-import { useAppDispatch } from '../../services/hooks';
+import { useAppDispatch,
+         useAppSelector } from '../../services/hooks';
 
 import type { TChangeHandler } from '../checkable-input/checkable-input';
 
-import type { TRootState } from '../../services/store';
-
-import { useSelector,
-         shallowEqual } from 'react-redux';
+import { shallowEqual } from 'react-redux';
 
 import { Button } from '@ya.praktikum/react-developer-burger-ui-components';
 
@@ -37,10 +35,10 @@ const ForgotPasswordForm = () : JSX.Element => {
     
     const { sEnteredEmail,
             bIsForgotPasswordRequestSuccess } =
-                                             useSelector((store : TRootState) =>
+                                             useAppSelector(store =>
                                                            store.authorization,
                                                            shallowEqual);
-    const bIsBusy = useSelector((store : TRootState) => store.app.bIsBusy);
+    const bIsBusy = useAppSelector(store => store.app.bIsBusy);
 
     const [oFormData, setFormData] = useState({ email : sEnteredEmail });
     

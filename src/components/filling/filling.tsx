@@ -1,10 +1,8 @@
 import { useRef,
          useState} from 'react';
-import { useSelector } from 'react-redux';
 
-import { useAppDispatch } from '../../services/hooks';
-
-import type { TRootState } from '../../services/store';
+import { useAppDispatch,
+         useAppSelector } from '../../services/hooks';
 
 import { useDrag, useDrop } from 'react-dnd';
 
@@ -35,8 +33,7 @@ const Filling =
 
     const dispatch = useAppDispatch();
     
-    const bIsBusy =
-          useSelector((store : TRootState) => store.orderDetails.bIsRequesting);
+    const bIsBusy = useAppSelector(store => store.orderDetails.bIsRequesting);
     
     const refThis = useRef<HTMLLIElement>(null);
 
