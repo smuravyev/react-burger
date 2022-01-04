@@ -6,6 +6,7 @@ import BurgerConstructor from './burger-constructor/burger-constructor';
 import BurgerIngredients from './burger-ingredients/burger-ingredients';
 import CheckableInput from './checkable-input/checkable-input';
 import ErrorMessage from './error-message/error-message';
+import Feed from './feed/feed';
 import Filling from './filling/filling';
 import ForgotPasswordForm from './forgot-password-form/forgot-password-form';
 import Ingredient from './ingredient/ingredient';
@@ -36,6 +37,7 @@ export { App,
          BurgerIngredients,
          CheckableInput,
          ErrorMessage,
+         Feed,
          Filling,
          ForgotPasswordForm,
          Ingredient,

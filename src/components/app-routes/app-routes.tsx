@@ -10,7 +10,8 @@ import { ConstructorPage,
          LoginPage,
          ProfilePage,
          RegisterPage,
-         ResetPasswordPage } from '../../pages/';
+         ResetPasswordPage, 
+         FeedPage } from '../../pages/';
          
 import { ProtectedRoute } from '../';
 
@@ -27,7 +28,7 @@ const AppRoutes = () => {
     return (
         <>
             <Routes location={oBackground || oLocation}>
-            <Route path="/" element={ ( <ConstructorPage /> ) } />
+                <Route path="/" element={ ( <ConstructorPage /> ) } />
                 <Route path="/login"
                        element={ ( <ProtectedRoute sFromWhom="authorized">
                                        <LoginPage />
@@ -44,6 +45,7 @@ const AppRoutes = () => {
                        element={  ( <ProtectedRoute sFromWhom="authorized">
                                         <ResetPasswordPage />
                                     </ProtectedRoute> ) } />
+                <Route path="/feed" element={  ( <FeedPage /> ) } />
                 <Route path="/profile/*"
                        element={ ( <ProtectedRoute sFromWhom="unauthorized"
                                                    bSavePathToStore={true}

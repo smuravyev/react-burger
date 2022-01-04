@@ -12,6 +12,8 @@ import { BurgerIcon,
          ProfileIcon, 
          Logo } from '@ya.praktikum/react-developer-burger-ui-components'
 
+import { addTrailingSlash } from '../../utils/functions';
+
 import styles from './app-header-link.module.css';
 
 export type TIconToRenderName = "burger" | "logo" | "list" | "profile"; 
@@ -31,9 +33,10 @@ const AppHeaderLink : FC<IAppHeaderLinkProps> = ({ to,
                                                    children }) => {
 
     const oLocation : ILocation = useLocation();
-    const bIsCurrent : boolean = exact ? (oLocation.pathname === to)
-                             : oLocation?.pathname?.indexOf(to) === 0;
-
+    const bIsCurrent : boolean = exact ?
+               (addTrailingSlash(oLocation.pathname) === addTrailingSlash(to)) :
+     addTrailingSlash(oLocation?.pathname)?.indexOf(addTrailingSlash(to)) === 0;
+     
     /* Let us construct some classes based on bIsCurrent */
     const sLiClassName : string =
                        `${styles.header__button} ${sAdditionalPaddingClasses}` + 

@@ -5,6 +5,8 @@ body {
     font-family: sans-serif;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
+    min-width: 1360px;
+    
 }
 
 .width_480px_form .input__container .input,

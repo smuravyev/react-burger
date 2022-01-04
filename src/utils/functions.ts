@@ -136,3 +136,7 @@ export const fetchWithAuth : TFetchWithAuthFunction =
         return oResult;
     }
 };
+
+export const addTrailingSlash : (sString : string) => string = (sString) => {
+    return (/^.*\/$/.test(sString)) ? sString : (sString + "/");
+};

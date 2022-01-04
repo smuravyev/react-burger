@@ -1,0 +1,12 @@
+.section {
+    display: inline-block;
+    max-width: 1240px;
+    width: 100%;
+    text-align: center;
+    height: 100%;
+    vertical-align: top;
+}
+
+.header {
+    text-align: left;
+}

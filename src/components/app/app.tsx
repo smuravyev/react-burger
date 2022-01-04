@@ -28,15 +28,15 @@ const App = () : JSX.Element => {
     }, [dispatch]);
 
     return (
-        <div className={styles.wrapper}>
-            <BrowserRouter>
-                <AppHeader />
+        <BrowserRouter>
+            <AppHeader />
+            <div className={styles.wrapper}>
                 <main className={styles.main}>
                     <AppRoutes />
                     <ErrorMessage />
                 </main>
-            </BrowserRouter>
-        </div>
+            </div>
+        </BrowserRouter>
     );
 };
  

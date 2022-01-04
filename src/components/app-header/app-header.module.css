@@ -1,12 +1,19 @@
 .header {
     display: inline-block;
-    width: 100%;
+    text-align: center;
+    background-color: #1C1C21;
+    margin: 40px 40px 0 40px;
+    width: calc(100% - 80px);
+}
+
+.section{
+    display: inline-block;
     max-width: 1280px;
-    min-width: 1072px;
+    min-width: 1280px;
+    width: 100%;
 }
 
 .nav {
-    width: 100%;
     display: grid;
     grid-template-columns: 1fr auto 1fr;
     grid-column-gap: 0;

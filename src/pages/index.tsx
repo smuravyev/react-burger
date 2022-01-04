@@ -6,6 +6,7 @@ import LoginPage from './login-page';
 import ProfilePage from './profile-page';
 import RegisterPage from './register-page';
 import ResetPasswordPage from './reset-password-page';
+import FeedPage from './feed-page';
 
 export { ConstructorPage,
          ForgotPasswordPage,
@@ -14,4 +15,5 @@ export { ConstructorPage,
          LoginPage,
          ProfilePage,
          RegisterPage,
-         ResetPasswordPage };
+         ResetPasswordPage,
+         FeedPage };
