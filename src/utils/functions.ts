@@ -1,6 +1,6 @@
 import Cookies from 'js-cookie';
 
-import { oErrorCodes } from '../utils/constants';
+import { oErrorCodes, nMaxDigitsInTheOrderNumber } from '../utils/constants';
 
 import { oSettings } from '../config/config';
 
@@ -139,4 +139,20 @@ export const fetchWithAuth : TFetchWithAuthFunction =
 
 export const addTrailingSlash : (sString : string) => string = (sString) => {
     return (/^.*\/$/.test(sString)) ? sString : (sString + "/");
+};
+
+export const formatOrderNumber =
+                (nNumber : number,
+                 nMaxDigits : number = nMaxDigitsInTheOrderNumber) : string => {
+    let sResult: string = String(nNumber);
+    if(sResult.length > nMaxDigits){
+        sResult = sResult.slice(sResult.length - nMaxDigits);
+    }
+    else{
+        const nSymbolsToAdd : number = nMaxDigits - sResult.length;
+        for (let nCounter : number = 0; nCounter < nSymbolsToAdd; nCounter++){
+            sResult = "0" + sResult;
+        }
+    }
+    return sResult;
 };

@@ -92,3 +92,5 @@ export const aIngredientsTemplate : TArrayOfIngredients =
                                       aSet : [] }];
 
 export const sModalSelector = "#modals" as const;
+
+export const nMaxDigitsInTheOrderNumber = 6 as const;

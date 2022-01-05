@@ -1,22 +1,3 @@
-.figure {
-    margin: 0;
-    padding: 0;
-}
-
 .order {
-    margin: 0;
-    padding: 0;
-}
-.order_description {
-    margin: 0;
-    padding: 0;
-}
-.order_started {
-    margin: 0;
-    padding: 0;
-}
-
-.order_recommendation {
-    margin: 0;
-    padding: 0;
+    text-shadow: #4C4CFF 1px 0 20px;
 }
