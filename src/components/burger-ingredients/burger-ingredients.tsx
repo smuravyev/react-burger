@@ -9,14 +9,10 @@ import type { RefObject } from 'react';
          
 import { shallowEqual } from 'react-redux';
          
-import { useAppDispatch, 
-         useAppSelector } from '../../services/hooks';
+import { useAppSelector } from '../../services/hooks';
 
 import { useNavigate,
          useLocation } from 'react-router-dom';
-
-import { SET_CURRENT_INGREDIENT }
-                               from '../../services/actions/ingredient-details';
 
 import { Tab } from '@ya.praktikum/react-developer-burger-ui-components';
 
@@ -61,7 +57,6 @@ const BurgerIngredients = () : JSX.Element => {
     const oUsedIngredients = useAppSelector(usedIngredientsSelector,
                                               shallowEqual);
     const navigate = useNavigate();
-    const dispatch = useAppDispatch();
     const oLocation = useLocation();
 
     // This is used only here, locally,
@@ -88,12 +83,10 @@ const BurgerIngredients = () : JSX.Element => {
     const handleIngredientClick =
              useCallback((oThisElement : IDraggableIngredient) : () => void => {
         return () => {
-            dispatch({ type : SET_CURRENT_INGREDIENT,
-                       payload : { oIngredient: oThisElement}});
             navigate("/ingredients/" + oThisElement._id, 
                      {state: { oBackground : oLocation }});
         }
-    }, [dispatch, navigate, oLocation]);
+    }, [navigate, oLocation]);
     
     const oScrollerRef = useRef<HTMLElement>(null);
     

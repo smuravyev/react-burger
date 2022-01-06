@@ -1,0 +1,25 @@
+.list {
+    width: 272px;
+    display: inline-block;
+    text-align: left;
+    vertical-align: top;
+}
+
+.list__column {
+    padding: 0;
+    margin: 0;
+    list-style-type: none;
+    max-height: 154px;
+    display: inline-block;
+    width: 50%;
+    vertical-align: top;
+}
+
+
+.list__column__item {
+    width: 6em;
+}
+
+.list__column__item_cyan {
+    color: #00CCCC;
+}

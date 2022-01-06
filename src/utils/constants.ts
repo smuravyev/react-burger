@@ -94,3 +94,11 @@ export const aIngredientsTemplate : TArrayOfIngredients =
 export const sModalSelector = "#modals" as const;
 
 export const nMaxDigitsInTheOrderNumber = 6 as const;
+
+export const nMaxOrdersInPendingList = 10 as const;
+
+export const nMaxOrdersInPendingColumn = 5 as const;
+
+export const nMaxOrdersInDoneList = 10 as const;
+
+export const nMaxOrdersInDoneColumn = 5 as const;

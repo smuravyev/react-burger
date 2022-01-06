@@ -11,6 +11,7 @@ import Filling from './filling/filling';
 import ForgotPasswordForm from './forgot-password-form/forgot-password-form';
 import Ingredient from './ingredient/ingredient';
 import IngredientDetails from './ingredient-details/ingredient-details';
+import IngredientProperty from './ingredient-property/ingredient-property';
 import InvalidRouteMessage from './invalid-route-message/invalid-route-message';
 import Loader from './loader/loader';
 import LoginForm from './login-form/login-form';
@@ -18,6 +19,7 @@ import Modal from './modal/modal';
 import ModalOverlay from './modal-overlay/modal-overlay';
 import OrderDetails from './order-details/order-details';
 import OrdersHistory from './orders-history/orders-history';
+import OrdersList from './orders-list/orders-list';
 import Profile from './profile/profile';
 import ProfileBlockDescription from
                         './profile-block-description/profile-block-description';
@@ -25,8 +27,6 @@ import ProfileEditor from './profile-editor/profile-editor';
 import ProtectedRoute from './protected-route/protected-route';
 import RegisterForm from './register-form/register-form';
 import ResetPasswordForm from './reset-password-form/reset-password-form';
-import SeparateIngredientDetails from
-                    './separate-ingredient-details/separate-ingredient-details';
 import SuccessIcon from './success-icon/success-icon';
 
 export { App,
@@ -42,6 +42,7 @@ export { App,
          ForgotPasswordForm,
          Ingredient,
          IngredientDetails,
+         IngredientProperty,
          InvalidRouteMessage,
          Loader,
          LoginForm,
@@ -49,11 +50,11 @@ export { App,
          ModalOverlay,
          OrderDetails,
          OrdersHistory,
+         OrdersList,
          Profile,
          ProfileBlockDescription,
          ProfileEditor,
          ProtectedRoute,
          RegisterForm,
          ResetPasswordForm,
-         SeparateIngredientDetails,
          SuccessIcon };

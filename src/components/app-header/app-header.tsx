@@ -5,7 +5,7 @@ import styles from './app-header.module.css';
 const AppHeader = () : JSX.Element => {
 
     return (
-        <header className={`${styles.header} pt-4 pb-4`}>
+        <header className={`${styles.header} pt-4 pb-3`}>
             <section className={styles.section}>
                 <nav className={styles.nav}>
                      <ul className={styles.header__element}>

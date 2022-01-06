@@ -8,18 +8,21 @@ export type TBackgroundLocationState = {
 
 export type TIngredientType = "bun" | "sauce" | "main";
 
-export interface IIngredient {
+export interface IPureIngredient {
+    readonly name : string;
+    readonly calories : number;
+    readonly carbohydrates : number;
+    readonly proteins : number;
+    readonly fat : number;
+    readonly image_large : string;
+};
+
+export interface IIngredient extends IPureIngredient {
    readonly _id : string;
-   readonly name : string
    readonly type : TIngredientType;
-   readonly proteins : number;
-   readonly fat : number;
-   readonly carbohydrates : number;
-   readonly calories : number;
    readonly price : number;
    readonly image: string;
    readonly image_mobile? : string;
-   readonly image_large: string;
    readonly __v : number;
 };
 

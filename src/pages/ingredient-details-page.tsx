@@ -1,4 +1,5 @@
-import { useEffect } from 'react';
+import { useEffect,
+         useState } from 'react';
 
 import { shallowEqual } from 'react-redux';
          
@@ -6,23 +7,20 @@ import { useNavigate,
          useLocation,
          useParams } from 'react-router-dom';
 
-import { IngredientDetails,
-         SeparateIngredientDetails, 
+import { IngredientDetails, 
          Modal,
          Loader,
          InvalidRouteMessage } from '../components';
 
-import { CLEAR_CURRENT_INGREDIENT,
-         SET_CURRENT_INGREDIENT } from '../services/actions/ingredient-details';
+import { useAppSelector } from '../services/hooks';
 
-import { useAppDispatch,
-         useAppSelector } from '../services/hooks';
-
-import type { IIngredient } from '../utils/types'; 
+import type { IIngredient,
+              IPureIngredient } from '../utils/types'; 
 
 const IngredientDetailsPage = () : JSX.Element => {
 
-   const oCurrentIngredient = useAppSelector(store => store.currentIngredient);
+   const [oCurrentIngredient, setOCurrentIngredient] =
+                             useState<IPureIngredient | null | undefined>(null);
    
    //boolean, ok
    const bIsBusy = useAppSelector(store => store.app.bIsBusy);
@@ -34,8 +32,6 @@ const IngredientDetailsPage = () : JSX.Element => {
                    useAppSelector(store => store.burgerIngredients.aIngredients,
                                   shallowEqual);
 
-   const dispatch = useAppDispatch();
-   
    //sID = string | undefined, already, automatically, that's we needed
    const { sID } = useParams();
    
@@ -58,13 +54,21 @@ const IngredientDetailsPage = () : JSX.Element => {
            //Found?
            if(oIngredient){
                //Set it!
-               dispatch({ type: SET_CURRENT_INGREDIENT,
-                          payload: { oIngredient : oIngredient }});
+              setOCurrentIngredient({ carbohydrates : oIngredient.carbohydrates,
+                                      calories : oIngredient.calories,
+                                      name : oIngredient.name,
+                                      proteins : oIngredient.proteins,
+                                      fat : oIngredient.fat,
+                                      image_large : oIngredient.image_large });
+           }
+           else{
+               // Undefined is a mark that we all done, but did not found
+               // anything
+               setOCurrentIngredient(undefined);
            }
         }
     }, [oCurrentIngredient,
         sID,
-        dispatch,
         bLoadedIngredients,
         aIngredients]);
 
@@ -77,7 +81,6 @@ const IngredientDetailsPage = () : JSX.Element => {
     
     const closeModalHandler = () : void => {
         navigate("/");
-        dispatch({ type : CLEAR_CURRENT_INGREDIENT});
     };
 
     return (
@@ -87,13 +90,20 @@ const IngredientDetailsPage = () : JSX.Element => {
                 bIsModal ? (
                     <Modal caption="Детали игредиента"
                            closer={closeModalHandler}>
-                        <IngredientDetails />
+                        <IngredientDetails {...oCurrentIngredient} />
                     </Modal>
                 ) : (
-                    <SeparateIngredientDetails />
+                    <section className="pt-20 mt-15">
+                        <h1 className="text text_type_main-large">
+                            Детали ингредиента
+                        </h1>
+                        <IngredientDetails {...oCurrentIngredient} />
+                    </section>
                 )
             ) : (
-                 (bLoadedIngredients && (!(bIsBusy))) ? (
+                 ((oCurrentIngredient === undefined) && 
+                  bLoadedIngredients &&
+                  (!(bIsBusy))) ? (
                       <InvalidRouteMessage />
                  ) : (
                       <Loader message="Загрузка" />
