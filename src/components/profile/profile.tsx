@@ -71,7 +71,7 @@ const Profile = () : JSX.Element => {
             <article>
                 <Routes>
                     <Route index element={ (<ProfileEditor />) } />
-                    <Route path="orders" element={ (<OrdersHistory />) } />
+                    <Route path="orders/*" element={ (<OrdersHistory />) } />
                     <Route path="*" element={ ( <InvalidRouteMessage /> ) } />
                 </Routes>
             </article>

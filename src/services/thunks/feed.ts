@@ -198,7 +198,9 @@ export const socketDisconnect : TAppThunk = () => dispatch => {
     dispatch({ type: WS_CLOSE });
 }
 
-export const socketConnect : TAppThunk = (sURL : string) => dispatch => {
+export const socketConnect : TAppThunk = (sURL : string,
+                                          bWithToken : boolean = false) =>
+                                                                   dispatch => {
     dispatch({ type : WS_CONNECT,
                payload : {
                    url : sURL,

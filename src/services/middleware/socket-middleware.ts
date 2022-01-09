@@ -123,7 +123,6 @@ export const socketMiddleware : Middleware = ({ dispatch }) => {
                         wsSocket.onclose = () => {
                             // We won't handle errors here
                             // But we'll try to reconnect
-
                             if(oAction.payload.onClose){
                                 mwDispatch(oAction.payload.onClose);
                             }

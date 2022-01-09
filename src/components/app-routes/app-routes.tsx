@@ -1,7 +1,10 @@
 import { Route,
          Routes,
          useLocation } from 'react-router-dom';
+         
 import type { Location as ILocation } from 'react-router-dom';
+
+import { oSettings } from '../../config/config';
 
 import { ConstructorPage,
          ForgotPasswordPage,
@@ -18,7 +21,7 @@ import { ProtectedRoute } from '../';
 
 import type { TBackgroundLocationState } from '../../utils/types'; 
 
-const AppRoutes = () => {
+const AppRoutes = () : JSX.Element => {
     
     const oLocation : ILocation = useLocation();
     
@@ -47,12 +50,6 @@ const AppRoutes = () => {
                                         <ResetPasswordPage />
                                     </ProtectedRoute> ) } />
                 <Route path="/feed" element={  ( <FeedPage /> ) } />
-                <Route path="/profile/*"
-                       element={ ( <ProtectedRoute sFromWhom="unauthorized"
-                                                   bSavePathToStore={true}
-                                                   sRedirectTo="/login/">
-                                       <ProfilePage />
-                                   </ProtectedRoute> ) } />
                 {
                     (!oBackground) && (
                         <>
@@ -60,9 +57,25 @@ const AppRoutes = () => {
                                    element={ ( <IngredientDetailsPage />) } />
                             <Route path="/feed/:sID"
                                    element={ ( <OrderDetailsPage />) } />
+                            <Route path="/profile/orders/:sID"
+                               element={ ( <ProtectedRoute
+                                                   sFromWhom="unauthorized"
+                                                   bSavePathToStore={true}
+                                                   sRedirectTo="/login/">
+                                               <OrderDetailsPage
+                                           sWSURL={oSettings.oAPIWS.sUserOrders}
+                                           bWithAuthToken={true} />
+                                           </ProtectedRoute> ) } />
+
                         </>
                     )
                 }
+                <Route path="/profile/*"
+                       element={ ( <ProtectedRoute sFromWhom="unauthorized"
+                                                   bSavePathToStore={true}
+                                                   sRedirectTo="/login/">
+                                       <ProfilePage />
+                                   </ProtectedRoute> ) } />
                 <Route path="*" element={ < InvalidPage /> } />
             </Routes>
             {
@@ -72,6 +85,15 @@ const AppRoutes = () => {
                                element={( <IngredientDetailsPage />) } />
                         <Route path="/feed/:sID"
                                element={( <OrderDetailsPage />) } />
+                        <Route path="/profile/orders/:sID"
+                               element={ ( <ProtectedRoute
+                                                   sFromWhom="unauthorized"
+                                                   bSavePathToStore={true}
+                                                   sRedirectTo="/login/">
+                                               <OrderDetailsPage
+                                           sWSURL={oSettings.oAPIWS.sUserOrders}
+                                           bWithAuthToken={true} />
+                                           </ProtectedRoute> ) } />
                         <Route path="*" element= {null} />
                     </Routes>
                 )

@@ -11,5 +11,6 @@ export const oSettings = {
                  sExit : "/auth/logout"} as const,
     oCookiesLifetime : { nRefresh : 365000,
                          nAccess : 365000 } as const,
-    oAPIWS : { sAllOrders : "wss://norma.nomoreparties.space/orders/all"}
+    oAPIWS : { sAllOrders : "wss://norma.nomoreparties.space/orders/all",
+               sUserOrders : "wss://norma.nomoreparties.space/orders/all"}
 } as const;

@@ -14,7 +14,6 @@ export interface IOrderStatusProps {
 };
 
 const OrderStatus : FC<IOrderStatusProps> = memo(({ sStatus }) => {
-    console.log(sStatus);
     return (
         <span className={sStatus === oOrderTypes.sCancelled ? styles.cancelled : 
                          sStatus === oOrderTypes.sCreated ? styles.created :

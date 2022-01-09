@@ -1,6 +1,8 @@
 import { useEffect,
          useState } from 'react';
 
+import type { FC } from 'react';
+
 import { shallowEqual } from 'react-redux';
          
 import { useNavigate,
@@ -24,7 +26,14 @@ import { useAppSelector,
 
 import type { IOrderWithProcessedIngredientsProperties } from '../utils/types'; 
 
-const OrderDetailsPage = () : JSX.Element => {
+export interface IOrderDetailsPageProps {
+    sWSURL? : string;
+    bWithAuthToken? : boolean; 
+};
+
+const OrderDetailsPage : FC<IOrderDetailsPageProps> =
+                                        ({ sWSURL = oSettings.oAPIWS.sAllOrders,
+                                           bWithAuthToken = false }) => {
 
     const [oCurrentOrder, setOCurrentOrder ] =
     useState<IOrderWithProcessedIngredientsProperties | null | undefined>(null);
@@ -43,7 +52,7 @@ const OrderDetailsPage = () : JSX.Element => {
 
     //sID = string | undefined, already, automatically, that's we needed
     const { sID } = useParams();
-   
+
     // We need to ensure that the ingredients are loaded!
     useEffect(() => {
         if((sID) &&
@@ -58,11 +67,13 @@ const OrderDetailsPage = () : JSX.Element => {
          bHasData]);
 
     useEffect(() => {
-        dispatch(socketConnect(oSettings.oAPIWS.sAllOrders));
+        dispatch(socketConnect(sWSURL, bWithAuthToken));
         return () => {
             dispatch(socketDisconnect());
         };
-    }, [dispatch]);
+    }, [ dispatch,
+         sWSURL,
+         bWithAuthToken]);
     
     const oLocation = useLocation();
    
@@ -72,7 +83,7 @@ const OrderDetailsPage = () : JSX.Element => {
     const navigate = useNavigate();
     
     const closeModalHandler = () : void => {
-        navigate("/feed/");
+        navigate(oLocation?.state?.oBackground.pathname || "/");
     };
 
     return (
