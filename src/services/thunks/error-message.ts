@@ -1,6 +1,6 @@
 import { ERROR_RAISE } from '../actions/error-message';
 
-import type { TAppThunk } from '../store';
+import type { TAppThunk  } from '../store';
 
 export const setError : TAppThunk = (sErrorMessage : string,
                                      bCanProceed : boolean = false) =>

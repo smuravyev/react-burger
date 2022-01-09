@@ -46,7 +46,17 @@ export const oErrorCodes = {
     EC_ERROR_UPDATING_USER : "Ошибка обновления данных о клиенте. Попробуйте," +
                              "пожалуйста, позже.",
     EC_CANNOT_UPDATE_USER : "Невозможно обновить данные. Обратитесь, " + 
-                            "пожалуйста, к представителю бургерной."  
+                            "пожалуйста, к представителю бургерной.",
+    EC_CANNOT_CREATE_WEBSOCKET : "Ошибка установки соединения с сервером. " +
+                                 "Пожалуйста, попробуйте позже или обратитесь" +
+                                 " к представителю бургерной.",
+    EC_SEND_TO_WEBSOCKET_ERROR : "Разработчик приложения допустил ошибку. " +
+                                 "Пожалуйста, сообщите об этом администрации," +
+                                 " мы обязательно примем меры.",
+    EC_SYNTAX_ERROR_PARSING_MESSAGE : "Сервер вернул недопустимые данные. " +
+                                      "Приносим Вам свои извинения за " +
+                                      "временные неудобства и просим уточнять" +
+                                      " статус заказа на кассе."
 } as const;
 
 export const oIngredientTypes = {
@@ -102,3 +112,43 @@ export const nMaxOrdersInPendingColumn = 5 as const;
 export const nMaxOrdersInDoneList = 10 as const;
 
 export const nMaxOrdersInDoneColumn = 5 as const;
+
+export const nSecondsUntilSocketReconnectOnError = 5 as const;
+
+export const nSuccessSocketCloseCode = 1000 as const;
+
+export const oOrderTypes = { sPending : "pending",
+                             sCancelled : "cancelled",
+                             sCreated : "created",
+                             sDone : "done" } as const;
+
+export const nMaxIngredientsToShowInOrder = 6 as const;
+
+export const oDeclinations = { aOne : [1 as number],
+                               aTwoToFour: [2 as number,
+                                            3 as number,
+                                            4 as number],
+                               aFive : [5 as number,
+                                        6 as number,
+                                        7 as number,
+                                        8 as number,
+                                        9 as number,
+                                        0 as number],
+                               aExtemptions : [11 as number,
+                                               12 as number,
+                                               13 as number,
+                                               14 as number] } as const;
+
+export const oDateFormatOptions = { nNumberOfLastDays : 7,
+                                    nMillisecondsPerDay : 86400000,
+                                    aYesterdays : ["Cегодня", "Вчера"],
+                                    aDayWords : ["день", "дня", "дней"],
+                                    sBefore : "назад",
+                                    nTZDifferenceDivider : 60,
+                                    sTZPrefix : "i-GMT" } as const;
+
+export const oStatusLabels = {
+    [oOrderTypes.sPending] : "Готовится",
+    [oOrderTypes.sDone] : "Выполнен",
+    [oOrderTypes.sCancelled] : "Отменён",
+    [oOrderTypes.sCreated] : "Создан"} as const;

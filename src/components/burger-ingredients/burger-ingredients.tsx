@@ -83,7 +83,7 @@ const BurgerIngredients = () : JSX.Element => {
     const handleIngredientClick =
              useCallback((oThisElement : IDraggableIngredient) : () => void => {
         return () => {
-            navigate("/ingredients/" + oThisElement._id, 
+            navigate("/ingredients/" + oThisElement._id + "/", 
                      {state: { oBackground : oLocation }});
         }
     }, [navigate, oLocation]);

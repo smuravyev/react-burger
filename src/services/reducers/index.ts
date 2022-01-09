@@ -7,13 +7,15 @@ import { reducerOrderDetails } from './order-details';
 import { reducerApp } from './app';
 import { reducerErrorMessage } from './error-message';
 import { reducerAuthorization } from './authorization';
+import { reducerFeed } from './feed';
 
 export const reducerRoot = combineReducers({
-    app: reducerApp,
-    authorization: reducerAuthorization,
-    constructedBurger: undoable(reducerBurgerConstructor),
-    burgerIngredients: reducerBurgerIngredients,
+    app : reducerApp,
+    authorization : reducerAuthorization,
+    constructedBurger : undoable(reducerBurgerConstructor),
+    burgerIngredients : reducerBurgerIngredients,
     orderDetails : reducerOrderDetails,
-    errorMessage: reducerErrorMessage
+    errorMessage : reducerErrorMessage,
+    feed : reducerFeed
 });
 

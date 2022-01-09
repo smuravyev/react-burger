@@ -1,6 +1,9 @@
 import Cookies from 'js-cookie';
 
-import { oErrorCodes, nMaxDigitsInTheOrderNumber } from '../utils/constants';
+import { oErrorCodes,
+         nMaxDigitsInTheOrderNumber,
+         oDeclinations, 
+         oDateFormatOptions } from '../utils/constants';
 
 import { oSettings } from '../config/config';
 
@@ -155,4 +158,96 @@ export const formatOrderNumber =
         }
     }
     return sResult;
+};
+
+export const getDeclinationString = (nNumber : number,
+                                     sOne : string,
+                                     sTwoToFour : string,
+                                     sFive : string) : string => {
+    const nRemainder : number = nNumber % 10;
+    const bIsExtemption = oDeclinations.aExtemptions.indexOf(nNumber) >= 0;
+    let sResult : string = "";
+    switch(true){
+        case ((oDeclinations.aOne.indexOf(nRemainder) >= 0) &&
+              (!bIsExtemption)) : {
+            sResult = sOne;
+            break;
+        }
+        case ((oDeclinations.aTwoToFour.indexOf(nRemainder) >= 0) &&
+              (!bIsExtemption)) : {
+            sResult = sTwoToFour;
+            break;
+        }
+        default: 
+            sResult = sFive;
+    }
+    return String(nNumber) + " " + sResult;
+};
+
+/**
+ * Makes the string like "Today, 03:24:00 i-GMT+3" from the dateString like
+ * "1995-12-17T03:24:00Z". Timezone will be used currently installed at
+ * the client system.
+ * 
+ * @param sSource Source string. Example: "1995-12-17T03:24:00Z". TZ required.
+ *
+ * @returns The "cool string" based on some constants.   
+ */
+export const makeCoolDateFromUTCString : (sSource : string) => string =
+                                                                  (sSource) => {
+    const dtDate = new Date(sSource);
+    //Date with the time reset, 00:00:00
+    const dtDateInDays = new Date(dtDate.getFullYear(),
+                                  dtDate.getMonth(),
+                                  dtDate.getDate()); // Could be easier, but...
+    const dtNow = new Date();
+    const dtNowInDays = new Date(dtNow.getFullYear(), 
+                                 dtNow.getMonth(),
+                                 dtNow.getDate());
+    // How many days is the difference?
+    const nDayDifference =
+                     Math.floor((dtNowInDays.getTime() - dtDateInDays.getTime())
+                                / oDateFormatOptions.nMillisecondsPerDay);
+    // First, "Today, ", "Yesterday, ", "2 days ago,"...
+    let sResult : string = "";
+    if((nDayDifference >= 0) &&
+       (nDayDifference <= oDateFormatOptions.nNumberOfLastDays)){
+        if(nDayDifference < oDateFormatOptions.aYesterdays.length){
+            sResult = oDateFormatOptions.aYesterdays[nDayDifference];
+        }
+        else {
+            sResult = getDeclinationString(nDayDifference,
+                                           ...oDateFormatOptions.aDayWords) +
+                      " " + oDateFormatOptions.sBefore;
+        }
+    }
+    else{
+        // If more that nNumberOfLastDays before, just plain date will be used
+        sResult = dtDate.toLocaleDateString();
+    }
+    sResult = sResult + ", ";
+    
+    // Second: local time:
+    sResult = sResult + dtDate.toLocaleTimeString();
+    
+    // Third: Timezone. We should display the CURRENT time zone as + or -...
+     
+    let nTZDifference = - dtNow.getTimezoneOffset();
+    let sTZDifference : string =
+                       nTZDifference === 0 ? "" : nTZDifference > 0 ? "+" : "-";
+    // We know the sign, so...
+    nTZDifference = Math.abs(nTZDifference);
+    // There are some time zones with NON-ROUND number of hours!
+    if(nTZDifference % oDateFormatOptions.nTZDifferenceDivider === 0){
+        sTZDifference = sTZDifference +
+                String(nTZDifference / oDateFormatOptions.nTZDifferenceDivider);
+    }
+    else{
+        sTZDifference = sTZDifference +
+               String(Math.floor(nTZDifference /
+                                 oDateFormatOptions.nTZDifferenceDivider)) + ":"
+               + String(Math.floor(nTZDifference %
+                                      oDateFormatOptions.nTZDifferenceDivider));
+    }
+    return sResult +  " " + oDateFormatOptions.sTZPrefix + sTZDifference;
 };

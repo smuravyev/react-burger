@@ -76,3 +76,51 @@ export interface IAPIErrorData {
 export interface IIngredientsRequestData extends IAPIRequestData {
     readonly data : Array<IIngredient>;
 }
+
+export type TOrderStatus = "done" | "cancelled" | "pending" | "created"; 
+
+export interface IOrderProperties {
+    _id : string;
+    status: TOrderStatus;
+    name : string;
+    createdAt : string;
+    updatedAt : string;
+    number: number;
+};
+
+export interface IOrderWithIngredientsProperties extends IOrderProperties {
+    ingredients : Array<string>;
+};
+
+export interface IProcessedForFeedIngredient {
+        price?: number;
+        image: string;
+        type?: string;
+        name?: string;
+};
+
+export interface IOrderWithProcessedIngredientsProperties
+                                                       extends IOrderProperties{
+    ingredients : Array<IProcessedForFeedIngredient>;
+    price : number;
+};
+
+export interface IOrdersFeedData {
+    success : boolean;
+    orders : Array<IOrderWithIngredientsProperties>;
+    total : number,
+    totalToday: number;    
+};
+
+export interface IProcessedOrdersFeedData {
+    aOrders : Array<IOrderWithProcessedIngredientsProperties>;
+    nTotal : number,
+    nTotalToday : number,
+    aReadyOrders : Array<Array<number>>;
+    aPendingOrders : Array<Array<number>>;
+};
+
+export interface IOrderNumberAndTime {
+    nNumber: number;
+    nTimeUpdated : number;
+};

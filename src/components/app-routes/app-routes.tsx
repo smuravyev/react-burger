@@ -8,6 +8,7 @@ import { ConstructorPage,
          IngredientDetailsPage,
          InvalidPage,
          LoginPage,
+         OrderDetailsPage,
          ProfilePage,
          RegisterPage,
          ResetPasswordPage, 
@@ -54,8 +55,12 @@ const AppRoutes = () => {
                                    </ProtectedRoute> ) } />
                 {
                     (!oBackground) && (
-                        <Route path="/ingredients/:sID"
-                               element={ ( <IngredientDetailsPage />) } />
+                        <>
+                            <Route path="/ingredients/:sID"
+                                   element={ ( <IngredientDetailsPage />) } />
+                            <Route path="/feed/:sID"
+                                   element={ ( <OrderDetailsPage />) } />
+                        </>
                     )
                 }
                 <Route path="*" element={ < InvalidPage /> } />
@@ -65,6 +70,8 @@ const AppRoutes = () => {
                     <Routes>
                         <Route path="/ingredients/:sID"
                                element={( <IngredientDetailsPage />) } />
+                        <Route path="/feed/:sID"
+                               element={( <OrderDetailsPage />) } />
                         <Route path="*" element= {null} />
                     </Routes>
                 )

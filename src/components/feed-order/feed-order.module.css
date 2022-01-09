@@ -1,0 +1,44 @@
+.order{
+    border-radius: 40px;
+    background-color: #1C1C21;
+    cursor: pointer;
+}
+
+.order__top{
+    text-align: left;
+    display: flex;
+    flex-direction: row;
+}
+
+.order__top > *{
+    flex-grow: 1;
+}
+
+.order__top > *:last-child{
+    text-align: right;
+    flex-grow: 1;
+}
+
+.order__name{
+    text-align: left;
+}
+
+.ingredients{
+    list-style-type: none;
+    text-align: left;
+    padding: 0;
+    position: relative;
+    direction: rtl;
+}
+
+.price {
+    float: right;
+    height: 64px;
+    line-height: 64px;
+    vertical-align: middle;
+    direction: ltr;
+}
+
+.price > * {
+    vertical-align: middle;
+}

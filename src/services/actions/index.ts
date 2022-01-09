@@ -4,12 +4,15 @@ import { TBurgerIngredientsAction } from './burger-ingredients';
 import { TBurgerConstructorAction } from './burger-constructor';
 import { TErrorMessageAction } from './error-message';
 import { TOrderDetailsAction } from './order-details';
+import { TFeedAction } from './feed';
+import { TSocketMiddlewareAction } from '../middleware/socket-middleware';
 
 export type TApplicationAction = TAppAction |
                                  TAuthorizationAction |
                                  TBurgerIngredientsAction |
                                  TBurgerConstructorAction |
                                  TErrorMessageAction |
-                                 TOrderDetailsAction;
-
+                                 TOrderDetailsAction |
+                                 TFeedAction | 
+                                 TSocketMiddlewareAction;
 
