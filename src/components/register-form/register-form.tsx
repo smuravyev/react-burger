@@ -19,7 +19,7 @@ import { reNameChecker,
          
 import type { TChangeHandler } from '../checkable-input/checkable-input';
 
-import { SAVE_ENTERED_EMAIL,
+import { saveEnteredEmailAction,
          requestRegisterUser } from '../../services/actions/authorization';
 
 import { useAppDispatch,
@@ -49,8 +49,7 @@ const RegisterForm = () : JSX.Element => {
     const saveEnteredEmail = () : void => {
         if((oFormData.email !== sEnteredEmail) && 
            (oFormData.email !== "")){
-            dispatch({type: SAVE_ENTERED_EMAIL,
-                      payload: { sEmail : oFormData.email }});
+            dispatch(saveEnteredEmailAction(oFormData.email));
         }
     }
 

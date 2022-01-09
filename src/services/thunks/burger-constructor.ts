@@ -1,5 +1,5 @@
-import { SWAP_INGREDIENTS,
-         ADD_INGREDIENT } from '../actions/burger-constructor';
+import { swapIngredientsAction,
+         addIngredientAction } from '../actions/burger-constructor';
 
 import type { TAppThunk } from '../store';
 
@@ -27,9 +27,7 @@ export const moveIngredient : TAppThunk = ({ nSourceIndex,
                          constructedBurger.present.aContent.length - 1) ? 1 : 0;
 
     // Aaaaand... Swap! 
-    dispatch({type: SWAP_INGREDIENTS,
-              payload: { nFirst : nSourceIndex,
-                         nSecond : nTargetIndex + nAddition}})
+    dispatch(swapIngredientsAction(nSourceIndex, nTargetIndex + nAddition));
 };
 
 export const addIngredient : TAppThunk = ({ oIngredient,
@@ -42,9 +40,8 @@ export const addIngredient : TAppThunk = ({ oIngredient,
     const { constructedBurger } = getState();
     const nTargetIndex = constructedBurger.present.aContent.findIndex(
                                    oElement => oElement.sInnerID === sTargetID);
-    dispatch({type: ADD_INGREDIENT,
-              payload: {nIndex: bIsBefore ? nTargetIndex : nTargetIndex + 1,
-                        oIngredient: oIngredient}});
+    dispatch(addIngredientAction(bIsBefore ? nTargetIndex : nTargetIndex + 1,
+                                 oIngredient));
 };
 
 export const addIngredientBefore : TAppThunk =

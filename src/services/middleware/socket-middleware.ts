@@ -49,7 +49,7 @@ export const WS_SEND = '@socketMiddleware/WS_SEND' as const;
 export interface IWSConnectAction {
     readonly type : typeof WS_CONNECT;
     readonly payload : {
-        readonly url : string;
+        readonly sURL : string;
         readonly onOpen? : TApplicationAction | TAppThunk;
         readonly onClose? : TApplicationAction | TAppThunk;
         readonly onError? : TApplicationAction | TAppThunk;
@@ -65,13 +65,35 @@ export interface IWSCloseAction {
 export interface IWSSendAction {
     readonly type: typeof WS_SEND;
     readonly payload : {
-        readonly message : string; 
+        readonly sMessage : string; 
     }
 };
 
 export type TSocketMiddlewareAction = IWSSendAction |
                                       IWSCloseAction |
                                       IWSConnectAction;
+
+export const socketConnectAction =
+        ( sURL : string,
+          bWithAuthToken : boolean = false,
+          onOpen : TApplicationAction | TAppThunk | undefined = undefined,
+          onClose : TApplicationAction | TAppThunk | undefined = undefined,
+          onError : TApplicationAction | TAppThunk | undefined = undefined,
+          onMessage : TApplicationAction | TAppThunk | undefined = undefined ) :
+                                                             IWSConnectAction =>
+                                 ({ type: WS_CONNECT,
+                                     payload: { sURL : sURL,
+                                                bWithAuthToken : bWithAuthToken,
+                                                onOpen: onOpen,
+                                                onClose: onClose,
+                                                onError: onError,
+                                                onMessage : onMessage } });
+
+export const socketSendAction = (sMessage : string) : IWSSendAction =>
+                                         ({ type: WS_SEND,
+                                            payload: { sMessage : sMessage } });
+
+export const socketCloseAction = () : IWSCloseAction => ({ type: WS_CLOSE });
 
 export const socketMiddleware : Middleware =
                  ({ dispatch, getState } : { dispatch : TAppDispatch,
@@ -97,7 +119,7 @@ export const socketMiddleware : Middleware =
         if(oAction?.type){
             switch(oAction.type){
                 case WS_CONNECT: {
-                    let sRequiredURL = oAction.payload.url;
+                    let sRequiredURL = oAction.payload.sURL;
                     if(oAction.payload?.bWithAuthToken){
                         const store = getState();
                         if(store?.authorization?.bIsUserSet){
@@ -143,9 +165,11 @@ export const socketMiddleware : Middleware =
                             if(oAction.payload.onOpen !== undefined){
                                 wsSocket.onopen = () => {
                                     if(oAction.payload.onOpen !== undefined){
-                                        if(typeof oAction.payload.onOpen === "function"){
-                                            dispatch(oAction.payload.onOpen(oAction.payload.url,
-                                                                          oAction.payload.bWithAuthToken));
+                                        if(typeof oAction.payload.onOpen ===
+                                                                    "function"){
+                                            dispatch(oAction.payload.onOpen(
+                                               oAction.payload.sURL,
+                                               oAction.payload.bWithAuthToken));
                                          }
                                     }
                                 };
@@ -236,7 +260,7 @@ export const socketMiddleware : Middleware =
                 case WS_SEND : {
                     try{
                         // We already declared that the payload is string. So...
-                        wsSocket?.send(oAction.payload.message);
+                        wsSocket?.send(oAction.payload.sMessage);
                     }
                     catch(_){
                         // The developer should be fired if this will

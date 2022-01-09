@@ -29,3 +29,16 @@ export interface IGetIngredientsFailedAction {
 export type TBurgerIngredientsAction = IGetIngredientsRequestAction |
                                        IGetIngredientsSuccessAction |
                                        IGetIngredientsFailedAction;
+
+export const
+           setGetIngredientsRequestAction = () : IGetIngredientsRequestAction =>
+                                            ({ type: GET_INGREDIENTS_REQUEST });
+
+export const setGetIngredientsFailedAction = () : IGetIngredientsFailedAction =>
+                                             ({ type: GET_INGREDIENTS_FAILED });
+
+export const
+         setGetIngredientsSuccessAction = (aIngredients : TArrayOfIngredients) :
+                                                 IGetIngredientsSuccessAction =>
+                                 ({ type: GET_INGREDIENTS_SUCCESS,
+                                    payload: { aIngredients : aIngredients } });

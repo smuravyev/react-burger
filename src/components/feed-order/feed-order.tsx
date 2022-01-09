@@ -4,7 +4,8 @@ import { memo,
 import { CurrencyIcon }
                       from '@ya.praktikum/react-developer-burger-ui-components';
 
-import { OrderIngredientsList } from '../';
+import { OrderIngredientsList,
+         OrderStatus } from '../';
 
 import { formatOrderNumber,
          makeCoolDateFromUTCString } from '../../utils/functions';
@@ -22,10 +23,12 @@ import styles from './feed-order.module.css';
 export interface IFeedOrderProps {
     sAdditionalClass? : string;
     oOrder : IOrderWithProcessedIngredientsProperties;
+    bShowStatus? : boolean;
 };
 
 const FeedOrder : FC<IFeedOrderProps> = memo(({ sAdditionalClass = '',
-                                                oOrder }) => {
+                                                oOrder,
+                                                bShowStatus = false}) => {
 
     const navigate = useNavigate();
     
@@ -55,11 +58,18 @@ const FeedOrder : FC<IFeedOrderProps> = memo(({ sAdditionalClass = '',
                     {makeCoolDateFromUTCString(oOrder.createdAt)}
                 </section>
             </section>
-            <h2 className={`${styles.order__name} mb-6 text ` + 
+            <h2 className={`${styles.order__name} text ` + 
                           " text_type_main-medium"}>
                 {oOrder.name}
             </h2>
-            <ul className={`${styles.ingredients}`}>
+            {
+                ( bShowStatus ) && (
+                   <section className="pt-2 text text_type_main-default">
+                       <OrderStatus sStatus={oOrder.status} />
+                   </section> 
+                )
+            }
+            <ul className={`${styles.ingredients} mt-6`}>
                 <li className={`${styles.price} ml-6`}>
                     <span className=
    "text text_type_digits-default pr-2">{oOrder.price}</span>&nbsp;<CurrencyIcon

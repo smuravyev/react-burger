@@ -8,7 +8,7 @@ import { useAppDispatch,
 import { useLocation,
          Navigate } from 'react-router-dom';
 
-import { SET_RETURN_PATH } from '../../services/actions/authorization';
+import { setReturnPathAction } from '../../services/actions/authorization';
 
 export interface IProtectedRouteProps {
     sFromWhom? : "authorized" | "unauthorized";
@@ -41,8 +41,7 @@ const ProtectedRoute : FC<IProtectedRouteProps> = ({ sFromWhom = "unauthorized",
                                              ( sReturnPath ? sReturnPath : "/");
     useEffect(() => {
         if(bSavePathToStore && (!(bIsAllowed))){
-            dispatch({ type: SET_RETURN_PATH,
-                       payload: { sReturnPath : oLocation.pathname }});
+            dispatch(setReturnPathAction(oLocation.pathname));
         }
     }, [bIsAllowed,
         dispatch,

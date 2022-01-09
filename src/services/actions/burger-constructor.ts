@@ -64,3 +64,29 @@ export type TBurgerConstructorAction = IClearBurgerAction |
                                        IRemoveIngredientAction |
                                        ISwapIngredientsAction |
                                        ISetBunAction;
+
+export const clearBurgerAction = () : IClearBurgerAction =>
+                                                       ({ type: CLEAR_BURGER });
+
+export const addIngredientAction = (nIndex : number,
+                                    oIngredient : IDraggableIngredient) :
+                                                         IAddIngredientAction =>
+                                    ({ type: ADD_INGREDIENT,
+                                       payload: { nIndex : nIndex,
+                                                  oIngredient: oIngredient } });
+
+export const
+            removeIngredientAction = (sID : string) : IRemoveIngredientAction =>
+                                                   ({ type: REMOVE_INGREDIENT,
+                                                      payload: { sID : sID } });
+
+export const
+          swapIngredientsAction = (nFirst: number,
+                                   nSecond : number) : ISwapIngredientsAction =>
+                                            ({ type: SWAP_INGREDIENTS,
+                                               payload: { nFirst: nFirst,
+                                                          nSecond: nSecond } });
+
+export const setBunAction = (oBun : IDraggableIngredient) : ISetBunAction => 
+                                                 ({ type : SET_BUN,
+                                                    payload: { oBun : oBun } });

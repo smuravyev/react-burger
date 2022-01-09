@@ -34,3 +34,17 @@ export type TOrderDetailsAction = IClearOrderNumberAction |
                                   IOrderRequestAction |
                                   IOrderSuccessAction |
                                   IOrderFailedAction;
+                                  
+export const clearOrderNumberAction = () : IClearOrderNumberAction => 
+                                                 ({ type: CLEAR_ORDER_NUMBER });
+
+export const setOrderRequestAction = () : IOrderRequestAction =>
+                                                      ({ type: ORDER_REQUEST });
+
+export const
+        setOrderSuccessAction = (nOrderNumber : number) : IOrderSuccessAction => 
+                                 ({ type: ORDER_SUCCESS,
+                                    payload: { nOrderNumber : nOrderNumber } });
+
+export const setOrderFailedAction = () : IOrderFailedAction => 
+                                                       ({ type: ORDER_FAILED });

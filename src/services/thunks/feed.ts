@@ -1,10 +1,10 @@
-import { FEED_CONNECTION_ERROR,
-         FEED_CONNECTED,
-         FEED_DISCONNECTED,
-         FEED_RECEIVED_DATA } from '../actions/feed';
+import { setFeedConnectionErrorAction,
+         setFeedConnectedAction,
+         setFeedDisconnectedAction,
+         setFeedReceivedDataAction } from '../actions/feed';
 
-import { WS_CONNECT,
-         WS_CLOSE } from '../middleware/socket-middleware';
+import { socketConnectAction,
+         socketCloseAction } from '../middleware/socket-middleware';
 
 import { setError } from '../actions/error-message';
 
@@ -156,39 +156,33 @@ const processOrders =
 };
 
 export const socketDisconnect : TAppThunk = () => dispatch => {
-    dispatch({ type: WS_CLOSE });
+    dispatch(socketCloseAction());
 }
 
 export const socketConnect : TAppThunk = (sURL : string,
                                           bWithAuthToken : boolean = false) =>
                                                                    dispatch => {
-    dispatch({ type : WS_CONNECT,
-               payload : {
-                   url : sURL,
-                   onOpen : onSocketConnected,
-                   onClose : onSocketClosed,
-                   onError : onSocketError,
-                   onMessage : onSocketMessage,
-                   bWithAuthToken : bWithAuthToken
-            }});
+    dispatch(socketConnectAction(sURL,
+                                 bWithAuthToken,
+                                 onSocketConnected,
+                                 onSocketClosed,
+                                 onSocketError,
+                                 onSocketMessage));
+
     };
             
 export const onSocketError : TAppThunk = () => dispatch => {
-    dispatch({ type : FEED_CONNECTION_ERROR });
+    dispatch(setFeedConnectionErrorAction());
 };
 
 export const onSocketConnected : TAppThunk = (sURL : string,
                                               bWithAuthToken : boolean) =>
                                                                   dispatch => {
-    dispatch({ type: FEED_CONNECTED,
-               payload: {
-                   bWithAuthToken: bWithAuthToken,
-                   sURL : sURL }
-    });
-}
+        dispatch(setFeedConnectedAction(bWithAuthToken, sURL));
+};
 
 export const onSocketClosed : TAppThunk = () => dispatch => {
-    dispatch({ type: FEED_DISCONNECTED });
+    dispatch(setFeedDisconnectedAction());
 }
 
 export const onSocketMessage : TAppThunk =
@@ -204,8 +198,7 @@ export const onSocketMessage : TAppThunk =
             const oProcessedOrders = processOrders(oData,
                                                    store.burgerIngredients.aIngredients);
             if(oProcessedOrders !== null){
-                dispatch({ type : FEED_RECEIVED_DATA,
-                           payload: oProcessedOrders });
+                dispatch(setFeedReceivedDataAction(oProcessedOrders));
             }
         }
         else{

@@ -6,7 +6,7 @@ import { Modal } from '../';
 import { useAppDispatch,
          useAppSelector } from '../../services/hooks';
 
-import { ERROR_CLEAR } from '../../services/actions/error-message';
+import { errorClearAction } from '../../services/actions/error-message';
 
 import styles from './error-message.module.css';
 
@@ -19,7 +19,7 @@ const ErrorMessage = () => {
    const dispatch = useAppDispatch();
    
    const closer = useCallback(() : void => {
-       dispatch({type : ERROR_CLEAR});
+       dispatch(errorClearAction());
    }, [ dispatch ]); 
 
    return (   

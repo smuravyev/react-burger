@@ -10,9 +10,12 @@ import styles from './feed-orders-list.module.css';
 
 export interface IFeedOrdersListProps {
     aOrders : Array<IOrderWithProcessedIngredientsProperties>;
+    bShowStatus? : boolean
 };
 
-const FeedOrdersList : FC<IFeedOrdersListProps> =  memo(({ aOrders }) => {
+const FeedOrdersList : FC<IFeedOrdersListProps> = 
+                                              memo(({ aOrders,
+                                                      bShowStatus = false}) => {
     
     return (
         <ul className={styles.orders__list}>
@@ -21,6 +24,7 @@ const FeedOrdersList : FC<IFeedOrdersListProps> =  memo(({ aOrders }) => {
                     (
                         <FeedOrder key={oOrder._id}
                                    oOrder={oOrder}
+                                   bShowStatus={bShowStatus}
                                sAdditionalClass = {nIndex > 0 ? " mt-4" : ""} /> 
                     )
                 )

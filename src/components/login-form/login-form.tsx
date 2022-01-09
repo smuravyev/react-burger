@@ -21,7 +21,7 @@ import { oErrorCodes } from '../../utils/constants';
 
 import { rePasswordChecker } from '../../utils/checkers';
 
-import { SAVE_ENTERED_EMAIL,
+import { saveEnteredEmailAction,
          requestLogin } from '../../services/actions/authorization';
          
 import type { TChangeHandler } from '../checkable-input/checkable-input';
@@ -55,8 +55,7 @@ const LoginForm = () : JSX.Element => {
     const saveEnteredEmail = () : void => {
         if((oFormData.email !== sEnteredEmail) && 
            (oFormData.email !== "")){
-            dispatch({type: SAVE_ENTERED_EMAIL,
-                      payload: { sEmail : oFormData.email }});
+            dispatch(saveEnteredEmailAction(oFormData.email));
         }
     }
 

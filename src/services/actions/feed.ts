@@ -48,3 +48,21 @@ export type TFeedAction = IFeedConnectedAction |
                           IFeedConnectionErrorAction |
                           IFeedDisconnectedAction |
                           IFeedReceivedDataAction;
+
+export const setFeedConnectedAction = (bWithAuthToken : boolean,
+                                       sURL : string) : IFeedConnectedAction =>
+                                  ({ type: FEED_CONNECTED,
+                                     payload: { bWithAuthToken : bWithAuthToken,
+                                                sURL : sURL } });
+
+export const setFeedConnectionErrorAction = () : IFeedConnectionErrorAction =>
+                                              ({ type: FEED_CONNECTION_ERROR });
+
+export const setFeedDisconnectedAction = () : IFeedDisconnectedAction =>
+                                                  ({ type: FEED_DISCONNECTED });
+
+export const
+              setFeedReceivedDataAction = ( oData : IProcessedOrdersFeedData ) :
+                                                      IFeedReceivedDataAction =>
+                                                    ({ type: FEED_RECEIVED_DATA,
+                                                       payload: oData });

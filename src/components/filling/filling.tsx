@@ -9,7 +9,7 @@ import { useDrag, useDrop } from 'react-dnd';
 import { ConstructorElement, 
          DragIcon } from '@ya.praktikum/react-developer-burger-ui-components';
          
-import { REMOVE_INGREDIENT,
+import { removeIngredientAction,
          moveIngredientBefore,
          moveIngredientAfter } from '../../services/actions/burger-constructor';
 
@@ -132,10 +132,12 @@ const Filling =
                                 price={oIngredient.price}
                                 thumbnail={oIngredient.image}
                                 handleClose=
-                                 {() => {dispatch({ type : REMOVE_INGREDIENT,
-                                                   payload :
-                                                       { sID :
-                                          oIngredient?.sInnerID || '' } })}} />
+                                {
+                                    () => {
+                                        dispatch(removeIngredientAction(
+                                                  oIngredient?.sInnerID || ''));
+                                    }
+                                } />
         </li>
     );
 }

@@ -172,3 +172,76 @@ export type TAuthorizationAction = IForgotPasswordRequestAction |
                                    IUpdateUserFailedAction |
                                    IAuthCheckDoneAction |
                                    IResetUserAction;
+
+export const
+           setForgotPasswordRequestAction = () : IForgotPasswordRequestAction =>
+                                            ({ type: FORGOT_PASSWORD_REQUEST });
+
+export const
+           setForgotPasswordSuccessAction = () : IForgotPasswordSuccessAction =>
+                                            ({ type: FORGOT_PASSWORD_SUCCESS });
+
+export const
+             setForgotPasswordFailedAction = () : IForgotPasswordFailedAction =>
+                                             ({ type: FORGOT_PASSWORD_FAILED });
+
+export const
+          resetForgotPasswordDataAction = () : IResetForgotPasswordDataAction =>
+                                         ({ type: RESET_FORGOT_PASSWORD_DATA });
+
+export const setResetPasswordRequestAction = () : IResetPasswordRequestAction =>
+                                            ({ type : RESET_PASSWORD_REQUEST });
+
+export const setResetPasswordSuccessAction = () : IResetPasswordSuccessAction =>
+                                             ({ type: RESET_PASSWORD_SUCCESS });
+
+export const setResetPasswordFailedAction = () : IResetPasswordFailedAction =>
+                                              ({ type: RESET_PASSWORD_FAILED });
+
+export const setRegisterUserRequestAction = () : IRegisterUserRequestAction =>
+                                             ({ type : REGISTER_USER_REQUEST });
+
+export const setRegisterUserSuccessAction = () : IRegisterUserSuccessAction =>
+                                              ({ type: REGISTER_USER_SUCCESS });
+
+export const setRegisterUserFailedAction = () : IRegisterUserFailedAction =>
+                                               ({ type: REGISTER_USER_FAILED });
+
+export const setLoginRequestAction = () : ILoginRequestAction =>
+                                                      ({ type: LOGIN_REQUEST });
+
+export const setLoginFailedAction = () : ILoginFailedAction =>
+                                                       ({ type: LOGIN_FAILED });
+
+export const setLoginSuccessAction = () : ILoginSuccessAction =>
+                                                      ({ type: LOGIN_SUCCESS });
+
+export const
+        saveEnteredEmailAction = (sEmail : string) : ISaveEnteredEmailAction =>
+                                               ({ type: SAVE_ENTERED_EMAIL,
+                                                  payload: { sEmail : sEmail}});
+
+export const
+            setUserAction = (sEmail : string, sName: string) : ISetUserAction =>
+                                                ({ type: SET_USER,
+                                                   payload: { sEmail : sEmail,
+                                                               sName : sName}});
+ 
+export const
+    setReturnPathAction = (sReturnPath : string = "/") : ISetReturnPathAction => 
+                                     ({ type: SET_RETURN_PATH,
+                                        payload: { sReturnPath : sReturnPath}});
+
+export const setUpdateUserRequestAction = () : IUpdateUserRequestAction =>
+                                                ({ type: UPDATE_USER_REQUEST });
+
+export const setUpdateUserSuccessAction = () : IUpdateUserSuccessAction =>
+                                                ({ type: UPDATE_USER_SUCCESS });
+
+export const setUpdateUserFailedAction = () : IUpdateUserFailedAction =>
+                                                 ({ type: UPDATE_USER_FAILED });
+
+export const setAuthCheckDoneAction = () : IAuthCheckDoneAction =>
+                                                    ({ type: AUTH_CHECK_DONE });
+
+export const resetUserAction = () : IResetUserAction => ({ type: RESET_USER }); 

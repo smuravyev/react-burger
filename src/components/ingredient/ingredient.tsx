@@ -6,7 +6,7 @@ import { useAppDispatch } from '../../services/hooks';
 import { addIngredient,
          addIngredientBefore,
          addIngredientAfter,
-         SET_BUN} from '../../services/actions/burger-constructor';
+         setBunAction} from '../../services/actions/burger-constructor';
 
 import { Counter, 
          CurrencyIcon }
@@ -53,8 +53,7 @@ const Ingredient = ({ onClickHandler,
             if(oResult){
                 if(oResult.bDefaultDrop){
                     if(oIngredient.sDragType === oIngredientDragTypes.sBun){
-                        dispatch({ type : SET_BUN,
-                                   payload : { oBun: oIngredient }});
+                        dispatch(setBunAction(oIngredient));
                     }
                     else{
                         dispatch(addIngredient({ oIngredient : oIngredient }));

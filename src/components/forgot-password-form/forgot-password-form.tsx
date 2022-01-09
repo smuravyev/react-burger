@@ -25,7 +25,7 @@ import { CheckableInput,
 
 import { setError } from '../../services/actions/error-message';
 
-import { SAVE_ENTERED_EMAIL,
+import { saveEnteredEmailAction,
          requestForgotPassword } from '../../services/actions/authorization';
 
 import styles from './forgot-password-form.module.css';
@@ -52,8 +52,7 @@ const ForgotPasswordForm = () : JSX.Element => {
     const saveEnteredEmail = () => {
         if((oFormData.email !== sEnteredEmail) && 
            (oFormData.email !== "")){
-            dispatch({type: SAVE_ENTERED_EMAIL,
-                      payload: { sEmail : oFormData.email }});
+            dispatch(saveEnteredEmailAction(oFormData.email));
         }
     }
 

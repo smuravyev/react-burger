@@ -1,5 +1,5 @@
-import { BUSY_SET,
-         BUSY_CLEAR } from '../actions/app';
+import { setIsBusyAction,
+         clearIsBusyAction } from '../actions/app';
 
 import { setError } from '../actions/error-message';
 
@@ -9,16 +9,16 @@ import { oErrorCodes } from '../../utils/constants';
 
 import { oSettings } from '../../config/config'; 
 
-import { ORDER_REQUEST,
-         ORDER_SUCCESS,
-         ORDER_FAILED } from '../actions/order-details';
+import { setOrderRequestAction,
+         setOrderSuccessAction,
+         setOrderFailedAction } from '../actions/order-details';
 
 import type { TAppThunk} from '../store';
 
 import type { IOrderRequestResult } from '../../utils/functions';
 
 export const sendOrder : TAppThunk = () => async (dispatch, getState) => {
-    dispatch({type: BUSY_SET});
+    dispatch(setIsBusyAction());
     try{
         const { constructedBurger } = getState();
         if(!(constructedBurger.present.oBun &&
@@ -36,7 +36,7 @@ export const sendOrder : TAppThunk = () => async (dispatch, getState) => {
             });
         
             //Start requesting...
-            dispatch({type: ORDER_REQUEST});
+            dispatch(setOrderRequestAction());
             const oData =
                  await fetchWithAuth(oSettings.sAPIBaseURL +
                                      oSettings.oAPIURIS.sOrders,
@@ -51,21 +51,19 @@ export const sendOrder : TAppThunk = () => async (dispatch, getState) => {
             if((!(oData.success)) ||
                (!(oData.order)) ||
                (!(oData.order.number))){
-                dispatch({ type: ORDER_FAILED });
+                dispatch(setOrderFailedAction());
                 dispatch(setError(oErrorCodes.EC_CANNOT_CREATE_ORDER, true));
             }
             else{
-                dispatch({type: ORDER_SUCCESS,
-                          payload:
-                               { nOrderNumber: oData.order.number }});
+                dispatch(setOrderSuccessAction(oData.order.number));
             }
         }
     }
     catch(_){
-        dispatch({ type: ORDER_FAILED });
+        dispatch(setOrderFailedAction());
         dispatch(setError(oErrorCodes.EC_CANNOT_CREATE_ORDER, true));
     }
     finally{
     }
-        dispatch({ type: BUSY_CLEAR });
+        dispatch(clearIsBusyAction());
 };

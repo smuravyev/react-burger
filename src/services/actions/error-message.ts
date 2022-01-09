@@ -21,3 +21,12 @@ export interface IErrorClearAction {
 
 export type TErrorMessageAction = IErrorRaiseAction |
                                   IErrorClearAction;
+
+export const errorRaiseAction = (sMessage : string,
+                                 bCanProceed : boolean) : IErrorRaiseAction =>
+                                    ({ type: ERROR_RAISE,
+                                       payload: { sMessage : sMessage,
+                                                  bCanProceed : bCanProceed }}); 
+
+export const 
+           errorClearAction = () : IErrorClearAction => ({ type: ERROR_CLEAR }); 

@@ -43,7 +43,7 @@ const OrdersHistory = () : JSX.Element => {
             <section className={`${styles.pane} `}>
                 {
                     (aOrders.length > 0) ? (
-                        <FeedOrdersList aOrders={aOrders} />
+                        <FeedOrdersList aOrders={aOrders} bShowStatus={true} />
                     ) : (
                         <p className="text text_type_main-default">
                             Вы&nbsp;пока не&nbsp;сделали ни&nbsp;одного заказа.
