@@ -172,19 +172,21 @@ export const socketConnect : TAppThunk = (sURL : string,
                    onMessage : onSocketMessage,
                    bWithAuthToken : bWithAuthToken
             }});
-    dispatch({ type: FEED_CONNECTING,
-               payload: {
-                   bWithAuthToken: bWithAuthToken,
-                   sURL : sURL }
-    });
-};
+    dispatch({ type: FEED_CONNECTING });
+    };
             
 export const onSocketError : TAppThunk = () => dispatch  => {
     dispatch({ type : FEED_CONNECTION_ERROR });
 };
 
-export const onSocketConnected : TAppThunk = () => dispatch => {
-    dispatch({ type: FEED_CONNECTED });
+export const onSocketConnected : TAppThunk = (sURL : string,
+                                              bWithAuthToken : boolean) =>
+                                                                  dispatch => {
+    dispatch({ type: FEED_CONNECTED,
+               payload: {
+                   bWithAuthToken: bWithAuthToken,
+                   sURL : sURL }
+    });
 }
 
 export const onSocketClosed : TAppThunk = () => dispatch => {
@@ -212,9 +214,10 @@ export const onSocketMessage : TAppThunk =
             if((oData?.message === sInvalidTokenInSocketMessage) &&
                (store?.feed?.bWithAuthToken)){
                 //Need to renew token!
+                 
                 dispatch(requestAuthorizationCheck(() =>  {
                     dispatch(socketConnect(store.feed.sURL,
-                                           store.feed.bWithAuthToken));
+                                          store.feed.bWithAuthToken));
                 }));
             }
             else{

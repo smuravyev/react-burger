@@ -25,7 +25,7 @@ const Feed = () : JSX.Element => {
             aReadyOrders,
             aPendingOrders,
             nTotal,
-            nTotalToday } = useAppSelector(store => store.feed.oFeedData)
+            nTotalToday } = useAppSelector(store => store.feed.oFeedData);
 
     const bHasData = useAppSelector(store => store.feed.bHasData);
     

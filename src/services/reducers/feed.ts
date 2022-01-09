@@ -40,17 +40,14 @@ export const reducerFeed =
        case FEED_CONNECTING: {
             return { ...state,
                      bIsConnecting : true,
-                     bHasError : false, // Reset error status on reconnect
-                     bHasData : false, // And this too
-                     oFeedData : stateInitialFeed.oFeedData,
-                     bIsConnected  : false,
-                     bWithAuthToken : action.payload.bWithAuthToken,
-                     sURL : action.payload.sURL};
+                     bHasError : false }; // Reset error status on reconnect
        }
        
        case FEED_CONNECTED: {
             return { ...state,
                      bIsConnecting: false,
+                     bWithAuthToken : action.payload.bWithAuthToken,
+                     sURL : action.payload.sURL,
                      bIsConnected  : true };
        }
        

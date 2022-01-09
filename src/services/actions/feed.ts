@@ -27,14 +27,14 @@ export { FEED_CONNECTING,
 
 export interface IFeedConnectingAction {
     readonly type : typeof FEED_CONNECTING;
-    readonly payload : {
-        readonly bWithAuthToken : boolean;
-        readonly sURL : string; 
-    };
 };
 
 export interface IFeedConnectedAction {
     readonly type : typeof FEED_CONNECTED;
+    readonly payload : {
+        readonly bWithAuthToken : boolean;
+        readonly sURL : string; 
+    };
 };
 
 export interface IFeedConnectionErrorAction {

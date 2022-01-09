@@ -36,6 +36,7 @@ const OrdersHistory = () : JSX.Element => {
     }, [dispatch]);
     
     return (
+
         (bIsBusy || (!bLoadedIngredients) || !(bHasData)) ? (
             <Loader message="Загрузка данных&hellip;" />
         ) : (

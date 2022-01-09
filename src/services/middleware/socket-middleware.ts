@@ -143,7 +143,10 @@ export const socketMiddleware : Middleware =
                             if(oAction.payload.onOpen !== undefined){
                                 wsSocket.onopen = () => {
                                     if(oAction.payload.onOpen !== undefined){
-                                        redispatch(oAction.payload.onOpen);
+                                        if(typeof oAction.payload.onOpen === "function"){
+                                            dispatch(oAction.payload.onOpen(oAction.payload.url,
+                                                                          oAction.payload.bWithAuthToken));
+                                         }
                                     }
                                 };
                             }
