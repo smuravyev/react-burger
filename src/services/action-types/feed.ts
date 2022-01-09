@@ -1,4 +1,3 @@
-export const FEED_CONNECTING = '@Feed/FEED_CONNECTING' as const;
 export const FEED_CONNECTED = '@Feed/FEED_CONNECTED' as const;
 export const FEED_CONNECTION_ERROR = '@Feed/FEED_CONNECTION_ERROR' as const;
 export const FEED_DISCONNECTED = '@Feed/FEED_DISCONNECTED' as const;
