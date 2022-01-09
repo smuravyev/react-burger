@@ -1,5 +1,4 @@
-import { FEED_CONNECTING,
-         FEED_CONNECTED,
+import { FEED_CONNECTED,
          FEED_CONNECTION_ERROR,
          FEED_DISCONNECTED,
          FEED_RECEIVED_DATA } from '../action-types/feed';
@@ -13,8 +12,7 @@ import { onSocketError,
 
 import type { IProcessedOrdersFeedData } from '../../utils/types';
          
-export { FEED_CONNECTING,
-         FEED_CONNECTED,
+export { FEED_CONNECTED,
          FEED_CONNECTION_ERROR,
          FEED_DISCONNECTED,
          FEED_RECEIVED_DATA,
@@ -24,10 +22,6 @@ export { FEED_CONNECTING,
          onSocketClosed,
          socketDisconnect,
          socketConnect };
-
-export interface IFeedConnectingAction {
-    readonly type : typeof FEED_CONNECTING;
-};
 
 export interface IFeedConnectedAction {
     readonly type : typeof FEED_CONNECTED;
@@ -50,8 +44,7 @@ export interface IFeedReceivedDataAction {
     readonly payload : IProcessedOrdersFeedData;
 };
 
-export type TFeedAction = IFeedConnectingAction |
-                          IFeedConnectedAction | 
+export type TFeedAction = IFeedConnectedAction | 
                           IFeedConnectionErrorAction |
                           IFeedDisconnectedAction |
                           IFeedReceivedDataAction;

@@ -1,5 +1,4 @@
-import { FEED_CONNECTING,
-         FEED_CONNECTED,
+import { FEED_CONNECTED,
          FEED_CONNECTION_ERROR,
          FEED_DISCONNECTED,
          FEED_RECEIVED_DATA } from '../actions/feed';
@@ -9,7 +8,6 @@ import type { TFeedAction } from '../actions/feed';
 import type { IProcessedOrdersFeedData } from '../../utils/types';
          
 export type TFeedState = {
-    bIsConnecting : boolean;
     bIsConnected : boolean;
     bHasError : boolean;
     bHasData : boolean;
@@ -19,7 +17,6 @@ export type TFeedState = {
 };
 
 const stateInitialFeed : TFeedState = {
-    bIsConnecting : false,
     bIsConnected : false,
     bHasError : false,
     bHasData : false,
@@ -37,15 +34,8 @@ const stateInitialFeed : TFeedState = {
 export const reducerFeed =
               (state = stateInitialFeed, action : TFeedAction) : TFeedState => {
     switch(action.type){
-       case FEED_CONNECTING: {
-            return { ...state,
-                     bIsConnecting : true,
-                     bHasError : false }; // Reset error status on reconnect
-       }
-       
        case FEED_CONNECTED: {
             return { ...state,
-                     bIsConnecting: false,
                      bWithAuthToken : action.payload.bWithAuthToken,
                      sURL : action.payload.sURL,
                      bIsConnected  : true };
@@ -58,7 +48,6 @@ export const reducerFeed =
        
        case FEED_DISCONNECTED: {
             return { ...state,
-                     bIsConnecting: false,
                      bIsConnected  : false,
                      bHasData : false,
                      oFeedData : stateInitialFeed.oFeedData,

@@ -1,6 +1,5 @@
 import { FEED_CONNECTION_ERROR,
          FEED_CONNECTED,
-         FEED_CONNECTING,
          FEED_DISCONNECTED,
          FEED_RECEIVED_DATA } from '../actions/feed';
 
@@ -172,10 +171,9 @@ export const socketConnect : TAppThunk = (sURL : string,
                    onMessage : onSocketMessage,
                    bWithAuthToken : bWithAuthToken
             }});
-    dispatch({ type: FEED_CONNECTING });
     };
             
-export const onSocketError : TAppThunk = () => dispatch  => {
+export const onSocketError : TAppThunk = () => dispatch => {
     dispatch({ type : FEED_CONNECTION_ERROR });
 };
 
