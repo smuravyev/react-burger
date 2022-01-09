@@ -1,6 +1,7 @@
 .pane {
     display: inline-block;
     max-width: 844px;
+    min-width: 844px;
     width: 100%;
     height: 100%;
     vertical-align: top;
