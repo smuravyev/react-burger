@@ -1,11 +1,15 @@
 import { FEED_CONNECTION_ERROR,
          FEED_CONNECTED,
+         FEED_CONNECTING,
+         FEED_DISCONNECTED,
          FEED_RECEIVED_DATA } from '../actions/feed';
 
 import { WS_CONNECT,
          WS_CLOSE } from '../middleware/socket-middleware';
 
 import { setError } from '../actions/error-message';
+
+import { requestAuthorizationCheck } from '../actions/authorization';
 
 import { oErrorCodes,
          oIngredientTypes,
@@ -14,7 +18,8 @@ import { oErrorCodes,
          nMaxOrdersInPendingColumn,
          nMaxOrdersInPendingList,
          nMaxOrdersInDoneList } from '../../utils/constants';
-         
+
+import { sInvalidTokenInSocketMessage } from '../../utils/constants';
 
 import type { TAppThunk } from '../store';
 
@@ -151,7 +156,29 @@ const processOrders =
             nTotalToday : aOrders.totalToday };
 };
 
-              
+export const socketDisconnect : TAppThunk = () => dispatch => {
+    dispatch({ type: WS_CLOSE });
+}
+
+export const socketConnect : TAppThunk = (sURL : string,
+                                          bWithAuthToken : boolean = false) =>
+                                                                   dispatch => {
+    dispatch({ type : WS_CONNECT,
+               payload : {
+                   url : sURL,
+                   onOpen : onSocketConnected,
+                   onClose : onSocketClosed,
+                   onError : onSocketError,
+                   onMessage : onSocketMessage,
+                   bWithAuthToken : bWithAuthToken
+            }});
+    dispatch({ type: FEED_CONNECTING,
+               payload: {
+                   bWithAuthToken: bWithAuthToken,
+                   sURL : sURL }
+    });
+};
+            
 export const onSocketError : TAppThunk = () => dispatch  => {
     dispatch({ type : FEED_CONNECTION_ERROR });
 };
@@ -161,7 +188,7 @@ export const onSocketConnected : TAppThunk = () => dispatch => {
 }
 
 export const onSocketClosed : TAppThunk = () => dispatch => {
-    dispatch({ type: FEED_CONNECTION_ERROR });
+    dispatch({ type: FEED_DISCONNECTED });
 }
 
 export const onSocketMessage : TAppThunk =
@@ -182,9 +209,19 @@ export const onSocketMessage : TAppThunk =
             }
         }
         else{
-            dispatch(setError(oErrorCodes.EC_SYNTAX_ERROR_PARSING_MESSAGE,
-                              true));
-            dispatch(onSocketError());
+            if((oData?.message === sInvalidTokenInSocketMessage) &&
+               (store?.feed?.bWithAuthToken)){
+                //Need to renew token!
+                dispatch(requestAuthorizationCheck(() =>  {
+                    dispatch(socketConnect(store.feed.sURL,
+                                           store.feed.bWithAuthToken));
+                }));
+            }
+            else{
+                dispatch(setError(oErrorCodes.EC_SYNTAX_ERROR_PARSING_MESSAGE,
+                                  true));
+                dispatch(onSocketError());
+            }
         }
     }
     catch(_)
@@ -193,20 +230,3 @@ export const onSocketMessage : TAppThunk =
         dispatch(onSocketError());
     }
 } 
-
-export const socketDisconnect : TAppThunk = () => dispatch => {
-    dispatch({ type: WS_CLOSE });
-}
-
-export const socketConnect : TAppThunk = (sURL : string,
-                                          bWithToken : boolean = false) =>
-                                                                   dispatch => {
-    dispatch({ type : WS_CONNECT,
-               payload : {
-                   url : sURL,
-                   onOpen : onSocketConnected,
-                   onClose : onSocketClosed,
-                   onError : onSocketError,
-                   onMessage : onSocketMessage
-            }});
-};

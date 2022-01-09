@@ -235,7 +235,8 @@ export const requestRegisterUser : TAppThunk =
     }
 };
 
-export const requestAuthorizationCheck : TAppThunk = () => async dispatch => {
+export const requestAuthorizationCheck : TAppThunk =
+      (callback : ( () => void ) | undefined = undefined) => async dispatch => {
     dispatch({ type: BUSY_SET });
     try{
         if(Cookies.get('accessToken')){
@@ -249,6 +250,9 @@ export const requestAuthorizationCheck : TAppThunk = () => async dispatch => {
                 dispatch({ type: SET_USER,
                            payload: { sEmail : oUserData["user"]["email"],
                                       sName : oUserData["user"]["name"] }});
+               if(typeof callback === "function"){
+                   callback();
+                }
             }
         } 
     }

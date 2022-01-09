@@ -13,7 +13,9 @@ export type TFeedState = {
     bIsConnected : boolean;
     bHasError : boolean;
     bHasData : boolean;
-    oFeedData : IProcessedOrdersFeedData; 
+    oFeedData : IProcessedOrdersFeedData;
+    bWithAuthToken : boolean;
+    sURL : string;
 };
 
 const stateInitialFeed : TFeedState = {
@@ -21,6 +23,8 @@ const stateInitialFeed : TFeedState = {
     bIsConnected : false,
     bHasError : false,
     bHasData : false,
+    bWithAuthToken : false,
+    sURL : "",
     oFeedData : {
         aOrders : [],
         nTotal : 0,
@@ -38,7 +42,10 @@ export const reducerFeed =
                      bIsConnecting : true,
                      bHasError : false, // Reset error status on reconnect
                      bHasData : false, // And this too
-                     bIsConnected  : false };
+                     oFeedData : stateInitialFeed.oFeedData,
+                     bIsConnected  : false,
+                     bWithAuthToken : action.payload.bWithAuthToken,
+                     sURL : action.payload.sURL};
        }
        
        case FEED_CONNECTED: {
@@ -56,7 +63,10 @@ export const reducerFeed =
             return { ...state,
                      bIsConnecting: false,
                      bIsConnected  : false,
-                     bHasData : false };
+                     bHasData : false,
+                     oFeedData : stateInitialFeed.oFeedData,
+                     bWithAuthToken : false,
+                     sURL : ""};
        }
        
        case FEED_RECEIVED_DATA: {

@@ -152,3 +152,5 @@ export const oStatusLabels = {
     [oOrderTypes.sDone] : "Выполнен",
     [oOrderTypes.sCancelled] : "Отменён",
     [oOrderTypes.sCreated] : "Создан"} as const;
+    
+export const sInvalidTokenInSocketMessage = "Invalid or missing token";

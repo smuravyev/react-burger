@@ -1,5 +1,7 @@
 import { setError } from '../actions/error-message';
 
+import Cookies from 'js-cookie';
+
 import { oErrorCodes,
          nSecondsUntilSocketReconnectOnError,
          nSuccessSocketCloseCode } from '../../utils/constants';
@@ -7,7 +9,8 @@ import { oErrorCodes,
 import type { Middleware } from 'redux';
 
 import type { TAppThunk,
-              TAppDispatch } from '../store';
+              TAppDispatch,
+              TGetStateFunction } from '../store';
 
 import type { TApplicationAction } from '../actions';
 
@@ -51,6 +54,7 @@ export interface IWSConnectAction {
         readonly onClose? : TApplicationAction | TAppThunk;
         readonly onError? : TApplicationAction | TAppThunk;
         readonly onMessage? : TApplicationAction | TAppThunk;
+        readonly bWithAuthToken? : boolean;
     };
 };
 
@@ -69,8 +73,9 @@ export type TSocketMiddlewareAction = IWSSendAction |
                                       IWSCloseAction |
                                       IWSConnectAction;
 
-export const socketMiddleware : Middleware = ({ dispatch }) => {
-    const mwDispatch = dispatch as TAppDispatch;
+export const socketMiddleware : Middleware =
+                 ({ dispatch, getState } : { dispatch : TAppDispatch,
+                                             getState : TGetStateFunction}) => {
     let wsSocket : WebSocket | null = null;
     let bIsConnected : boolean = false;
     let nReconnectTimerID : ReturnType<typeof setTimeout> | null = null;
@@ -78,26 +83,49 @@ export const socketMiddleware : Middleware = ({ dispatch }) => {
     // Number of components using this socket. We won't close it until
     // it reaches zero.
     let nClientComponentsCount = 0;
+    
+    const redispatch = (oAction : TApplicationAction | TAppThunk) => {
+        if(typeof oAction === "function"){
+            dispatch(oAction());
+        }
+        else{
+            dispatch(oAction);
+        }
+    }
 
     return (next) => (oAction : TSocketMiddlewareAction)  => {
         if(oAction?.type){
             switch(oAction.type){
                 case WS_CONNECT: {
+                    let sRequiredURL = oAction.payload.url;
+                    if(oAction.payload?.bWithAuthToken){
+                        const store = getState();
+                        if(store?.authorization?.bIsUserSet){
+                            const sCookieToken : string =
+                                               Cookies.get("accessToken") || "";
+                            if(sCookieToken !== ""){
+                                sRequiredURL = sRequiredURL + 
+                                   (sRequiredURL.indexOf("?") >= 0 ? "&" : "?");
+                                sRequiredURL =
+                                         sRequiredURL + "token=" + sCookieToken;    
+                            }
+                        }
+                        
+                    }
                     // WebSocket constructor could throw an error
                     try{
                         //DO NOT RECONNECT IF WE ARE CONNECTED & URL is the same
-                        if(bIsConnected && wsSocket !== null){
-                            if(sURL !== oAction.payload.url){
+                        if(bIsConnected){
+                            if(sURL !== sRequiredURL){
                                 bIsConnected = false;
                                 //1. Remove the timer
                                 if(nReconnectTimerID){
                                     clearTimeout(nReconnectTimerID);
                                     nReconnectTimerID = null;
                                 }
-                                wsSocket?.close(nSuccessSocketCloseCode);
-                                wsSocket = null;
                                 nClientComponentsCount = 0;
-                                wsSocket = new WebSocket(oAction.payload.url);
+                                wsSocket?.close(nSuccessSocketCloseCode);
+                                wsSocket = new WebSocket(sRequiredURL);
                             }
                             else{
                                 // Don't touch the socket, but can redeclare
@@ -105,75 +133,79 @@ export const socketMiddleware : Middleware = ({ dispatch }) => {
                             }
                         }
                         else{
-                            wsSocket = new WebSocket(oAction.payload.url);
+                            wsSocket = new WebSocket(sRequiredURL);
                         }
                         bIsConnected = true;
                         nClientComponentsCount++;
-                        sURL = oAction.payload.url;
+                        sURL = sRequiredURL;
                         // onOnpen handler
-                        if(oAction.payload.onOpen !== undefined){
-                            wsSocket.onopen = () => {
-                                if(oAction.payload.onOpen !== undefined){
-                                    mwDispatch(oAction.payload.onOpen);
+                        if(wsSocket !== null){
+                            if(oAction.payload.onOpen !== undefined){
+                                wsSocket.onopen = () => {
+                                    if(oAction.payload.onOpen !== undefined){
+                                        redispatch(oAction.payload.onOpen);
+                                    }
+                                };
+                            }
+                        
+                            // onClose handler, needed always
+                            wsSocket.onclose = () => {
+                                // We won't handle errors here
+                                // But we'll try to reconnect
+                                if(oAction.payload.onClose){
+                                    redispatch(oAction.payload.onClose);
+                                }
+
+                                if(bIsConnected){
+                                    nReconnectTimerID = setTimeout(() => {
+                                        // The current WS_CONNECT action
+                                        // will remain in this closure
+                                        dispatch(oAction);
+                                    },
+                                    nSecondsUntilSocketReconnectOnError * 1000);
                                 }
                             };
-                        }
-                        
-                        // onClose handler, needed always
-                        wsSocket.onclose = () => {
-                            // We won't handle errors here
-                            // But we'll try to reconnect
-                            if(oAction.payload.onClose){
-                                mwDispatch(oAction.payload.onClose);
-                            }
 
-                            if(bIsConnected){
-                                nReconnectTimerID = setTimeout(() => {
-                                    // The current WS_CONNECT action
-                                    // will remain in this closure
-                                    dispatch(oAction);
-                                }, nSecondsUntilSocketReconnectOnError);
-                            }
-                        };
-
-                        // onError handler
-                        if(oAction.payload.onError){
-                            // Won't pass any error details here, it's
-                            // useless
-                            wsSocket.onerror = () => {
-                                if(typeof oAction.payload.onError
+                            // onError handler
+                            if(oAction.payload.onError){
+                                // Won't pass any error details here, it's
+                                // useless
+                                wsSocket.onerror = () => {
+                                    if(typeof oAction.payload.onError
                                                               !== "undefined") {
-                                     mwDispatch(oAction.payload.onError);
+                                         redispatch(oAction.payload.onError);
+                                    }
                                 }
-                            }
-                        };
+                            };
 
-                        // onMessage handler
-                        if(oAction.payload.onMessage){
-                            //Interesting
-                            wsSocket.onmessage =
+                            // onMessage handler
+                            if(oAction.payload.onMessage){
+                                //Interesting
+                                wsSocket.onmessage =
                                               ({ data } : { data : string}) => {
-                                // WE WILL RETURN THIS AS STRING, NO JSON
-                                // PARSING! WE DON'T KNOW WHAT TO WAIT!
-                                if(typeof(oAction.payload.onMessage) ===
+                                    // WE WILL RETURN THIS AS STRING, NO JSON
+                                    // PARSING! WE DON'T KNOW WHAT TO WAIT!
+                                    if(typeof(oAction.payload.onMessage) ===
                                                                     "function"){
-                                    mwDispatch(oAction.payload.onMessage(data));
-                                }
-                                else{
-                                    if(typeof oAction.payload.onMessage
+                                        dispatch(
+                                               oAction.payload.onMessage(data));
+                                    }
+                                    else{
+                                        if(typeof oAction.payload.onMessage
                                                                !== "undefined"){
-                                        if(oAction.payload.onMessage.type){
-                                            dispatch({
+                                            if(oAction.payload.onMessage.type){
+                                                dispatch({
                                            type: oAction.payload.onMessage.type,
                                                payload: { 
                                               _ws_message : data } });
+                                            }
+                                        }
+                                        else{
+                                            //Strange action, skipping...
                                         }
                                     }
-                                    else{
-                                        //Strange action, skipping...
-                                    }
-                                }
-                            };
+                                };
+                            }
                         }
                     }
                     catch(_){
@@ -185,7 +217,7 @@ export const socketMiddleware : Middleware = ({ dispatch }) => {
                 
                 case WS_CLOSE : {
                     nClientComponentsCount--;
-                    if(nClientComponentsCount === 0){
+                    if(nClientComponentsCount <= 0){
                         //0. Stop trying.
                         bIsConnected = false;
                         //1. Remove the timer
@@ -194,7 +226,6 @@ export const socketMiddleware : Middleware = ({ dispatch }) => {
                             nReconnectTimerID = null;
                         }
                         wsSocket?.close(nSuccessSocketCloseCode);
-                        wsSocket = null;
                     }
                     break;
                 }

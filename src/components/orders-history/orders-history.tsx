@@ -29,7 +29,7 @@ const OrdersHistory = () : JSX.Element => {
     const dispatch = useAppDispatch();
     
     useEffect(() => {
-        dispatch(socketConnect(oSettings.oAPIWS.sAllOrders));
+        dispatch(socketConnect(oSettings.oAPIWS.sUserOrders, true));
         return () => {
             dispatch(socketDisconnect());
         };

@@ -109,7 +109,8 @@ export interface IOrdersFeedData {
     success : boolean;
     orders : Array<IOrderWithIngredientsProperties>;
     total : number,
-    totalToday: number;    
+    totalToday: number;
+    message?: string;    
 };
 
 export interface IProcessedOrdersFeedData {
