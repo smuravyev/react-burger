@@ -198,7 +198,7 @@ export const onSocketMessage : TAppThunk =
         if((store.burgerIngredients.bLoadedSuccessful) &&
             (oData?.success)){
             const oProcessedOrders = processOrders(oData,
-                                                   store.burgerIngredients.aIngredients);
+                                          store.burgerIngredients.aIngredients);
             if(oProcessedOrders !== null){
                 dispatch(setFeedReceivedDataAction(oProcessedOrders));
             }
@@ -207,7 +207,6 @@ export const onSocketMessage : TAppThunk =
             if((oData?.message === sInvalidTokenInSocketMessage) &&
                (store?.feed?.bWithAuthToken)){
                 //Need to renew token!
-                console.log("we are here");
                 //Save the dispatch data for closure
                 const savedDispatch = dispatch;
                 const savedURL = store.feed.sURL;
@@ -215,7 +214,6 @@ export const onSocketMessage : TAppThunk =
                 dispatch(requestAuthorizationCheck(
                     (bUserAuthorized : boolean) =>  {
                         if(bUserAuthorized){
-                            console.log("Dispatch after authorization check");
                             savedDispatch(socketConnect(savedURL,
                                                         savedBWithAuthToken));
                         }
@@ -224,10 +222,9 @@ export const onSocketMessage : TAppThunk =
                             const oLocation = window.location;
                             savedDispatch(setReturnPathAction(
                                                            oLocation.pathname));
-                            // I'm not sure we can use react-router-dom here,
-                            // so use the navigation methods instead
+                            // I'm not sure if we can use react-router-dom here,
+                            // so use the browser native methods instead
                             oLocation.assign("/login/");
-                            
                             //hehe, let's check if it'll work
                         }
                 }));

@@ -248,7 +248,7 @@ export const requestAuthorizationCheck : TAppThunk =
                 const oUserData = oUser as IUserDataResult;
                 bUserAuthorized = true;
                 dispatch(setUserAction(oUserData["user"]["email"],
-                                      oUserData["user"]["name"]));
+                                       oUserData["user"]["name"]));
             }
         } 
     }

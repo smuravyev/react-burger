@@ -4,7 +4,8 @@ import Cookies from 'js-cookie';
 
 import { oErrorCodes,
          nSecondsUntilSocketReconnectOnError,
-         nSuccessSocketCloseCode } from '../../utils/constants';
+         nSuccessSocketCloseCode, 
+         nRetryAttemptsForSocketConnection } from '../../utils/constants';
 
 import type { Middleware } from 'redux';
 
@@ -102,6 +103,7 @@ export const socketMiddleware : Middleware =
     let bIsConnected : boolean = false;
     let nReconnectTimerID : ReturnType<typeof setTimeout> | null = null;
     let sURL : string = "";
+    let nRetriesCount = 0;
     // Number of components using this socket. We won't close it until
     // it reaches zero.
     let nClientComponentsCount = 0;
@@ -119,7 +121,6 @@ export const socketMiddleware : Middleware =
         if(oAction?.type){
             switch(oAction.type){
                 case WS_CONNECT: {
-                    console.log("WS_CONNECT!");
                     let sRequiredURL = oAction.payload.sURL;
                     if(oAction.payload?.bWithAuthToken){
                         const store = getState();
@@ -148,9 +149,7 @@ export const socketMiddleware : Middleware =
                                 }
                                 nClientComponentsCount = 0;
                                 wsSocket?.close(nSuccessSocketCloseCode);
-                                console.log("Applying " + sRequiredURL)
                                 wsSocket = new WebSocket(sRequiredURL);
-                                console.log(wsSocket.readyState);
                             }
                             else{
                                 // Don't touch the socket, but can redeclare
@@ -160,16 +159,17 @@ export const socketMiddleware : Middleware =
                         else{
                             wsSocket = new WebSocket(sRequiredURL);
                         }
-                        if(!wsSocket){
-                            alert(123);
-                        }
                         bIsConnected = true;
                         nClientComponentsCount++;
                         sURL = sRequiredURL;
                         // onOnpen handler
                         if(wsSocket !== null){
+                            
                             if(oAction.payload.onOpen !== undefined){
                                 wsSocket.onopen = () => {
+                                    //Reset failed retries count
+                                    nRetriesCount = 0;
+
                                     if(oAction.payload.onOpen !== undefined){
                                         if(typeof oAction.payload.onOpen ===
                                                                     "function"){
@@ -189,16 +189,27 @@ export const socketMiddleware : Middleware =
                                     redispatch(oAction.payload.onClose);
                                 }
 
-                                if(bIsConnected && !(eEvent.wasClean)){
+                                if(bIsConnected && !(eEvent.wasClean) &&
+                                   (nRetriesCount <
+                                            nRetryAttemptsForSocketConnection)){
                                     nReconnectTimerID = setTimeout(() => {
                                         // The current WS_CONNECT action
                                         // will remain in this closure
                                         bIsConnected = false;
-                                        console.log("We are here - 1");
                                         wsSocket?.close();
+                                        nRetriesCount++;
                                         dispatch(oAction);
                                     },
                                     nSecondsUntilSocketReconnectOnError * 1000);
+                                }
+                                else{
+                                    nReconnectTimerID = null;
+                                    if(nRetriesCount ===
+                                             nRetryAttemptsForSocketConnection){
+                                         dispatch(
+                                             setError(oErrorCodes.EC_WS_FAILED,
+                                                      false));
+                                    }
                                 }
                             };
 
@@ -245,6 +256,7 @@ export const socketMiddleware : Middleware =
                         }
                     }
                     catch(_){
+                        wsSocket = null;
                         setError(oErrorCodes.EC_CANNOT_CREATE_WEBSOCKET, true);
                     }
                     //That's it :-)

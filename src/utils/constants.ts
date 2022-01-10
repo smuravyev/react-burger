@@ -56,7 +56,12 @@ export const oErrorCodes = {
     EC_SYNTAX_ERROR_PARSING_MESSAGE : "Сервер вернул недопустимые данные. " +
                                       "Приносим Вам свои извинения за " +
                                       "временные неудобства и просим уточнять" +
-                                      " статус заказа на кассе."
+                                      " статус заказа на кассе.",
+    EC_WS_FAILED : "После нескольких попыток установить соединение не удалось. "
+                   + "Пожалуйста, проверьте подключение к интернету и обновите "
+                   + "страницу. Если это не помогает, пожалуйста, загляните в "
+                   + "бургерную лично, будем признательны за сообщение "
+                   + "об ошибке."
 } as const;
 
 export const oIngredientTypes = {
@@ -154,3 +159,5 @@ export const oStatusLabels = {
     [oOrderTypes.sCreated] : "Создан"} as const;
     
 export const sInvalidTokenInSocketMessage = "Invalid or missing token";
+
+export const nRetryAttemptsForSocketConnection = 3 as const;
