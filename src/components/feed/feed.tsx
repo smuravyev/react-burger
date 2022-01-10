@@ -16,8 +16,6 @@ import styles from './feed.module.css';
 
 const Feed = () : JSX.Element => {
 
-    const bIsBusy = useAppSelector(store => store.app.bIsBusy);
-
     const bLoadedIngredients =
              useAppSelector(store => store.burgerIngredients.bLoadedSuccessful);
 
@@ -45,7 +43,7 @@ const Feed = () : JSX.Element => {
                  Лента заказов
              </h1>
              {
-                 (bIsBusy || (!bLoadedIngredients) || !(bHasData)) ? (
+                 ((!bLoadedIngredients) || !(bHasData)) ? (
                      <Loader message="Загрузка данных&hellip;" />
                 ) : (
                      <>

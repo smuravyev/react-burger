@@ -38,8 +38,6 @@ const OrderDetailsPage : FC<IOrderDetailsPageProps> =
     const [oCurrentOrder, setOCurrentOrder ] =
     useState<IOrderWithProcessedIngredientsProperties | null | undefined>(null);
    
-    const bIsBusy = useAppSelector(store => store.app.bIsBusy);
-   
     const bLoadedIngredients =
              useAppSelector(store => store.burgerIngredients.bLoadedSuccessful);
 
@@ -108,8 +106,7 @@ const OrderDetailsPage : FC<IOrderDetailsPageProps> =
             ) : (
                  ((oCurrentOrder === undefined) && 
                   bLoadedIngredients &&
-                  bHasData && 
-                  (!(bIsBusy))) ? (
+                  bHasData) ? (
                       <InvalidRouteMessage />
                  ) : (
                       <Loader message="Загрузка" />

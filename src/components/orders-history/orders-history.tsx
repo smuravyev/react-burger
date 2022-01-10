@@ -17,8 +17,6 @@ import { oSettings } from '../../config/config';
 
 const OrdersHistory = () : JSX.Element => {
 
-    const bIsBusy = useAppSelector(store => store.app.bIsBusy);
-
     const bLoadedIngredients =
              useAppSelector(store => store.burgerIngredients.bLoadedSuccessful);
 
@@ -37,7 +35,7 @@ const OrdersHistory = () : JSX.Element => {
     
     return (
 
-        (bIsBusy || (!bLoadedIngredients) || !(bHasData)) ? (
+        ((!bLoadedIngredients) || !(bHasData)) ? (
             <>
                 <Loader message="Загрузка данных или&nbsp;ожидание окончания выполнения операции&hellip;" />
             </>
