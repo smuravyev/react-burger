@@ -236,8 +236,8 @@ export const onSocketMessage : TAppThunk =
             }
         }
     }
-    catch(_)
-    {
+    catch(oError){
+        console.log(oError);
         dispatch(setError(oErrorCodes.EC_SYNTAX_ERROR_PARSING_MESSAGE, true));
         dispatch(onSocketError());
     }

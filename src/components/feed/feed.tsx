@@ -30,11 +30,14 @@ const Feed = () : JSX.Element => {
     const dispatch = useAppDispatch();
     
     useEffect(() => {
-        dispatch(socketConnect(oSettings.oAPIWS.sAllOrders));
-        return () => {
-            dispatch(socketDisconnect());
-        };
-    }, [dispatch]);
+        if(bLoadedIngredients){
+            dispatch(socketConnect(oSettings.oAPIWS.sAllOrders));
+            return () => {
+                dispatch(socketDisconnect());
+            };
+        }
+    }, [ dispatch,
+        bLoadedIngredients ]);
     
     return (
          <section className={`${styles.section}`}>
