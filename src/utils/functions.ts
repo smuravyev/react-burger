@@ -119,7 +119,7 @@ export const fetchWithAuth : TFetchWithAuthFunction =
     }
     catch(erError : unknown /* it's required to be such type */){
         // Check type first ad we can not set it in catch clause
-        if((erError instanceof Error) && erError.message !== "jwt expired"){
+        if((erError instanceof Error) && erError.message === "jwt expired"){
             //Need to refresh token!
             if(await tryToRefreshToken()){
                 //Got it, we renewed it!
