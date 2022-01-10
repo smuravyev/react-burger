@@ -1,0 +1,12 @@
+.property {
+    display: inline-block;
+}
+
+.property__name {
+    padding-bottom: 0.35em;
+}
+
+.property__value {
+    padding: 0;
+    margin: 0;
+}

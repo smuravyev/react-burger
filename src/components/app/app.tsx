@@ -22,23 +22,21 @@ const App = () : JSX.Element => {
     useEffect(() => {
         // We need the ingredients list at least on two routes, so why don't
         // ask for it now...
-        // TODO: typing in sprint 5
-        dispatch(getIngredients() as any);
+        dispatch(getIngredients());
         // And the authorization data
-        // TODO: typing in sprint 5
-        dispatch(requestAuthorizationCheck() as any);
+        dispatch(requestAuthorizationCheck());
     }, [dispatch]);
 
     return (
-        <div className={styles.wrapper}>
-            <BrowserRouter>
-                <AppHeader />
+        <BrowserRouter>
+            <AppHeader />
+            <div className={styles.wrapper}>
                 <main className={styles.main}>
                     <AppRoutes />
                     <ErrorMessage />
                 </main>
-            </BrowserRouter>
-        </div>
+            </div>
+        </BrowserRouter>
     );
 };
  

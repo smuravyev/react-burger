@@ -1,7 +1,7 @@
-import { BUSY_SET,
-         BUSY_CLEAR } from './app.js';
+import { setIsBusyAction,
+         clearIsBusyAction } from '../actions/app';
 
-import { setError } from './error-message.js';
+import { setError } from '../actions/error-message';
 
 import { oErrorCodes,
          oIngredientTypes,
@@ -10,14 +10,20 @@ import { oErrorCodes,
 
 import { oSettings } from '../../config/config'; 
 
-export const GET_INGREDIENTS_REQUEST =
-                                   '@BurgerIngredients/GET_INGREDIENTS_REQUEST';
-export const GET_INGREDIENTS_SUCCESS =
-                                   '@BurgerIngredients/GET_INGREDIENTS_SUCCESS';
-export const GET_INGREDIENTS_FAILED =
-                                    '@BurgerIngredients/GET_INGREDIENTS_FAILED';
+import { setGetIngredientsRequestAction,
+         setGetIngredientsFailedAction,
+         setGetIngredientsSuccessAction } from '../actions/burger-ingredients';
 
-const splitByTypes = (aIngredients) => {
+import type { TAppThunk,
+              TRootState } from '../store';
+
+import type { IIngredient,
+              TArrayOfIngredients,
+              IIngredientsRequestData } from '../../utils/types';
+
+const splitByTypes :
+                    (aIngredients : Array<IIngredient>) => TArrayOfIngredients =
+                                                             (aIngredients) => {
     /* Modify our ingredients array to make it more easily operated: split
        by ingredient types and add some properties like drag type. */
     const aData = aIngredientsTemplate;
@@ -35,37 +41,38 @@ const splitByTypes = (aIngredients) => {
     return aData;
 };
 
-export const getIngredients = () => async (dispatch, getState) => {
-    const state = getState();
+export const getIngredients : TAppThunk = () => async (dispatch, getState ) => {
+    const state : TRootState = getState();
+    
     if(state.burgerIngredients.bLoadedSuccessful) return; // Do not load twice!
-    dispatch({type: BUSY_SET});
-    dispatch({type: GET_INGREDIENTS_REQUEST});
+    
+    dispatch(setIsBusyAction());
+    dispatch(setGetIngredientsRequestAction());
     try{
         const oResponse = await fetch(oSettings.sAPIBaseURL +
                                                oSettings.oAPIURIS.sIngredients);
         if(oResponse.ok){
-            const oData = await oResponse.json();
+            const oData : IIngredientsRequestData = await oResponse.json();
             if((!(oData.success)) ||
                (!(Array.isArray(oData.data)))){
-                dispatch({ type: GET_INGREDIENTS_FAILED });
+                dispatch(setGetIngredientsFailedAction());
                 dispatch(setError(oErrorCodes.EC_INVALID_INGREDIENTS_DATA));
             }
             else {
-                dispatch({ type: GET_INGREDIENTS_SUCCESS,
-                           payload:
-                                   { aIngredients: splitByTypes(oData.data) }});
+                 dispatch(
+                      setGetIngredientsSuccessAction(splitByTypes(oData.data)));
             }
         }
         else{
-            dispatch({ type: GET_INGREDIENTS_FAILED });
+            dispatch(setGetIngredientsFailedAction());
             dispatch(setError(oErrorCodes.EC_COULD_NOT_FETCH_INGREDIENTS));
         }
     }
-    catch(erError){
-        dispatch({ type: GET_INGREDIENTS_FAILED });
+    catch(_){
+        dispatch(setGetIngredientsFailedAction());
         dispatch(setError(oErrorCodes.EC_COULD_NOT_FETCH_INGREDIENTS));
     }
     finally{
-        dispatch({ type: BUSY_CLEAR });
+        dispatch(clearIsBusyAction());
     }
 };

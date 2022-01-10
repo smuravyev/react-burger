@@ -1,15 +1,15 @@
 import { useEffect,
          useCallback } from 'react';
 
-import { useSelector,
-         shallowEqual} from 'react-redux';
-         
-import type { TRootState } from '../../services/store';
+import { shallowEqual } from 'react-redux';
 
-import { useAppDispatch } from '../../services/hooks';
+import { useAppDispatch,
+         useAppSelector } from '../../services/hooks';
          
 import { useLocation,
          useNavigate } from 'react-router-dom';
+         
+import { TRootState } from '../../services/store';
 
 import { useDrop } from 'react-dnd';
 
@@ -24,10 +24,10 @@ import { Loader,
          Modal,
          OrderDetails } from '../';
 
-import { CLEAR_ORDER_NUMBER,
+import { clearOrderNumberAction,
          sendOrder } from '../../services/actions/order-details';
-import { SET_RETURN_PATH } from '../../services/actions/authorization';
-import { CLEAR_BURGER } from '../../services/actions/burger-constructor';
+import { setReturnPathAction } from '../../services/actions/authorization';
+import { clearBurgerAction } from '../../services/actions/burger-constructor';
 
 import { oIngredientDragTypes,
          oKeyCodes } from '../../utils/constants';
@@ -47,27 +47,25 @@ const priceSelector = (store : TRootState) : number => {
 };
 
 const BurgerConstructor = () : JSX.Element => {
-    const bIsBusy = useSelector((store : TRootState) => store.app.bIsBusy);     
+    const bIsBusy = useAppSelector(store => store.app.bIsBusy);     
     const bIsOrderRequesting =
-          useSelector((store : TRootState) => store.orderDetails.bIsRequesting);                                
+                      useAppSelector(store => store.orderDetails.bIsRequesting);
     const { oBun,
-            aContent } = useSelector((store : TRootState) =>
+            aContent } = useAppSelector(store =>
                                                 store.constructedBurger.present,
                                                 shallowEqual);
-    const nPrice = useSelector(priceSelector);
+    const nPrice = useAppSelector<number>(priceSelector);
     
-    const nOrderNumber = useSelector((store : TRootState) =>
+    const nOrderNumber = useAppSelector(store =>
                                                store.orderDetails.nOrderNumber);
-    
+    const bIsAuthorized = useAppSelector(store =>
+                                                store.authorization.bIsUserSet);
     const dispatch = useAppDispatch(); 
     
     const navigate = useNavigate();
     
     const location = useLocation();
-
-    const bIsAuthorized = useSelector((store : TRootState) =>
-                                                store.authorization.bIsUserSet);
-
+    
     const [{ bNeedHelper } , refDrop] = useDrop({
         accept : bIsOrderRequesting ? "" : [ oIngredientDragTypes.sBun,
                                              oIngredientDragTypes.sFilling ],
@@ -115,12 +113,10 @@ const BurgerConstructor = () : JSX.Element => {
     
     const clickHandler = useCallback(() => {
         if(bIsAuthorized){
-            // TODO: typing in spring 5
-            dispatch(sendOrder() as any);
+            dispatch(sendOrder());
         }
         else{
-            dispatch({type : SET_RETURN_PATH,
-                      payload : { sReturnPath : location.pathname }});
+            dispatch(setReturnPathAction(location.pathname));
             navigate("/login", { replace : true });
         }
     }, [ navigate,
@@ -212,8 +208,8 @@ const BurgerConstructor = () : JSX.Element => {
                 (nOrderNumber >= 0) && (
                     <Modal
                         closer={() => {
-                            dispatch({ type: CLEAR_ORDER_NUMBER });
-                            dispatch({ type: CLEAR_BURGER });
+                            dispatch(clearOrderNumberAction());
+                            dispatch(clearBurgerAction());
                             dispatch(UndoActionCreators.clearHistory());
                         }}>
                         <OrderDetails />

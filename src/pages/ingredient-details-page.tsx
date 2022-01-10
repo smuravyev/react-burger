@@ -1,46 +1,38 @@
-import { useEffect } from 'react';
+import { useEffect,
+         useState } from 'react';
 
-import { useSelector,
-         shallowEqual } from 'react-redux';
+import { shallowEqual } from 'react-redux';
          
 import { useNavigate,
          useLocation,
          useParams } from 'react-router-dom';
 
-import { IngredientDetails,
-         SeparateIngredientDetails, 
+import { IngredientDetails, 
          Modal,
          Loader,
          InvalidRouteMessage } from '../components';
 
-import { CLEAR_CURRENT_INGREDIENT,
-         SET_CURRENT_INGREDIENT } from '../services/actions/ingredient-details';
+import { useAppSelector } from '../services/hooks';
 
-import { useAppDispatch } from '../services/hooks';
-         
-import type { TRootState } from '../services/store';
-import type { IIngredient } from '../utils/types'; 
+import type { IIngredient,
+              TBackgroundLocationState,
+              IPureIngredient } from '../utils/types'; 
 
 const IngredientDetailsPage = () : JSX.Element => {
 
-   //Let it be any until the next spint
-   const oCurrentIngredient = useSelector((store : TRootState) =>
-                                                       store.currentIngredient);
+   const [oCurrentIngredient, setOCurrentIngredient] =
+                             useState<IPureIngredient | null | undefined>(null);
    
    //boolean, ok
-   const bIsBusy = useSelector((store : TRootState) => store.app.bIsBusy);
+   const bIsBusy = useAppSelector(store => store.app.bIsBusy);
    
    //boolean, ok
    const bLoadedIngredients =
-                useSelector((store : TRootState) =>
-                                     store.burgerIngredients.bLoadedSuccessful);
+             useAppSelector(store => store.burgerIngredients.bLoadedSuccessful);
    const aIngredients =
-       useSelector((store : TRootState) => store.burgerIngredients.aIngredients,
-                   shallowEqual);
+                   useAppSelector(store => store.burgerIngredients.aIngredients,
+                                  shallowEqual);
 
-   //Let it be Dispatch<any> until next sprint
-   const dispatch = useAppDispatch();
-   
    //sID = string | undefined, already, automatically, that's we needed
    const { sID } = useParams();
    
@@ -63,26 +55,36 @@ const IngredientDetailsPage = () : JSX.Element => {
            //Found?
            if(oIngredient){
                //Set it!
-               dispatch({ type: SET_CURRENT_INGREDIENT,
-                          payload: { oIngredient : oIngredient }});
+              setOCurrentIngredient({ carbohydrates : oIngredient.carbohydrates,
+                                      calories : oIngredient.calories,
+                                      name : oIngredient.name,
+                                      proteins : oIngredient.proteins,
+                                      fat : oIngredient.fat,
+                                      image_large : oIngredient.image_large });
+           }
+           else{
+               // Undefined is a mark that we all done, but did not found
+               // anything
+               setOCurrentIngredient(undefined);
            }
         }
     }, [oCurrentIngredient,
         sID,
-        dispatch,
         bLoadedIngredients,
         aIngredients]);
 
     const oLocation = useLocation();
+    
+    const oState : TBackgroundLocationState =
+                                    oLocation.state as TBackgroundLocationState;
    
     //If we have a background object, then we're modal
-    const bIsModal = oLocation?.state?.oBackground ? true : false;
+    const bIsModal = oState?.oBackground ? true : false;
 
     const navigate = useNavigate();
     
     const closeModalHandler = () : void => {
         navigate("/");
-        dispatch({ type : CLEAR_CURRENT_INGREDIENT});
     };
 
     return (
@@ -92,13 +94,20 @@ const IngredientDetailsPage = () : JSX.Element => {
                 bIsModal ? (
                     <Modal caption="Детали игредиента"
                            closer={closeModalHandler}>
-                        <IngredientDetails />
+                        <IngredientDetails {...oCurrentIngredient} />
                     </Modal>
                 ) : (
-                    <SeparateIngredientDetails />
+                    <section className="pt-20 mt-15">
+                        <h1 className="text text_type_main-large">
+                            Детали ингредиента
+                        </h1>
+                        <IngredientDetails {...oCurrentIngredient} />
+                    </section>
                 )
             ) : (
-                 (bLoadedIngredients && (!(bIsBusy))) ? (
+                 ((oCurrentIngredient === undefined) && 
+                  bLoadedIngredients &&
+                  (!(bIsBusy))) ? (
                       <InvalidRouteMessage />
                  ) : (
                       <Loader message="Загрузка" />

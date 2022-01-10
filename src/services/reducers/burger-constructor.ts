@@ -3,22 +3,29 @@ import { CLEAR_BURGER,
          REMOVE_INGREDIENT,
          SWAP_INGREDIENTS,
          SET_BUN } from '../actions/burger-constructor';
-         
+
 import { nMaximumRandomNumberForID } from '../../utils/constants';
-         
-import type { TBurgerConstructorAction,
-              IDraggableIngredient } from '../../utils/types';
+
+import type { TBurgerConstructorAction } from '../actions/burger-constructor'
+
+import type { IDraggableIngredient } from '../../utils/types';
+
+export type TBurgerConstructorState = {
+    oBun : IDraggableIngredient | null;
+    aContent : Array<IDraggableIngredient>;
+};
 
 /**
- * Will be with past, present, future!
+ * This state Will be with past, present, future, as this part of the state
+ * will be used with undo/redo abilities.
  */
-const stateInitialBurgerConstructor : { oBun : IDraggableIngredient | null,
-                                        aContent: Array<IDraggableIngredient> } 
+const stateInitialBurgerConstructor : TBurgerConstructorState 
                                     = { oBun : null,
-                                        aContent : [] } 
+                                        aContent : [] }
+
 export const reducerBurgerConstructor =
-                           (state  = stateInitialBurgerConstructor,
-                            action : TBurgerConstructorAction) => {
+              (state  = stateInitialBurgerConstructor,
+               action : TBurgerConstructorAction) : TBurgerConstructorState => {
     switch(action.type){
         
         case CLEAR_BURGER: {
@@ -26,7 +33,6 @@ export const reducerBurgerConstructor =
         }
         
         case ADD_INGREDIENT: {
-            // I'm paranoid
             if((action.payload !== undefined) &&
                (action.payload !== null)){
                 const aContent = [...state.aContent];

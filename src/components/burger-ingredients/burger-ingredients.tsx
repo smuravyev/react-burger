@@ -7,16 +7,12 @@ import { useState,
          
 import type { RefObject } from 'react';
          
-import { useSelector,
-         shallowEqual } from 'react-redux';
+import { shallowEqual } from 'react-redux';
          
-import { useAppDispatch } from '../../services/hooks';
+import { useAppSelector } from '../../services/hooks';
 
 import { useNavigate,
          useLocation } from 'react-router-dom';
-
-import { SET_CURRENT_INGREDIENT }
-                               from '../../services/actions/ingredient-details';
 
 import { Tab } from '@ya.praktikum/react-developer-burger-ui-components';
 
@@ -55,13 +51,12 @@ const usedIngredientsSelector = (store : TRootState)  => {
 const BurgerIngredients = () : JSX.Element => {
     const { aIngredients,
             bIsRequesting,
-            bIsRequestFailed } = useSelector((store : TRootState) =>
+            bIsRequestFailed } = useAppSelector((store) =>
                                                         store.burgerIngredients, 
                                              shallowEqual);
-    const oUsedIngredients = useSelector(usedIngredientsSelector, shallowEqual);
-    
+    const oUsedIngredients = useAppSelector(usedIngredientsSelector,
+                                              shallowEqual);
     const navigate = useNavigate();
-    const dispatch = useAppDispatch();
     const oLocation = useLocation();
 
     // This is used only here, locally,
@@ -88,12 +83,10 @@ const BurgerIngredients = () : JSX.Element => {
     const handleIngredientClick =
              useCallback((oThisElement : IDraggableIngredient) : () => void => {
         return () => {
-            dispatch({ type : SET_CURRENT_INGREDIENT,
-                       payload : { oIngredient: oThisElement}});
-            navigate("/ingredients/" + oThisElement._id, 
+            navigate("/ingredients/" + oThisElement._id + "/", 
                      {state: { oBackground : oLocation }});
         }
-    }, [dispatch, navigate, oLocation]);
+    }, [navigate, oLocation]);
     
     const oScrollerRef = useRef<HTMLElement>(null);
     

@@ -9,9 +9,8 @@ import { Link } from 'react-router-dom';
 
 import { Button } from '@ya.praktikum/react-developer-burger-ui-components';
 
-import { useSelector } from 'react-redux';
-
-import { useAppDispatch } from '../../services/hooks';
+import { useAppDispatch,
+         useAppSelector } from '../../services/hooks';
          
 import { Navigate,
          useLocation } from 'react-router-dom';
@@ -25,18 +24,18 @@ import { setError } from '../../services/actions/error-message';
 
 import { requestResetPassword } from '../../services/actions/authorization';
 
-import type { TRootState } from '../../services/store';
-
 import type { SyntheticEvent } from 'react';
+
+import type { TBackgroundLocationState } from '../../utils/types';
 
 import styles from './reset-password-form.module.css';
 
 const ResetPasswordForm = () : JSX.Element => {
     const oPasswordInputRef = useRef<HTMLInputElement>(null);
 
-    const bIsBusy = useSelector((store : TRootState)=> store.app.bIsBusy);
+    const bIsBusy = useAppSelector(store => store.app.bIsBusy);
     
-    const bWeAllowedToSeeThisPage = useSelector((store : TRootState) =>
+    const bWeAllowedToSeeThisPage = useAppSelector(store =>
                             (store.authorization.bIsForgotPasswordRequestSuccess
                             && (!(store.authorization.bIsUserSet))));
 
@@ -50,6 +49,9 @@ const ResetPasswordForm = () : JSX.Element => {
     const dispatch = useAppDispatch();
     
     const oLocation = useLocation();
+    
+    const oState : TBackgroundLocationState =
+                                    oLocation.state as TBackgroundLocationState;
 
     const onChange : TChangeHandler<"code" | "password"> =  (oData) : void => {
         setFormData({...oFormData,
@@ -70,20 +72,17 @@ const ResetPasswordForm = () : JSX.Element => {
         eEvent.preventDefault();
         if(!bIsBusy){
             if(oFormData.password && oFormData.code){
-                //TODO: typing in 5th sprint
                 dispatch(
                         requestResetPassword({ sNewPassword: oFormData.password,
-                                               sCode: oFormData.code }) as any);
+                                               sCode: oFormData.code }));
             }
             else{
-                //TODO: typing in 5th sprint
-                dispatch(setError(oErrorCodes.EC_INVALID_FORM_DATA, true) as
-                                                                           any);
+                dispatch(setError(oErrorCodes.EC_INVALID_FORM_DATA, true));
             }
         }
     }, [ dispatch, oFormData.password, oFormData.code, bIsBusy]);
 
-    return (bWeAllowedToSeeThisPage && oLocation.state.bAllowed) ? (
+    return (bWeAllowedToSeeThisPage && oState?.bAllowed) ? (
         <section className={`${styles.centered_section} pt-20 mt-20`}>
             <h1 className="text text_type_main-medium">
                 Восстановление пароля

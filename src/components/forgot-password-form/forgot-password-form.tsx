@@ -11,14 +11,12 @@ import { oErrorCodes } from '../../utils/constants';
 import { Link,
          Navigate } from 'react-router-dom';
          
-import { useAppDispatch } from '../../services/hooks';
+import { useAppDispatch,
+         useAppSelector } from '../../services/hooks';
 
 import type { TChangeHandler } from '../checkable-input/checkable-input';
 
-import type { TRootState } from '../../services/store';
-
-import { useSelector,
-         shallowEqual } from 'react-redux';
+import { shallowEqual } from 'react-redux';
 
 import { Button } from '@ya.praktikum/react-developer-burger-ui-components';
 
@@ -27,7 +25,7 @@ import { CheckableInput,
 
 import { setError } from '../../services/actions/error-message';
 
-import { SAVE_ENTERED_EMAIL,
+import { saveEnteredEmailAction,
          requestForgotPassword } from '../../services/actions/authorization';
 
 import styles from './forgot-password-form.module.css';
@@ -37,10 +35,10 @@ const ForgotPasswordForm = () : JSX.Element => {
     
     const { sEnteredEmail,
             bIsForgotPasswordRequestSuccess } =
-                                             useSelector((store : TRootState) =>
+                                             useAppSelector(store =>
                                                            store.authorization,
                                                            shallowEqual);
-    const bIsBusy = useSelector((store : TRootState) => store.app.bIsBusy);
+    const bIsBusy = useAppSelector(store => store.app.bIsBusy);
 
     const [oFormData, setFormData] = useState({ email : sEnteredEmail });
     
@@ -54,8 +52,7 @@ const ForgotPasswordForm = () : JSX.Element => {
     const saveEnteredEmail = () => {
         if((oFormData.email !== sEnteredEmail) && 
            (oFormData.email !== "")){
-            dispatch({type: SAVE_ENTERED_EMAIL,
-                      payload: { sEmail : oFormData.email }});
+            dispatch(saveEnteredEmailAction(oFormData.email));
         }
     }
 
@@ -69,14 +66,10 @@ const ForgotPasswordForm = () : JSX.Element => {
         eEvent.preventDefault();
         if(!(bIsBusy)){
             if(oFormData.email){
-                //TODO: typing in 5th sprint
-                dispatch(requestForgotPassword({ sEmail : oFormData.email }) as
-                                                                           any);
+                dispatch(requestForgotPassword({ sEmail : oFormData.email }));
             }
             else{
-                //TODO: typing in 5th sprint
-                dispatch(setError(oErrorCodes.EC_INVALID_FORM_DATA, true) as
-                                                                           any);
+                dispatch(setError(oErrorCodes.EC_INVALID_FORM_DATA, true));
             }
         }
     }, [ dispatch, oFormData.email, bIsBusy]);

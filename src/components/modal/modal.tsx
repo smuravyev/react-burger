@@ -21,9 +21,14 @@ export interface IModalProps {
     canClose? : boolean;
     closer? : () => void;
     caption? : string;
+    captionIsNumeric? : boolean;
 };
  
-const Modal : FC<IModalProps> = ({canClose, closer, caption, children}) =>{
+const Modal : FC<IModalProps> = ({canClose, 
+                                  closer,
+                                  caption,
+                                  captionIsNumeric = false, 
+                                  children}) =>{
                                                 
     const bCanClose = (canClose === undefined) ? true : canClose;
 
@@ -64,7 +69,8 @@ const Modal : FC<IModalProps> = ({canClose, closer, caption, children}) =>{
     return ePortal !== null ? createPortal((
         <>
             <section className={styles.modal}>
-                <h1 className={`${styles.modal__header} pt-10 pl-10 pr-10 text text_type_main-large`}>
+                <h1 className={`${styles.modal__header} pt-10 pl-10 pr-10 text ` +
+                (captionIsNumeric ? " text_type_digits-default" : " text_type_main-large")}>
                     {caption}
                     { bCanClose && (<div className={styles.modal__close}
                                          onClick={checkForClick}>

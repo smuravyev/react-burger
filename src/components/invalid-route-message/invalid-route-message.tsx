@@ -13,8 +13,7 @@ const InvalidRouteMessage = () : JSX.Element => {
     const dispatch = useAppDispatch();
 
     useEffect(() => {
-        // TODO: typing in sprint 5
-        dispatch(setError(oErrorCodes.EC_INVALID_ROUTE, true) as any);
+        dispatch(setError(oErrorCodes.EC_INVALID_ROUTE, true));
     }, [dispatch]); 
     
     return (

@@ -6,12 +6,10 @@ import { useRef,
 import type { SyntheticEvent,
               RefObject } from 'react';
 
-import { useSelector,
-         shallowEqual } from 'react-redux';
+import { shallowEqual } from 'react-redux';
 
-import { useAppDispatch } from '../../services/hooks';
-         
-import type { TRootState } from '../../services/store';
+import { useAppDispatch,
+         useAppSelector } from '../../services/hooks';
 
 import type { TChangeHandler,
               TChecker } from '../checkable-input/checkable-input';
@@ -29,6 +27,8 @@ import { oErrorCodes } from '../../utils/constants';
 
 import { reNameChecker,
          rePasswordChecker } from '../../utils/checkers';
+
+import type { IUpdateUserStructure } from '../../utils/types';
 
 import styles from './profile-editor.module.css';
 
@@ -52,14 +52,13 @@ const ProfileEditor = () : JSX.Element => {
     const oEmailRef = useRef<HTMLInputElement>(null);
     const oPasswordRef = useRef<HTMLInputElement>(null);
     
-    const {sName, sEmail} = useSelector((store : TRootState) =>
-                                                     store.authorization.oUser,
-                                        shallowEqual);
-    const bIsBusy = useSelector((store : TRootState) => store.app.bIsBusy);
+    const {sName, sEmail} = useAppSelector(store => store.authorization.oUser,
+                                           shallowEqual);
+    const bIsBusy = useAppSelector(store => store.app.bIsBusy);
     
     const dispatch = useAppDispatch();
     
-    const bIsSavingProfile = useSelector((store : TRootState) =>
+    const bIsSavingProfile = useAppSelector(store =>
                                    store.authorization.bIsUpdateUserRequesting);
     
     const [nActiveElements, setNActiveElements] = useState(0);
@@ -148,11 +147,10 @@ const ProfileEditor = () : JSX.Element => {
         
         if((nActiveElements > 0) &&
            (!(bIsBusy))){
-            // 1. Check all fields if they are disabled. Will send request only on
-            //    enabled fields.
-            const oData = { name: "",
-                            email: "",
-                            password: ""};
+            // 1. Check all fields if they are disabled. Will send request only
+            // on enabled fields.
+            const oData : IUpdateUserStructure = {};
+    
             let bNullsExist = false;
             Object.keys(oFields).forEach((sIndex) : void => {
                 const sCurrentIndex = sIndex as TProfileEditorField;
@@ -166,9 +164,7 @@ const ProfileEditor = () : JSX.Element => {
             });
         
             if(bNullsExist){
-                 //TODO: typing in the 5th sprint
-                dispatch(setError(oErrorCodes.EC_INVALID_FORM_DATA, true) as
-                                                                           any);
+                dispatch(setError(oErrorCodes.EC_INVALID_FORM_DATA, true));
             }
             else{
                 // 2. Disable all the fields
@@ -181,8 +177,7 @@ const ProfileEditor = () : JSX.Element => {
                                           bIsDisabled  : true } });
              
                 // 3. Dispatch the request to the server.
-                 //TODO: typing in 5th sprint
-                dispatch(updateUser({ oProfile : oData }) as any);
+                dispatch(updateUser({ oProfile : oData }));
             }
         }
     }, [bIsBusy, dispatch, nActiveElements, oFields]);

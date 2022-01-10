@@ -1,65 +1,34 @@
-import { useSelector, shallowEqual } from 'react-redux';
+import { memo } from 'react';
 
-import type { TRootState } from '../../services/store';
+import { IngredientProperty } from '../';
+
+import type { FC } from 'react';
+import type { IPureIngredient } from '../../utils/types';
 
 import styles from  './ingredient-details.module.css';
 
-const IngredientDetails = () : JSX.Element =>{
-    const { name,
-            calories,
-            carbohydrates,
-            proteins,
-            fat,
-            image_large } = useSelector((store : TRootState) =>
-                        store.currentIngredient === null ? { name : "",
-                                                             calories : 0,
-                                                             carbohydrates : 0,
-                                                             proteins: 0,
-                                                             fat : 0,
-                                                             image_large : ""} :
-                                                        store.currentIngredient,
-                                         shallowEqual);
-    
+const IngredientDetails : FC<IPureIngredient> = memo(({ name, 
+                                                        calories,
+                                                        carbohydrates,
+                                                        proteins,
+                                                        fat,
+                                                        image_large}) =>{
     return (
         <figure className={styles.figure}>
             <img src={image_large} alt={name} className={styles.image} />
             <h2 className="text text_type_main-medium pt-4 pb-8">{name}</h2>
             <ul className={styles.table}>
-                <li className={styles.property}>
-                    <h3 className={`${styles.property__name} text text_type_main-small text_color_inactive`}>
-                        Калории, ккал
-                    </h3>
-                    <p className={`${styles.property__value} text text_type_digits-default text_color_inactive`}>
-                        {calories}
-                    </p>
-                </li>
-                <li className={styles.property}>
-                    <h3 className={`${styles.property__name} text text_type_main-small text_color_inactive`}>
-                        Белки, г
-                    </h3>
-                    <p className={`${styles.property__value} text text_type_digits-default text_color_inactive`}>
-                        {proteins}
-                    </p>
-                </li>
-                <li className={styles.property}>
-                    <h3 className={`${styles.property__name} text text_type_main-small text_color_inactive`}>
-                        Жиры, г
-                    </h3>
-                    <p className={`${styles.property__value} text text_type_digits-default text_color_inactive`}>
-                        {fat}
-                    </p>
-                </li>
-                <li className={styles.property}>
-                    <h3 className={`${styles.property__name} text text_type_main-small text_color_inactive`}>
-                        Углеводы, г
-                    </h3>
-                    <p className={`${styles.property__value} text text_type_digits-default text_color_inactive`}>
-                        {carbohydrates}
-                    </p>
-                </li>
+                <IngredientProperty sName="Калории, ккал"
+                                    sValue={String(calories)} />
+                <IngredientProperty sName="Белки, г"
+                                    sValue={String(proteins)} />
+                <IngredientProperty sName="Жиры, г"
+                                    sValue={String(fat)} />
+                <IngredientProperty sName="Углеводы, г"
+                                    sValue={String(carbohydrates)} />
             </ul>
         </figure>
     );
-};
+});
 
 export default IngredientDetails;

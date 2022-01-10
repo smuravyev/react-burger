@@ -2,16 +2,13 @@ import { useEffect } from 'react';
 
 import type { FC } from 'react';
 
-import { useSelector } from 'react-redux';
-
-import { useAppDispatch } from '../../services/hooks';
+import { useAppDispatch,
+         useAppSelector } from '../../services/hooks';
 
 import { useLocation,
          Navigate } from 'react-router-dom';
 
-import { SET_RETURN_PATH } from '../../services/actions/authorization';
-
-import type { TRootState } from '../../services/store';
+import { setReturnPathAction } from '../../services/actions/authorization';
 
 export interface IProtectedRouteProps {
     sFromWhom? : "authorized" | "unauthorized";
@@ -24,13 +21,13 @@ const ProtectedRoute : FC<IProtectedRouteProps> = ({ sFromWhom = "unauthorized",
                           bSavePathToStore = false, 
                           children }) => {
 
-    const bIsAuthorized = useSelector((store : TRootState) =>
+    const bIsAuthorized = useAppSelector(store =>
                                                 store.authorization.bIsUserSet);
     
-    const bAuthCheckDone = useSelector((store : TRootState) =>
+    const bAuthCheckDone = useAppSelector(store =>
                                             store.authorization.bAuthCheckDone);
     
-    const sReturnPath = useSelector((store : TRootState) =>
+    const sReturnPath = useAppSelector(store =>
                                         store.authorization.sReturnPath || "/"); 
 
     const dispatch = useAppDispatch();
@@ -44,8 +41,7 @@ const ProtectedRoute : FC<IProtectedRouteProps> = ({ sFromWhom = "unauthorized",
                                              ( sReturnPath ? sReturnPath : "/");
     useEffect(() => {
         if(bSavePathToStore && (!(bIsAllowed))){
-            dispatch({ type: SET_RETURN_PATH,
-                       payload: { sReturnPath : oLocation.pathname }});
+            dispatch(setReturnPathAction(oLocation.pathname));
         }
     }, [bIsAllowed,
         dispatch,

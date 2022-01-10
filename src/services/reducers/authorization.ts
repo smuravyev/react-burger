@@ -5,15 +5,12 @@ import { FORGOT_PASSWORD_REQUEST,
          RESET_PASSWORD_REQUEST,
          RESET_PASSWORD_SUCCESS,
          RESET_PASSWORD_FAILED,
-         RESET_RESET_PASSWORD_DATA,
          REGISTER_USER_REQUEST,
          REGISTER_USER_FAILED,
          REGISTER_USER_SUCCESS,
-         RESET_REGISTER_USER_DATA,
          LOGIN_REQUEST,
          LOGIN_FAILED,
          LOGIN_SUCCESS,
-         RESET_LOGIN_DATA,
          SAVE_ENTERED_EMAIL,
          SET_USER,
          SET_RETURN_PATH,
@@ -23,11 +20,33 @@ import { FORGOT_PASSWORD_REQUEST,
          AUTH_CHECK_DONE,
          RESET_USER } from '../actions/authorization';
 
-import type { TAuthorizationAction,
-              TToUnicodeFunction } from '../../utils/types';
+import type { TAuthorizationAction } from '../actions/authorization';
 
+import type { TToUnicodeFunction } from '../../utils/types';
 
-const stateInitialAuthorization = {
+export type TAuthorizationState = {
+    sEnteredEmail : string;
+    bIsForgotPasswordRequesting : boolean;
+    bIsForgotPasswordRequestSuccess : boolean;
+    bIsResetPasswordRequesting : boolean;
+    bIsResetPasswordRequestSuccess : boolean;
+    bIsRegisterUserRequesting : boolean;
+    bIsRegisterUserSuccess : boolean;
+    bIsLoginRequesting : boolean;
+    bIsLoginRequestSuccess : boolean;
+    bIsUpdateUserRequesting : boolean;
+    bIsUpdateUserRequestSuccess : boolean;
+    bIsUpdateUserRequestFailed : boolean;
+    bIsUserSet : boolean;
+    oUser : {
+        sEmail: string;
+        sName: string;
+    },
+    sReturnPath : string;
+    bAuthCheckDone : boolean;
+};
+
+const stateInitialAuthorization : TAuthorizationState = {
     sEnteredEmail : "",
     bIsForgotPasswordRequesting : false,
     bIsForgotPasswordRequestSuccess : false,
@@ -49,28 +68,28 @@ const stateInitialAuthorization = {
     bAuthCheckDone : false
 }
 
-        
-export const reducerAuthorization = (state = stateInitialAuthorization,
-                                     action : TAuthorizationAction ) => {
+export const reducerAuthorization =
+                     (state = stateInitialAuthorization,
+                      action : TAuthorizationAction ) : TAuthorizationState => {
     switch(action.type){
         
         case UPDATE_USER_REQUEST: {
             return { ...state,
-                     bIsUpdateUserRequsting: true,
+                     bIsUpdateUserRequesting: true,
                      bIsUpdateUserRequestSuccess : false,
                      bIsUpdateUserRequestFailed : false };
         }
 
         case UPDATE_USER_SUCCESS: {
             return { ...state,
-                     bIsUpdateUserRequsting: false,
+                     bIsUpdateUserRequesting: false,
                      bIsUpdateUserRequestSuccess : true,
                      bIsUpdateUserRequestFailed : false };
         }
 
         case UPDATE_USER_FAILED: {
             return { ...state,
-                     bIsUpdateUserRequsting: false,
+                     bIsUpdateUserRequesting: false,
                      bIsUpdateUserRequestSuccess : false,
                      bIsUpdateUserRequestFailed : true };
         }
@@ -111,7 +130,7 @@ export const reducerAuthorization = (state = stateInitialAuthorization,
         case RESET_USER: {
             return { ...state,
                      bIsUserSet : false,
-                     oUser :  {...stateInitialAuthorization.oUser} }
+                     oUser :  { ...stateInitialAuthorization.oUser } }
         }
 
         case LOGIN_REQUEST: {
@@ -119,13 +138,7 @@ export const reducerAuthorization = (state = stateInitialAuthorization,
                      bIsLoginRequesting : true,
                      bIsLoginRequestSuccess : false };
         }
-
-        case RESET_LOGIN_DATA: {
-            return { ...state,
-                     bIsLoginRequesting : false,
-                     bIsLoginRequestSuccess : false };
-        }
-
+        
         case LOGIN_SUCCESS: {
             return { ...state,
                      bIsLoginRequesting : false,
@@ -168,12 +181,6 @@ export const reducerAuthorization = (state = stateInitialAuthorization,
                      bIsResetPasswordRequestSuccess : false };
         }
         
-        case RESET_RESET_PASSWORD_DATA: {
-            return { ...state,
-                     bIsResetPasswordRequesting : false,
-                     bIsResetPasswordRequestSuccess : false };
-        }
-
         case RESET_PASSWORD_SUCCESS: {
             return { ...state,
                      bIsResetPasswordRequesting : false,
@@ -199,11 +206,6 @@ export const reducerAuthorization = (state = stateInitialAuthorization,
         }
 
         case REGISTER_USER_FAILED: {
-            return { ...state,
-                     bIsRegisterUserRequesting : false,
-                     bIsRegisterUserSuccess : false };
-        }
-        case RESET_REGISTER_USER_DATA: {
             return { ...state,
                      bIsRegisterUserRequesting : false,
                      bIsRegisterUserSuccess : false };

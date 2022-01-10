@@ -1,7 +1,7 @@
-import { BUSY_SET,
-         BUSY_CLEAR } from './app.js';
+import { setIsBusyAction,
+         clearIsBusyAction } from '../actions/app';
 
-import { setError } from './error-message';
+import { setError } from '../actions/error-message';
 
 import { fetchWithAuth } from '../../utils/functions';
 
@@ -9,15 +9,16 @@ import { oErrorCodes } from '../../utils/constants';
 
 import { oSettings } from '../../config/config'; 
 
+import { setOrderRequestAction,
+         setOrderSuccessAction,
+         setOrderFailedAction } from '../actions/order-details';
 
-export const CLEAR_ORDER_NUMBER = '@OrderDetails/CLEAR_ORDER_NUMBER';
-export const ORDER_REQUEST = '@OrderDetails/ORDER_REQUEST';
-export const ORDER_SUCCESS = '@OrderDetails/ORDER_SUCCESS';
-export const ORDER_FAILED = '@OrderDetails/ORDER_FAILED';
+import type { TAppThunk} from '../store';
 
+import type { IOrderRequestResult } from '../../utils/functions';
 
-export const sendOrder = () => async (dispatch, getState) => {
-    dispatch({type: BUSY_SET});
+export const sendOrder : TAppThunk = () => async (dispatch, getState) => {
+    dispatch(setIsBusyAction());
     try{
         const { constructedBurger } = getState();
         if(!(constructedBurger.present.oBun &&
@@ -28,14 +29,14 @@ export const sendOrder = () => async (dispatch, getState) => {
         }
         else {
             // Prepare ingredients list for the kitchen in the correct order
-            const aIngredientsToTheKitchen =
+            const aIngredientsToTheKitchen : Array<string> =
                                            [constructedBurger.present.oBun._id];
             constructedBurger.present.aContent.forEach((oElement) => {
                 aIngredientsToTheKitchen.push(oElement._id);
             });
         
             //Start requesting...
-            dispatch({type: ORDER_REQUEST});
+            dispatch(setOrderRequestAction());
             const oData =
                  await fetchWithAuth(oSettings.sAPIBaseURL +
                                      oSettings.oAPIURIS.sOrders,
@@ -45,25 +46,24 @@ export const sendOrder = () => async (dispatch, getState) => {
                                                           'application/json' }),
                                        redirect: 'follow',
                                        body: JSON.stringify({ingredients:
-                                                   aIngredientsToTheKitchen})});
+                                                 aIngredientsToTheKitchen})}) as
+                                                            IOrderRequestResult;
             if((!(oData.success)) ||
                (!(oData.order)) ||
                (!(oData.order.number))){
-                dispatch({ type: ORDER_FAILED });
+                dispatch(setOrderFailedAction());
                 dispatch(setError(oErrorCodes.EC_CANNOT_CREATE_ORDER, true));
             }
             else{
-                dispatch({type: ORDER_SUCCESS,
-                          payload:
-                               { nOrderNumber: parseInt(oData.order.number) }});
+                dispatch(setOrderSuccessAction(oData.order.number));
             }
         }
     }
-    catch(erError){
-        dispatch({ type: ORDER_FAILED });
+    catch(_){
+        dispatch(setOrderFailedAction());
         dispatch(setError(oErrorCodes.EC_CANNOT_CREATE_ORDER, true));
     }
     finally{
-        dispatch({ type: BUSY_CLEAR });
     }
+        dispatch(clearIsBusyAction());
 };

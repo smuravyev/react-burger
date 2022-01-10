@@ -6,7 +6,7 @@ import { useAppDispatch } from '../../services/hooks';
 import { addIngredient,
          addIngredientBefore,
          addIngredientAfter,
-         SET_BUN} from '../../services/actions/burger-constructor';
+         setBunAction} from '../../services/actions/burger-constructor';
 
 import { Counter, 
          CurrencyIcon }
@@ -53,25 +53,20 @@ const Ingredient = ({ onClickHandler,
             if(oResult){
                 if(oResult.bDefaultDrop){
                     if(oIngredient.sDragType === oIngredientDragTypes.sBun){
-                        dispatch({ type : SET_BUN,
-                                   payload : { oBun: oIngredient }});
+                        dispatch(setBunAction(oIngredient));
                     }
                     else{
-                         //TODO: typing in the 5th sprint
-                        dispatch(addIngredient({ oIngredient : oIngredient }) as
-                                                                           any);
+                        dispatch(addIngredient({ oIngredient : oIngredient }));
                     }
                 }
                 else{
                     if(oResult.sDropPosition === 'top'){
-                         //TODO: typing in the 5th sprint
                         dispatch(addIngredientBefore(oIngredient,
-                                                     oResult.sTargetID) as any);
+                                                     oResult.sTargetID));
                     }
                     else{
-                         //TODO: typing in the 5th sprint
                         dispatch(addIngredientAfter(oIngredient,
-                                                    oResult.sTargetID) as any);
+                                                    oResult.sTargetID));
                     }
                 }
             }

@@ -1,0 +1,48 @@
+.section {
+    display: inline-block;
+    max-width: 1240px;
+    width: 100%;
+    text-align: center;
+    height: 100%;
+    vertical-align: top;
+}
+
+.header {
+    text-align: left;
+}
+
+.pane {
+    display: inline-block;
+    max-width: 588px;
+    width: 100%;
+    height: 100%;
+    vertical-align: top;
+    min-height: 500px;
+    text-align: left;
+}
+
+.pane_scrollable {
+    height: 75vh;
+    overflow-y: auto;
+    scrollbar-width: thin;
+    scrollbar-color: #8585AD #2E2E37;
+}
+
+.pane_scrollable::-webkit-scrollbar {
+    width: 8px;
+    background-color:#2E2E37;
+}
+
+.pane_scrollable::-webkit-scrollbar-track {
+    width: 8px;
+    background-color:#2E2E37;
+}
+
+.pane_scrollable::-webkit-scrollbar-thumb {
+    width: 8px;
+    background-color:#8585AD;
+}
+
+.shadow {
+    text-shadow: #4C4CFF 1px 0 20px;
+}

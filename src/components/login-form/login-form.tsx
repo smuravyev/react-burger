@@ -7,11 +7,8 @@ import type { SyntheticEvent } from 'react';
 
 import { Link } from 'react-router-dom';
 
-import { useSelector } from 'react-redux';
-
-import { useAppDispatch } from '../../services/hooks';
-
-import type { TRootState } from '../../services/store';
+import { useAppDispatch,
+         useAppSelector } from '../../services/hooks';
 
 import { Button } from '@ya.praktikum/react-developer-burger-ui-components';
 
@@ -24,7 +21,7 @@ import { oErrorCodes } from '../../utils/constants';
 
 import { rePasswordChecker } from '../../utils/checkers';
 
-import { SAVE_ENTERED_EMAIL,
+import { saveEnteredEmailAction,
          requestLogin } from '../../services/actions/authorization';
          
 import type { TChangeHandler } from '../checkable-input/checkable-input';
@@ -34,10 +31,10 @@ import styles from './login-form.module.css';
 const LoginForm = () : JSX.Element => {
     const oEmailInputRef = useRef<HTMLInputElement>(null);
     
-    const sEnteredEmail = useSelector((store : TRootState) =>
+    const sEnteredEmail = useAppSelector(store =>
                                              store.authorization.sEnteredEmail);
 
-    const bIsBusy = useSelector((store : TRootState) => store.app.bIsBusy);
+    const bIsBusy = useAppSelector(store => store.app.bIsBusy);
 
     const [oFormData, setFormData] = useState({email : sEnteredEmail,
                                                password : ""});
@@ -58,8 +55,7 @@ const LoginForm = () : JSX.Element => {
     const saveEnteredEmail = () : void => {
         if((oFormData.email !== sEnteredEmail) && 
            (oFormData.email !== "")){
-            dispatch({type: SAVE_ENTERED_EMAIL,
-                      payload: { sEmail : oFormData.email }});
+            dispatch(saveEnteredEmailAction(oFormData.email));
         }
     }
 
@@ -67,15 +63,11 @@ const LoginForm = () : JSX.Element => {
         eEvent.preventDefault();
         if(!bIsBusy){
             if(oFormData.email && oFormData.password){
-                //TODO: typing in 5th sprint
                 dispatch(requestLogin({ sEmail : oFormData.email,
-                                        sPassword : oFormData.password }) as
-                                                                           any);
+                                        sPassword : oFormData.password }));
             }
             else{
-                 //TODO: typing in 5th sprint
-                 dispatch(setError(oErrorCodes.EC_INVALID_FORM_DATA, true) as
-                                                                           any);
+                 dispatch(setError(oErrorCodes.EC_INVALID_FORM_DATA, true));
             }
         }
     }, [ dispatch, oFormData.email, oFormData.password, bIsBusy]);

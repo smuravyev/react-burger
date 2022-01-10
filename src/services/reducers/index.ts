@@ -3,19 +3,19 @@ import undoable from 'redux-undo';
 
 import { reducerBurgerIngredients } from './burger-ingredients';
 import { reducerBurgerConstructor } from './burger-constructor';
-import { reducerIngredientDetails } from './ingredient-details';
 import { reducerOrderDetails } from './order-details';
 import { reducerApp } from './app';
 import { reducerErrorMessage } from './error-message';
 import { reducerAuthorization } from './authorization';
+import { reducerFeed } from './feed';
 
 export const reducerRoot = combineReducers({
-    app: reducerApp,
-    authorization: reducerAuthorization,
-    constructedBurger: (undoable(reducerBurgerConstructor)),
-    burgerIngredients: reducerBurgerIngredients,
-    currentIngredient : reducerIngredientDetails,
+    app : reducerApp,
+    authorization : reducerAuthorization,
+    constructedBurger : undoable(reducerBurgerConstructor),
+    burgerIngredients : reducerBurgerIngredients,
     orderDetails : reducerOrderDetails,
-    errorMessage: reducerErrorMessage
+    errorMessage : reducerErrorMessage,
+    feed : reducerFeed
 });
 

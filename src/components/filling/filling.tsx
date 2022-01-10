@@ -1,17 +1,15 @@
 import { useRef,
          useState} from 'react';
-import { useSelector } from 'react-redux';
 
-import { useAppDispatch } from '../../services/hooks';
-
-import type { TRootState } from '../../services/store';
+import { useAppDispatch,
+         useAppSelector } from '../../services/hooks';
 
 import { useDrag, useDrop } from 'react-dnd';
 
 import { ConstructorElement, 
          DragIcon } from '@ya.praktikum/react-developer-burger-ui-components';
          
-import { REMOVE_INGREDIENT,
+import { removeIngredientAction,
          moveIngredientBefore,
          moveIngredientAfter } from '../../services/actions/burger-constructor';
 
@@ -35,8 +33,7 @@ const Filling =
 
     const dispatch = useAppDispatch();
     
-    const bIsBusy =
-          useSelector((store : TRootState) => store.orderDetails.bIsRequesting);
+    const bIsBusy = useAppSelector(store => store.orderDetails.bIsRequesting);
     
     const refThis = useRef<HTMLLIElement>(null);
 
@@ -82,14 +79,12 @@ const Filling =
             if(oDropData.nIndex !== undefined){
                 if(oDropData.nIndex !== nIndex){
                     if(sDropPosition === 'top'){
-                        //TODO: typing in the 5th sprint
                         dispatch(moveIngredientBefore(oDropData.nIndex,
-                                                      nIndex) as any);
+                                                      nIndex));
                     }
                     else{
-                        //TODO: typing in the 5th sprint
                         dispatch(moveIngredientAfter(oDropData.nIndex,
-                                                     nIndex) as any);
+                                                     nIndex));
                     }
                 }
             }
@@ -137,10 +132,12 @@ const Filling =
                                 price={oIngredient.price}
                                 thumbnail={oIngredient.image}
                                 handleClose=
-                                 {() => dispatch({ type : REMOVE_INGREDIENT,
-                                                   payload :
-                                                       { sID :
-                                                   oIngredient.sInnerID } })} />
+                                {
+                                    () => {
+                                        dispatch(removeIngredientAction(
+                                                  oIngredient?.sInnerID || ''));
+                                    }
+                                } />
         </li>
     );
 }
