@@ -26,6 +26,8 @@ import { requestResetPassword } from '../../services/actions/authorization';
 
 import type { SyntheticEvent } from 'react';
 
+import type { TBackgroundLocationState } from '../../utils/types';
+
 import styles from './reset-password-form.module.css';
 
 const ResetPasswordForm = () : JSX.Element => {
@@ -47,6 +49,9 @@ const ResetPasswordForm = () : JSX.Element => {
     const dispatch = useAppDispatch();
     
     const oLocation = useLocation();
+    
+    const oState : TBackgroundLocationState =
+                                    oLocation.state as TBackgroundLocationState;
 
     const onChange : TChangeHandler<"code" | "password"> =  (oData) : void => {
         setFormData({...oFormData,
@@ -77,7 +82,7 @@ const ResetPasswordForm = () : JSX.Element => {
         }
     }, [ dispatch, oFormData.password, oFormData.code, bIsBusy]);
 
-    return (bWeAllowedToSeeThisPage && oLocation.state.bAllowed) ? (
+    return (bWeAllowedToSeeThisPage && oState?.bAllowed) ? (
         <section className={`${styles.centered_section} pt-20 mt-20`}>
             <h1 className="text text_type_main-medium">
                 Восстановление пароля

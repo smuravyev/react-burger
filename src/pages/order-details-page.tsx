@@ -24,7 +24,8 @@ import { formatOrderNumber } from '../utils/functions';
 import { useAppSelector,
          useAppDispatch } from '../services/hooks';
 
-import type { IOrderWithProcessedIngredientsProperties } from '../utils/types'; 
+import type { IOrderWithProcessedIngredientsProperties,
+              TBackgroundLocationState } from '../utils/types'; 
 
 export interface IOrderDetailsPageProps {
     sWSURL? : string;
@@ -74,9 +75,11 @@ const OrderDetailsPage : FC<IOrderDetailsPageProps> =
          bWithAuthToken]);
     
     const oLocation = useLocation();
+    const oState : TBackgroundLocationState =
+                                    oLocation.state as TBackgroundLocationState;
    
     //If we have a background object, then we're modal
-    const bIsModal = oLocation?.state?.oBackground ? true : false;
+    const bIsModal = oState?.oBackground ? true : false;
 
     const navigate = useNavigate();
     

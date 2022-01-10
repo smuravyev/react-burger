@@ -2,7 +2,7 @@ import { Route,
          Routes,
          useLocation } from 'react-router-dom';
          
-import type { Location as ILocation } from 'react-router-dom';
+import type { Location as ILocation } from 'history';
 
 import { oSettings } from '../../config/config';
 
@@ -25,7 +25,8 @@ const AppRoutes = () : JSX.Element => {
     
     const oLocation : ILocation = useLocation();
     
-    const oLocationState : TBackgroundLocationState = oLocation.state;
+    const oLocationState : TBackgroundLocationState =
+                                    oLocation.state as TBackgroundLocationState;
     
     const oBackground = (oLocationState && oLocationState.oBackground) || null;
 

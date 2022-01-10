@@ -42,7 +42,8 @@ import type { TToASCIIFunction,
               IForgotPasswordRequestData,
               IResetPasswordRequestData,
               IRegisterUserRequestData,
-              ILoginRequestData } from '../../utils/types';
+              ILoginRequestData,
+              IUpdateUserStructure } from '../../utils/types';
 
 export const requestLogin : TAppThunk =
             ({ sEmail, sPassword } : { sEmail : string, sPassword : string }) =>
@@ -265,9 +266,7 @@ export const requestAuthorizationCheck : TAppThunk =
 };
 
 export const updateUser : TAppThunk = ({ oProfile } :
-                                           { oProfile : { name: string,
-                                                          email: string,
-                                                          password: string}}) =>
+                              { oProfile : IUpdateUserStructure }) =>
                                                              async dispatch => {
     dispatch(setIsBusyAction());
     try{

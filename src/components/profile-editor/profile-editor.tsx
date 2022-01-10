@@ -28,6 +28,8 @@ import { oErrorCodes } from '../../utils/constants';
 import { reNameChecker,
          rePasswordChecker } from '../../utils/checkers';
 
+import type { IUpdateUserStructure } from '../../utils/types';
+
 import styles from './profile-editor.module.css';
 
 export type TProfileEditorField = "password" | "name" | "email"; 
@@ -145,11 +147,10 @@ const ProfileEditor = () : JSX.Element => {
         
         if((nActiveElements > 0) &&
            (!(bIsBusy))){
-            // 1. Check all fields if they are disabled. Will send request only on
-            //    enabled fields.
-            const oData = { name: "",
-                            email: "",
-                            password: ""};
+            // 1. Check all fields if they are disabled. Will send request only
+            // on enabled fields.
+            const oData : IUpdateUserStructure = {};
+    
             let bNullsExist = false;
             Object.keys(oFields).forEach((sIndex) : void => {
                 const sCurrentIndex = sIndex as TProfileEditorField;

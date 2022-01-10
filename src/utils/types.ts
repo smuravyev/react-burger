@@ -3,7 +3,8 @@ import type { Location as ILocation } from 'react-router-dom';
 import { oIngredientDragTypes } from './constants';
 
 export type TBackgroundLocationState = {
-    oBackground: ILocation
+    oBackground?: ILocation;
+    bAllowed? : boolean;
 } | null | undefined; 
 
 export type TIngredientType = "bun" | "sauce" | "main";
@@ -124,4 +125,10 @@ export interface IProcessedOrdersFeedData {
 export interface IOrderNumberAndTime {
     nNumber: number;
     nTimeUpdated : number;
+};
+
+export interface IUpdateUserStructure { 
+    name? : string;
+    email? : string;
+    password? : string;
 };

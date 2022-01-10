@@ -15,6 +15,7 @@ import { IngredientDetails,
 import { useAppSelector } from '../services/hooks';
 
 import type { IIngredient,
+              TBackgroundLocationState,
               IPureIngredient } from '../utils/types'; 
 
 const IngredientDetailsPage = () : JSX.Element => {
@@ -73,9 +74,12 @@ const IngredientDetailsPage = () : JSX.Element => {
         aIngredients]);
 
     const oLocation = useLocation();
+    
+    const oState : TBackgroundLocationState =
+                                    oLocation.state as TBackgroundLocationState;
    
     //If we have a background object, then we're modal
-    const bIsModal = oLocation?.state?.oBackground ? true : false;
+    const bIsModal = oState?.oBackground ? true : false;
 
     const navigate = useNavigate();
     
