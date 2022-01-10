@@ -7,7 +7,7 @@
     vertical-align: top;
     min-height: 500px;
     text-align: left;
-    height: 75vh;
+    max-height: 65vh;
     overflow-y: auto;
     scrollbar-width: thin;
     scrollbar-color: #8585AD #2E2E37;
