@@ -119,6 +119,7 @@ export const socketMiddleware : Middleware =
         if(oAction?.type){
             switch(oAction.type){
                 case WS_CONNECT: {
+                    console.log("WS_CONNECT!");
                     let sRequiredURL = oAction.payload.sURL;
                     if(oAction.payload?.bWithAuthToken){
                         const store = getState();
@@ -147,7 +148,9 @@ export const socketMiddleware : Middleware =
                                 }
                                 nClientComponentsCount = 0;
                                 wsSocket?.close(nSuccessSocketCloseCode);
+                                console.log("Applying " + sRequiredURL)
                                 wsSocket = new WebSocket(sRequiredURL);
+                                console.log(wsSocket.readyState);
                             }
                             else{
                                 // Don't touch the socket, but can redeclare
@@ -156,6 +159,9 @@ export const socketMiddleware : Middleware =
                         }
                         else{
                             wsSocket = new WebSocket(sRequiredURL);
+                        }
+                        if(!wsSocket){
+                            alert(123);
                         }
                         bIsConnected = true;
                         nClientComponentsCount++;
@@ -176,17 +182,20 @@ export const socketMiddleware : Middleware =
                             }
                         
                             // onClose handler, needed always
-                            wsSocket.onclose = () => {
+                            wsSocket.onclose = (eEvent : CloseEvent) => {
                                 // We won't handle errors here
                                 // But we'll try to reconnect
                                 if(oAction.payload.onClose){
                                     redispatch(oAction.payload.onClose);
                                 }
 
-                                if(bIsConnected){
+                                if(bIsConnected && !(eEvent.wasClean)){
                                     nReconnectTimerID = setTimeout(() => {
                                         // The current WS_CONNECT action
                                         // will remain in this closure
+                                        bIsConnected = false;
+                                        console.log("We are here - 1");
+                                        wsSocket?.close();
                                         dispatch(oAction);
                                     },
                                     nSecondsUntilSocketReconnectOnError * 1000);

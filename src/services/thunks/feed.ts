@@ -8,6 +8,8 @@ import { socketConnectAction,
 
 import { setError } from '../actions/error-message';
 
+import { setReturnPathAction } from '../actions/authorization';
+
 import { requestAuthorizationCheck } from '../actions/authorization';
 
 import { oErrorCodes,
@@ -205,10 +207,29 @@ export const onSocketMessage : TAppThunk =
             if((oData?.message === sInvalidTokenInSocketMessage) &&
                (store?.feed?.bWithAuthToken)){
                 //Need to renew token!
-                 
-                dispatch(requestAuthorizationCheck(() =>  {
-                    dispatch(socketConnect(store.feed.sURL,
-                                          store.feed.bWithAuthToken));
+                console.log("we are here");
+                //Save the dispatch data for closure
+                const savedDispatch = dispatch;
+                const savedURL = store.feed.sURL;
+                const savedBWithAuthToken = store.feed.bWithAuthToken;
+                dispatch(requestAuthorizationCheck(
+                    (bUserAuthorized : boolean) =>  {
+                        if(bUserAuthorized){
+                            console.log("Dispatch after authorization check");
+                            savedDispatch(socketConnect(savedURL,
+                                                        savedBWithAuthToken));
+                        }
+                        else{
+                            //We are not authorized. Need to change location..
+                            const oLocation = window.location;
+                            savedDispatch(setReturnPathAction(
+                                                           oLocation.pathname));
+                            // I'm not sure we can use react-router-dom here,
+                            // so use the navigation methods instead
+                            oLocation.assign("/login/");
+                            
+                            //hehe, let's check if it'll work
+                        }
                 }));
             }
             else{

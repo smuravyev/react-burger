@@ -38,7 +38,9 @@ const OrdersHistory = () : JSX.Element => {
     return (
 
         (bIsBusy || (!bLoadedIngredients) || !(bHasData)) ? (
-            <Loader message="Загрузка данных&hellip;" />
+            <>
+                <Loader message="Загрузка данных или&nbsp;ожидание окончания выполнения операции&hellip;" />
+            </>
         ) : (
             <section className={`${styles.pane} `}>
                 {

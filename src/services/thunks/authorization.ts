@@ -233,8 +233,10 @@ export const requestRegisterUser : TAppThunk =
 };
 
 export const requestAuthorizationCheck : TAppThunk =
-      (callback : ( () => void ) | undefined = undefined) => async dispatch => {
+  (callback : ( (bUserAuthorized: boolean) => void ) | undefined = undefined) =>
+                                                             async dispatch => {
     dispatch(setIsBusyAction());
+    let bUserAuthorized : boolean = false;
     try{
         if(Cookies.get('accessToken')){
             const oUser = await fetchWithAuth(oSettings.sAPIBaseURL + 
@@ -244,11 +246,9 @@ export const requestAuthorizationCheck : TAppThunk =
                            new Headers({"Content-Type" : "application/json"})});
             if(oUser.success){
                 const oUserData = oUser as IUserDataResult;
+                bUserAuthorized = true;
                 dispatch(setUserAction(oUserData["user"]["email"],
                                       oUserData["user"]["name"]));
-               if(typeof callback === "function"){
-                   callback();
-                }
             }
         } 
     }
@@ -256,8 +256,11 @@ export const requestAuthorizationCheck : TAppThunk =
         //Do nothing, we are not authorized, so... Silently ignoring
     }
     finally{
-        dispatch(clearIsBusyAction());
         dispatch(setAuthCheckDoneAction());
+        dispatch(clearIsBusyAction());
+        if(typeof callback === "function"){
+            callback(bUserAuthorized);
+        }
     }
 };
 
