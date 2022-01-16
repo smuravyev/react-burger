@@ -1,19 +1,54 @@
 {
-  "short_name": "React App",
-  "name": "Create React App Sample",
+  "short_name": "Stellar Burgers",
+  "name": "Stellar Burgers: бургерная у края вселенной",
   "icons": [
     {
       "src": "favicon.ico",
-      "sizes": "64x64 32x32 24x24 16x16",
-      "type": "image/x-icon"
+      "sizes": "32x32 24x24 16x16",
+      "type": "image/vnd.microsoft.icon"
     },
     {
-      "src": "logo192.png",
+      "src": "favicon.png",
+      "sizes": "64x64",
+      "type": "image/png"
+    },
+    {
+      "src": "apple-touch-icon-60x60.png",
+      "type": "image/png",
+      "sizes": "60x60"
+    },
+    {
+      "src": "apple-touch-icon-76x76.png",
+      "type": "image/png",
+      "sizes": "76x76"
+    },
+    {
+      "src": "apple-touch-icon-120x120.png",
+      "type": "image/png",
+      "sizes": "120x120"
+    },
+    {
+      "src": "apple-touch-icon-152x152.png",
+      "type": "image/png",
+      "sizes": "152x152"
+    },
+    {
+      "src": "apple-touch-icon-167x167.png",
+      "type": "image/png",
+      "sizes": "167x167"
+    },
+    {
+      "src": "apple-touch-icon-180x180.png",
+      "type": "image/png",
+      "sizes": "180x180"
+    },
+    {
+      "src": "apple-touch-icon-192x192.png",
       "type": "image/png",
       "sizes": "192x192"
     },
     {
-      "src": "logo512.png",
+      "src": "apple-touch-icon-512x512.png",
       "type": "image/png",
       "sizes": "512x512"
     }
@@ -21,5 +56,5 @@
   "start_url": ".",
   "display": "standalone",
   "theme_color": "#000000",
-  "background_color": "#ffffff"
+  "background_color": "#131316"
 }
