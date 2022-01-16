@@ -133,7 +133,7 @@ const LoginForm = () : JSX.Element => {
                 <article className=
                {`${styles.bottom_links} pt-20 pb-4 text text_type_main-small ` + 
                 `text_color_inactive`}>
-                    Вы&nbsp;&mdash; новый пользователь&nbsp;
+                    Вы&nbsp;&mdash; новый пользователь?&nbsp;
                     <Link to="/register/"
                           onClick={saveEnteredEmail}>Зарегистрироваться</Link>
                 </article>
