@@ -205,7 +205,7 @@ const ProfileEditor = () : JSX.Element => {
         };
     });
     
-    let sFormClassName : string = `${styles.form} width_480px_form`;
+    let sFormClassName : string = `${styles.form} width_480px_form pt-20 mt-20`;
     if(bIsSavingProfile){
         sFormClassName = `${sFormClassName} ${styles.busy}`;
     } 

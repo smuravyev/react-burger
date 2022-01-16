@@ -35,8 +35,8 @@ const Profile = () : JSX.Element => {
     };
 
     return (
-        <section className={`${styles.profile_section} pt-20 mt-20`}>
-            <nav className={`${styles.profile_navigation} pr-15`}>
+        <section className={`${styles.profile_section}`}>
+            <nav className={`${styles.profile_navigation} pt-20 mt-20 pr-15`}>
                 <NavLink to="/profile/" className={getLinkClassName}>
                     Профиль
                 </NavLink>
