@@ -7,7 +7,9 @@ import { oErrorCodes,
 
 import { oSettings } from '../config/config';
 
-import type { IAPIRequestData } from './types';
+import type { IAPIRequestData,
+              TToASCIIFunction,
+              TToUnicodeFunction } from './types';
 
 export interface IRefreshTokenResult extends IAPIRequestData {
     accessToken? : string;
@@ -250,4 +252,20 @@ export const makeCoolDateFromUTCString : (sSource : string) => string =
                                       oDateFormatOptions.nTZDifferenceDivider));
     }
     return sResult +  " " + oDateFormatOptions.sTZPrefix + sTZDifference;
+};
+
+export const punycodeDomainName = (sString : string) : string => {
+    const [sBeforeAt, sDomainName] = sString.split("@");
+    const punycode : { toASCII : TToASCIIFunction } = require("punycode/");
+    const sResult = sBeforeAt + "@" + punycode.toASCII(sDomainName);
+    console.log("Punycode. From: " + sString + ", to: " + sResult);
+    return sResult;
+};
+
+export const dePunycodeDomainName = (sString : string) : string => {
+    const [sBeforeAt, sDomainName] = sString.split("@");
+    const punycode : { toUnicode : TToUnicodeFunction } = require("punycode/");
+    const sResult = sBeforeAt + "@" + punycode.toUnicode(sDomainName);
+    console.log("Depunycode. From " + sString + ", to: " + sResult); 
+    return sResult;
 };

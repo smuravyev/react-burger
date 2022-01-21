@@ -76,7 +76,7 @@ const ProfileEditor = () : JSX.Element => {
                                                        oRef : oEmailRef,
                                                        bIsRequired : true,
                                                        mChecker : "email",
-                                                       sType : "email",
+                                                       sType : "text",
                                                        sPlaceholder :
                                                            "Логин"},
                                              password: { bIsDisabled : true,

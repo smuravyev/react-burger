@@ -94,7 +94,7 @@ const LoginForm = () : JSX.Element => {
                                mChecker="email"
                                sDefaultValue={sEnteredEmail}
                                name="email"
-                               type="email"
+                               type="text"
                                sName="email"
                                placeholder="Электронная почта"
                                ref={oEmailInputRef} />
