@@ -7,7 +7,9 @@ import { oErrorCodes,
          nSuccessSocketCloseCode, 
          nRetryAttemptsForSocketConnection } from '../../utils/constants';
 
-import type { Middleware } from 'redux';
+import type { Middleware,
+              Dispatch ,
+              AnyAction} from 'redux';
 
 import type { TAppThunk,
               TAppDispatch,
@@ -240,8 +242,10 @@ export const socketMiddleware : Middleware =
                                     else{
                                         if(typeof oAction.payload.onMessage
                                                                !== "undefined"){
-                                            if(oAction.payload.onMessage.type){
-                                                dispatch({
+                                            if(oAction.payload.onMessage?.type){
+                                                const ourDispatch = dispatch as
+                                                             Dispatch<AnyAction>
+                                                ourDispatch({
                                            type: oAction.payload.onMessage.type,
                                                payload: { 
                                               _ws_message : data } });
