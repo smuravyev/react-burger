@@ -255,17 +255,24 @@ export const makeCoolDateFromUTCString : (sSource : string) => string =
 };
 
 export const punycodeDomainName = (sString : string) : string => {
-    const [sBeforeAt, sDomainName] = sString.split("@");
-    const punycode : { toASCII : TToASCIIFunction } = require("punycode/");
-    const sResult = sBeforeAt + "@" + punycode.toASCII(sDomainName);
-    console.log("Punycode. From: " + sString + ", to: " + sResult);
-    return sResult;
+    if((typeof(sString) === "string") && (sString.indexOf("@") >= 0)){
+        const [sBeforeAt, sDomainName] = sString.split("@");
+        const punycode : { toASCII : TToASCIIFunction } = require("punycode/");
+        return sBeforeAt + "@" + punycode.toASCII(sDomainName);
+    }
+    else{
+        return "";
+    }
 };
 
 export const dePunycodeDomainName = (sString : string) : string => {
-    const [sBeforeAt, sDomainName] = sString.split("@");
-    const punycode : { toUnicode : TToUnicodeFunction } = require("punycode/");
-    const sResult = sBeforeAt + "@" + punycode.toUnicode(sDomainName);
-    console.log("Depunycode. From " + sString + ", to: " + sResult); 
-    return sResult;
+    if((typeof(sString) === "string") && (sString.indexOf("@") >= 0)){
+        const [sBeforeAt, sDomainName] = sString.split("@");
+        const punycode : { toUnicode : TToUnicodeFunction } =
+                                                           require("punycode/");
+        return sBeforeAt + "@" + punycode.toUnicode(sDomainName);
+    }
+    else {
+        return "";
+    } 
 };
