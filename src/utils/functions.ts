@@ -254,8 +254,12 @@ export const makeCoolDateFromUTCString : (sSource : string) => string =
     return sResult +  " " + oDateFormatOptions.sTZPrefix + sTZDifference;
 };
 
+const theStringIsStringAndHasOnlyOneAt = (sString : string) : boolean => {
+    return (typeof(sString) === "string") && (/^[^@]*?@[^@]*?$/.test(sString));
+};
+
 export const punycodeDomainName = (sString : string) : string => {
-    if((typeof(sString) === "string") && (sString.indexOf("@") >= 0)){
+    if(theStringIsStringAndHasOnlyOneAt(sString)){
         const [sBeforeAt, sDomainName] = sString.split("@");
         const punycode : { toASCII : TToASCIIFunction } = require("punycode/");
         return sBeforeAt + "@" + punycode.toASCII(sDomainName);
@@ -266,7 +270,7 @@ export const punycodeDomainName = (sString : string) : string => {
 };
 
 export const dePunycodeDomainName = (sString : string) : string => {
-    if((typeof(sString) === "string") && (sString.indexOf("@") >= 0)){
+    if(theStringIsStringAndHasOnlyOneAt(sString)){
         const [sBeforeAt, sDomainName] = sString.split("@");
         const punycode : { toUnicode : TToUnicodeFunction } =
                                                            require("punycode/");
