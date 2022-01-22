@@ -47,7 +47,9 @@ export const reducerBurgerConstructor =
                                       sInnerID : "" +
                                                Math.floor(Math.random() *
                                                nMaximumRandomNumberForID) 
-                                               + Date.now()});
+                                               + Date.now() +
+                                               Math.floor(Math.random() *
+                                               nMaximumRandomNumberForID) });
                     return { ...state,
                              aContent : aContent };
                 }

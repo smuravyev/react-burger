@@ -87,7 +87,7 @@ export const nBlurTimeout = 10 as const;
  
 export const nScrollThrottleDelay = 500 as const; 
 
-export const nMaximumRandomNumberForID = 65536 as const;
+export const nMaximumRandomNumberForID : number = Number.MAX_SAFE_INTEGER;
 
 export const oIngredientDragTypes = {
     sBun : "bun",
