@@ -123,7 +123,7 @@ export const reducerAuthorization =
             return { ...state,
                      bIsUserSet : true,
                      oUser : { sEmail :
-                                      dePunycodeDomainName(sEmail),
+                               dePunycodeDomainName(sEmail.toLocaleLowerCase()),
                                sName : sName } };
         }
 

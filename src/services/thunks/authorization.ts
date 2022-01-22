@@ -273,7 +273,8 @@ export const updateUser : TAppThunk = ({ oProfile } :
         //We must PUNYCODE the email in oProfile. So...
         const oValidatedProfile : IUpdateUserStructure = { 
             ...oProfile,
-            email: oProfile?.email ? punycodeDomainName(oProfile?.email) : "" };
+            email: oProfile?.email ? punycodeDomainName(oProfile?.email) :
+                                     undefined };
         const oData =
              await fetchWithAuth(oSettings.sAPIBaseURL +
                                  oSettings.oAPIURIS.sUserData,

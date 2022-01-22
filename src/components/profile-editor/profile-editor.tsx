@@ -72,7 +72,8 @@ const ProfileEditor = () : JSX.Element => {
                                                       sType : "text",
                                                       sPlaceholder : "Имя" },
                                              email : { bIsDisabled : true,
-                                                       sValue: sEmail || "",
+                                                       sValue:
+                                               sEmail.toLocaleLowerCase() || "",
                                                        oRef : oEmailRef,
                                                        bIsRequired : true,
                                                        mChecker : "email",
@@ -172,6 +173,8 @@ const ProfileEditor = () : JSX.Element => {
                 setOFields({ name : { ...oFields.name,
                                       bIsDisabled  : true},
                              email : { ...oFields.email,
+                                       sValue :
+                                       oFields.email.sValue.toLocaleLowerCase(),
                                        bIsDisabled  : true},
                              password : { ...oFields.password,
                                           bIsDisabled  : true } });

@@ -262,7 +262,8 @@ export const punycodeDomainName = (sString : string) : string => {
     if(theStringIsStringAndHasOnlyOneAt(sString)){
         const [sBeforeAt, sDomainName] = sString.split("@");
         const punycode : { toASCII : TToASCIIFunction } = require("punycode/");
-        return sBeforeAt + "@" + punycode.toASCII(sDomainName);
+        return sBeforeAt.toLocaleLowerCase() + "@" +
+                              punycode.toASCII(sDomainName.toLocaleLowerCase());
     }
     else{
         return "";
@@ -274,7 +275,8 @@ export const dePunycodeDomainName = (sString : string) : string => {
         const [sBeforeAt, sDomainName] = sString.split("@");
         const punycode : { toUnicode : TToUnicodeFunction } =
                                                            require("punycode/");
-        return sBeforeAt + "@" + punycode.toUnicode(sDomainName);
+        return sBeforeAt.toLocaleLowerCase() + "@" +
+                            punycode.toUnicode(sDomainName.toLocaleLowerCase());
     }
     else {
         return "";
