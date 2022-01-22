@@ -70,6 +70,8 @@ export const reducerBurgerConstructor =
                     aContent : aContent};
         }
 
+        // Payload: nFirst - which ingredient to move
+        //          nSecond - where to move (index)
         case SWAP_INGREDIENTS: {
             const aContent = [...state.aContent];
             const nFirstIndex = ((action.payload?.nFirst !== undefined) &&
