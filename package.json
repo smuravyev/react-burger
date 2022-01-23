@@ -30,7 +30,6 @@
     "verbose-test": "react-scripts test --verbose",
     "eject": "react-scripts eject",
     "cypress": "./node_modules/.bin/cypress open"
- 
   },
   "eslintConfig": {
     "extends": [
