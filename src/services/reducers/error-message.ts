@@ -21,8 +21,10 @@ export const reducerErrorMessage =
             // There could be several errors, so we have to save them all.
             // We can proceed only if ALL those errors came with
             // bCanProceed = true.
-            if((action.payload !== undefined) &&
-               (action.payload !== null)){            
+            if((action?.payload !== undefined) &&
+               (action?.payload !== null) &&
+               (typeof action?.payload?.bCanProceed === "boolean") &&
+               (typeof action?.payload?.sMessage === "string" )){            
                 return { ...state,
                      bCanProceedWithError : state.bCanProceedWithError &&
                                                      action.payload.bCanProceed,

@@ -61,8 +61,7 @@ export const setFeedConnectionErrorAction = () : IFeedConnectionErrorAction =>
 export const setFeedDisconnectedAction = () : IFeedDisconnectedAction =>
                                                   ({ type: FEED_DISCONNECTED });
 
-export const
-              setFeedReceivedDataAction = ( oData : IProcessedOrdersFeedData ) :
+export const setFeedReceivedDataAction = ( oData : IProcessedOrdersFeedData ) :
                                                       IFeedReceivedDataAction =>
                                                     ({ type: FEED_RECEIVED_DATA,
                                                        payload: oData });

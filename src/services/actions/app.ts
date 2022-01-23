@@ -17,4 +17,5 @@ export type TAppAction = IBusyClearAction |
                          
 export const setIsBusyAction = () : IBusySetAction => ({ type: BUSY_SET });
 
-export const clearIsBusyAction = () : IBusyClearAction => ({ type: BUSY_CLEAR });
+export const clearIsBusyAction =
+                                () : IBusyClearAction => ({ type: BUSY_CLEAR });

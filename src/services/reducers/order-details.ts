@@ -42,7 +42,8 @@ export const reducerOrderDetails =
 
         case ORDER_SUCCESS: {
             return {...state,
-                    nOrderNumber : action?.payload?.nOrderNumber || -1,
+                    nOrderNumber : action?.payload?.nOrderNumber ||
+                                   stateInitialOrderDetails.nOrderNumber,
                     bIsRequesting : false,
                     bIsRequestFailed : false};
         }
