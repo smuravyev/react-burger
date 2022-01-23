@@ -20,9 +20,9 @@ import { FORGOT_PASSWORD_REQUEST,
          AUTH_CHECK_DONE,
          RESET_USER } from '../actions/authorization';
 
-import type { TAuthorizationAction } from '../actions/authorization';
+import { dePunycodeDomainName } from '../../utils/functions';
 
-import type { TToUnicodeFunction } from '../../utils/types';
+import type { TAuthorizationAction } from '../actions/authorization';
 
 export type TAuthorizationState = {
     sEnteredEmail : string;
@@ -101,7 +101,9 @@ export const reducerAuthorization =
         case SET_RETURN_PATH: {
             return { ...state,
                      sReturnPath: "" + (action.payload ?
-                                            action.payload.sReturnPath :
+                                            (action.payload?.sReturnPath ? 
+                                             action.payload.sReturnPath :
+                                        stateInitialAuthorization.sReturnPath) :
                                        stateInitialAuthorization.sReturnPath) };
         }
         
@@ -110,8 +112,6 @@ export const reducerAuthorization =
         // sending it to the server. And now we should unpunycode the data,
         // received from the server.
         case SET_USER: {
-            const punycode : {toUnicode : TToUnicodeFunction} =
-                                                           require("punycode/");
             const sEmail = (action.payload === null ||
                             action.payload === undefined) ? "" :
                            (typeof action.payload.sEmail === "string" ?
@@ -123,7 +123,7 @@ export const reducerAuthorization =
             return { ...state,
                      bIsUserSet : true,
                      oUser : { sEmail :
-                                      punycode.toUnicode(sEmail),
+                               dePunycodeDomainName(sEmail.toLocaleLowerCase()),
                                sName : sName } };
         }
 

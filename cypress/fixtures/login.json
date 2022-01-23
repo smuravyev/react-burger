@@ -1,0 +1,9 @@
+{
+    "success": true,
+    "accessToken": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9",
+    "refreshToken": "f3257d013fb8bf790cbf59dd41008b4af5a23558b2",
+    "user": {
+        "email": "test@test.ru",
+        "name": "Тестов Тест Тестович"
+    }
+}

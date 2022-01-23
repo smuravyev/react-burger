@@ -7,7 +7,9 @@ import { oErrorCodes,
 
 import { oSettings } from '../config/config';
 
-import type { IAPIRequestData } from './types';
+import type { IAPIRequestData,
+              TToASCIIFunction,
+              TToUnicodeFunction } from './types';
 
 export interface IRefreshTokenResult extends IAPIRequestData {
     accessToken? : string;
@@ -250,4 +252,33 @@ export const makeCoolDateFromUTCString : (sSource : string) => string =
                                       oDateFormatOptions.nTZDifferenceDivider));
     }
     return sResult +  " " + oDateFormatOptions.sTZPrefix + sTZDifference;
+};
+
+const theStringIsStringAndHasOnlyOneAt = (sString : string) : boolean => {
+    return (typeof(sString) === "string") && (/^[^@]*?@[^@]*?$/.test(sString));
+};
+
+export const punycodeDomainName = (sString : string) : string => {
+    if(theStringIsStringAndHasOnlyOneAt(sString)){
+        const [sBeforeAt, sDomainName] = sString.split("@");
+        const punycode : { toASCII : TToASCIIFunction } = require("punycode/");
+        return sBeforeAt.toLocaleLowerCase() + "@" +
+                              punycode.toASCII(sDomainName.toLocaleLowerCase());
+    }
+    else{
+        return "";
+    }
+};
+
+export const dePunycodeDomainName = (sString : string) : string => {
+    if(theStringIsStringAndHasOnlyOneAt(sString)){
+        const [sBeforeAt, sDomainName] = sString.split("@");
+        const punycode : { toUnicode : TToUnicodeFunction } =
+                                                           require("punycode/");
+        return sBeforeAt.toLocaleLowerCase() + "@" +
+                            punycode.toUnicode(sDomainName.toLocaleLowerCase());
+    }
+    else {
+        return "";
+    } 
 };

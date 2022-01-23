@@ -7,7 +7,7 @@ import { ForwardRefExoticComponent,
          RefAttributes,
          FocusEvent } from 'react';
 
-import type { TToASCIIFunction } from '../../utils/types';
+import { punycodeDomainName } from '../..//utils/functions'
 
 import { Input } from '@ya.praktikum/react-developer-burger-ui-components';
 
@@ -57,13 +57,6 @@ const CheckableInput : TCheckableInput =
     
     //Boolean, OK
     const [bFirstTime, setBFirstTime] = useState(true);
-
-    const punycodeDomainName = useCallback((sString : string) : string => {
-        const [sBeforeAt, sDomainName] = sString.split("@");
-        const punycode : { toASCII : TToASCIIFunction } =
-                                                    require("punycode/");
-        return sBeforeAt + "@" + punycode.toASCII(sDomainName);
-    }, []);
     
     const validateString = useCallback((sString : string) : boolean => {
         switch(true){
@@ -90,7 +83,7 @@ const CheckableInput : TCheckableInput =
             default:
                 return false;
         }
-    }, [punycodeDomainName, mChecker, bIsRequired]);
+    }, [mChecker, bIsRequired]);
     
     const processWithCheck = (eEvent : FocusEvent<HTMLInputElement>) => {
         const eTarget =

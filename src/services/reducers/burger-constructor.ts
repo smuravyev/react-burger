@@ -47,7 +47,9 @@ export const reducerBurgerConstructor =
                                       sInnerID : "" +
                                                Math.floor(Math.random() *
                                                nMaximumRandomNumberForID) 
-                                               + Date.now()});
+                                               + Date.now() +
+                                               Math.floor(Math.random() *
+                                               nMaximumRandomNumberForID) });
                     return { ...state,
                              aContent : aContent };
                 }
@@ -68,6 +70,8 @@ export const reducerBurgerConstructor =
                     aContent : aContent};
         }
 
+        // Payload: nFirst - which ingredient to move
+        //          nSecond - where to move (index)
         case SWAP_INGREDIENTS: {
             const aContent = [...state.aContent];
             const nFirstIndex = ((action.payload?.nFirst !== undefined) &&

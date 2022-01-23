@@ -33,12 +33,13 @@ import { oErrorCodes } from '../../utils/constants';
 
 import { oSettings } from '../../config/config';
 
-import { fetchWithAuth, saveTokens } from '../../utils/functions';
+import { fetchWithAuth,
+         saveTokens,
+         punycodeDomainName } from '../../utils/functions';
 
 import type { IUserDataResult } from '../../utils/functions'; 
 
-import type { TToASCIIFunction,
-              IAPIErrorData,
+import type { IAPIErrorData,
               IForgotPasswordRequestData,
               IResetPasswordRequestData,
               IRegisterUserRequestData,
@@ -51,7 +52,6 @@ export const requestLogin : TAppThunk =
    dispatch(setIsBusyAction());
     try{
         dispatch(setLoginRequestAction());
-        const punycode : { toASCII : TToASCIIFunction } = require("punycode/");
         const oResponse =
             await fetch(oSettings.sAPIBaseURL +
                                              oSettings.oAPIURIS.sLogin,
@@ -60,7 +60,7 @@ export const requestLogin : TAppThunk =
                                headers: { 'Content-Type': 'application/json' },
                                redirect: 'follow',
                                body: JSON.stringify({"email":
-                                                       punycode.toASCII(sEmail),
+                                                     punycodeDomainName(sEmail),
                                                      "password" : sPassword})});
        if(oResponse.ok){
             const oData : ILoginRequestData = await oResponse.json();
@@ -102,7 +102,6 @@ export const requestForgotPassword : TAppThunk =
    dispatch(setIsBusyAction());
     try{
         dispatch(setForgotPasswordRequestAction());
-        const punycode : { toASCII : TToASCIIFunction } = require("punycode/");
         const oResponse =
             await fetch(oSettings.sAPIBaseURL +
                                              oSettings.oAPIURIS.sForgotPassword,
@@ -111,7 +110,7 @@ export const requestForgotPassword : TAppThunk =
                                headers: { 'Content-Type': 'application/json' },
                                redirect: 'follow',
                                body: JSON.stringify({"email":
-                                                   punycode.toASCII(sEmail)})});
+                                                 punycodeDomainName(sEmail)})});
         if(oResponse.ok){
             const oData : IForgotPasswordRequestData = await oResponse.json();
             if(!(oData.success)){
@@ -188,7 +187,6 @@ export const requestRegisterUser : TAppThunk =
     dispatch(setIsBusyAction());
     try{
         dispatch(setRegisterUserRequestAction());
-        const punycode : { toASCII : TToASCIIFunction } = require("punycode/");
         const oResponse =
             await fetch(oSettings.sAPIBaseURL +
                                                oSettings.oAPIURIS.sRegisterUser,
@@ -197,7 +195,7 @@ export const requestRegisterUser : TAppThunk =
                                headers: { 'Content-Type': 'application/json' },
                                redirect: 'follow',
                                body: JSON.stringify({"email" :
-                                                       punycode.toASCII(sEmail),
+                                                     punycodeDomainName(sEmail),
                                                      "password" : sPassword,
                                                      "name" : sName })});
         if(oResponse.ok){
@@ -272,6 +270,11 @@ export const updateUser : TAppThunk = ({ oProfile } :
     try{
         //Start requesting...
         dispatch(setUpdateUserRequestAction());
+        //We must PUNYCODE the email in oProfile. So...
+        const oValidatedProfile : IUpdateUserStructure = { 
+            ...oProfile,
+            email: oProfile?.email ? punycodeDomainName(oProfile?.email) :
+                                     undefined };
         const oData =
              await fetchWithAuth(oSettings.sAPIBaseURL +
                                  oSettings.oAPIURIS.sUserData,
@@ -280,7 +283,7 @@ export const updateUser : TAppThunk = ({ oProfile } :
                                    headers: new Headers({'Content-Type':
                                                       'application/json' }),
                                    redirect: 'follow',
-                                   body: JSON.stringify(oProfile)});
+                                   body: JSON.stringify(oValidatedProfile)});
         if((!(oData.success))){
             dispatch(setUpdateUserFailedAction());
             dispatch(setError(oErrorCodes.EC_CANNOT_UPDATE_USER, true));

@@ -84,7 +84,7 @@ const OrderDetailsPage : FC<IOrderDetailsPageProps> =
     const navigate = useNavigate();
     
     const closeModalHandler = () : void => {
-        navigate(oLocation?.state?.oBackground.pathname || "/");
+        navigate(oState?.oBackground?.pathname || "/");
     };
 
     return (

@@ -27,34 +27,40 @@ const OrdersHistory = () : JSX.Element => {
     const dispatch = useAppDispatch();
     
     useEffect(() => {
-        dispatch(socketConnect(oSettings.oAPIWS.sUserOrders, true));
-        return () => {
-            dispatch(socketDisconnect());
-        };
-    }, [dispatch]);
+        if(bLoadedIngredients){
+            dispatch(socketConnect(oSettings.oAPIWS.sUserOrders, true));
+            return () => {
+                dispatch(socketDisconnect());
+            };
+        }
+    }, [ dispatch,
+         bLoadedIngredients ]);
     
     return (
-
-        ((!bLoadedIngredients) || !(bHasData)) ? (
-            <>
-                <Loader message="Загрузка данных или&nbsp;ожидание окончания выполнения операции&hellip;" />
-            </>
-        ) : (
-            <section className={`${styles.pane} `}>
-                {
-                    (aOrders.length > 0) ? (
-                        <FeedOrdersList aOrders={aOrders} bShowStatus={true} />
-                    ) : (
-                        <p className="text text_type_main-default">
-                            Вы&nbsp;пока не&nbsp;сделали ни&nbsp;одного заказа.
-                            <br />
-                            <br />
-                            <Link to="/">Закажите вкусный бургер!</Link>
-                        </p>
-                    )
-                }
-            </section>
-        )
+        <section className="pt-10">
+            {
+                ((!bLoadedIngredients) || !(bHasData)) ? (
+                    <Loader message=
+    "Загрузка данных или&nbsp;ожидание окончания выполнения операции&hellip;" />
+                ) : (
+                    <section className={`${styles.pane} `}>
+                        {
+                            (aOrders.length > 0) ? (
+                         <FeedOrdersList aOrders={aOrders} bShowStatus={true} />
+                            ) : (
+                                <p className="text text_type_main-default">
+                                    Вы&nbsp;пока не&nbsp;сделали
+                                    ни&nbsp;одного заказа.
+                                    <br />
+                                    <br />
+                                    <Link to="/">Закажите вкусный бургер!</Link>
+                                </p>
+                            )
+                        }
+                    </section>
+                )
+           }
+       </section>
     );
 };
 

@@ -1,8 +1,41 @@
-# React-burger educational project
+# Stellar Burgers. Fresh space burgers on request 24/7
+
+## Available live
+
+at [https://stellarburgers.space/](https://stellarburgers.space/).
+
+## React-burger educational project
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app)
 and runs with [Yandex.Practicum components](https://practicum.yandex.ru/).
 
+This is a front-end side of the Stellar Burger site, where the customer
+can order a custom burger in the Stellar burgers cafe.
+
+## Configuration
+
+There is a configuration file located at `src/config/config.ts` file.
+
+The structure of this file is the following:
+
+```
+export const oSettings = {
+    sAPIBaseURL : "The basic path to the API endpoint, without trailing slash"
+    oAPIURIS : { sIngredients : "URI to request available ingredients list",
+                 sOrders : "URI to submit orders",
+                 sForgotPassword : "URI to submit forgot password requests",
+                 sResetPassword : "URI to submit reset password requests",
+                 sRegisterUser : "URI to sumbit registration requests",
+                 sRefreshToken : "URI to submit refresh token requests",
+                 sUserData : "URI to request the current user details",
+                 sLogin : "URI to request login",
+                 sExit : "URI to request timeout"} as const,
+    oCookiesLifetime : { nRefresh : <Refresh token cookie lifetime>,
+                         nAccess : <Accesss token cookie lifetime> } as const,
+    oAPIWS : { sAllOrders : "Full orders list websocket URL",
+               sUserOrders : "Current user orders list websocket URL"}
+} as const;
+```
 
 ## Available Scripts
 
@@ -20,6 +53,14 @@ You will also see any lint errors in the console.
 
 Launches the test runner in the interactive watch mode.\
 See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+
+### `npm run verbose-test`
+
+Launch the Jest tests with --verbose key.
+
+### `npm run cypress`
+
+Open the cypress app with e2e tests.
 
 ### `npm run build`
 
@@ -40,9 +81,3 @@ If you aren’t satisfied with the build tool and configuration choices, you can
 Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
 
 You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).

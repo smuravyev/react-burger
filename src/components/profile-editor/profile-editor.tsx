@@ -72,11 +72,12 @@ const ProfileEditor = () : JSX.Element => {
                                                       sType : "text",
                                                       sPlaceholder : "Имя" },
                                              email : { bIsDisabled : true,
-                                                       sValue: sEmail || "",
+                                                       sValue:
+                                               sEmail.toLocaleLowerCase() || "",
                                                        oRef : oEmailRef,
                                                        bIsRequired : true,
                                                        mChecker : "email",
-                                                       sType : "email",
+                                                       sType : "text",
                                                        sPlaceholder :
                                                            "Логин"},
                                              password: { bIsDisabled : true,
@@ -172,6 +173,8 @@ const ProfileEditor = () : JSX.Element => {
                 setOFields({ name : { ...oFields.name,
                                       bIsDisabled  : true},
                              email : { ...oFields.email,
+                                       sValue :
+                                       oFields.email.sValue.toLocaleLowerCase(),
                                        bIsDisabled  : true},
                              password : { ...oFields.password,
                                           bIsDisabled  : true } });
@@ -205,7 +208,7 @@ const ProfileEditor = () : JSX.Element => {
         };
     });
     
-    let sFormClassName : string = `${styles.form} width_480px_form`;
+    let sFormClassName : string = `${styles.form} width_480px_form pt-20 mt-20`;
     if(bIsSavingProfile){
         sFormClassName = `${sFormClassName} ${styles.busy}`;
     } 

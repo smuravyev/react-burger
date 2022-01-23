@@ -22,7 +22,9 @@ export const reducerApp =
                nIsBusy = 0. */
             return { ...state,
                      bIsBusy: true,
-                     nBusyCounter : state.nBusyCounter + 1 }
+                     nBusyCounter : (state.nBusyCounter > 0) ?
+                                    state.nBusyCounter + 1 :
+                                    1 }
         }
 
         case BUSY_CLEAR: {
