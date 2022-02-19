@@ -12,6 +12,13 @@ and runs with [Yandex.Practicum components](https://practicum.yandex.ru/).
 This is a front-end side of the Stellar Burger site, where the customer
 can order a custom burger in the Stellar burgers cafe.
 
+## Technologies used
+
+- React
+- React DnD
+- Redux
+- Websockets
+
 ## Configuration
 
 There is a configuration file located at `src/config/config.ts` file.
