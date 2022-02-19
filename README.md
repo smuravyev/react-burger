@@ -21,7 +21,7 @@ can order a custom burger in the Stellar burgers cafe.
 
 ## Configuration
 
-There is a configuration file located at `src/config/config.ts` file.
+There is a configuration file located at `src/config/config.ts`.
 
 The structure of this file is the following:
 
